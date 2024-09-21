@@ -188,7 +188,7 @@ public class MyEventHandler implements Listener {
             }
 
             Claim claim = getClaim(event.getPlayer().getLocation().getChunk());
-            if(claim == null){
+            if(claim.getType() == 0){
                 return;
             }
 
@@ -396,7 +396,7 @@ public class MyEventHandler implements Listener {
                         event.getEntity() instanceof ItemFrame ||
                         event.getEntity() instanceof Painting)){
             Claim claim = getClaim(((Player) event.getDamager()).getPlayer().getLocation().getChunk());
-            if(claim == null){
+            if(claim.getType() == 0){
                 return;
             }
 
@@ -414,7 +414,7 @@ public class MyEventHandler implements Listener {
                         event.getEntity() instanceof Painting)){
             if(!(((Projectile) event.getDamager()).getShooter() instanceof Player)){
                 Claim claim = getClaim(((Player) event.getDamager()).getPlayer().getLocation().getChunk());
-                if(claim == null){
+                if(claim.getType() == 0){
                     return;
                 }
 
