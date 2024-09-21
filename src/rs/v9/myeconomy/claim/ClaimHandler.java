@@ -65,7 +65,7 @@ public class ClaimHandler {
     }
 
     private static boolean claimForGroup(Player player, String key, MyGroup group){
-        if(group.getPower() > 1){
+        if(group.getPower() > 0){
             if(claims.has(key)){
                 Claim claim = new Claim(UUID.fromString(claims.getJSONObject(key).getString("k")), claims.getJSONObject(key).getInt("t"));
                 //Claim claim = claims.get(key);
