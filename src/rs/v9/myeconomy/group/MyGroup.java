@@ -25,8 +25,10 @@ public class MyGroup implements Group {
     private UUID key;
     private Location home;
 
-    public void init(String key){
-        this.key = UUID.fromString(key);
+    public MyGroup(){
+    }
+
+    public MyGroup(String key){
         read(key);
     }
 

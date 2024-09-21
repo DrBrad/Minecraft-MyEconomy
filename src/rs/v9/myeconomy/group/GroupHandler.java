@@ -39,8 +39,7 @@ public class GroupHandler {
         File groupFolder = new File(plugin.getDataFolder()+File.separator+"group");
         if(groupFolder.exists()){
             for(File groupFile : groupFolder.listFiles()){
-                MyGroup group = new MyGroup();
-                group.init(groupFile.getName());
+                MyGroup group = new MyGroup(groupFile.getName());
                 groupsByUUID.put(group.getKey(), group);
                 groupsByName.put(group.getName().toLowerCase(), group.getKey());
             }
