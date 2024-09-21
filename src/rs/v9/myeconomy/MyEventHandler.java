@@ -181,10 +181,26 @@ public class MyEventHandler implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerInteract(PlayerInteractEvent event){
-        Player player = event.getPlayer();
-        Material material = player.getItemInHand().getType();
+        if(event.getAction() == Action.PHYSICAL){
+            Block block = event.getClickedBlock();
+            if(block == null || block.getType() != Material.FARMLAND){
+                return;
+            }
+
+            Claim claim = getClaim(event.getPlayer().getLocation().getChunk());
+            if(claim == null){
+                return;
+            }
+
+            if(!getPlayersGroup(event.getPlayer().getUniqueId()).getKey().equals(claim.getKey())){
+                event.setCancelled(true);
+            }
+        }
 
         if(event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getClickedBlock().getType() == Material.SPAWNER){
+            Player player = event.getPlayer();
+            Material material = player.getItemInHand().getType();
+
             if(material == Material.BLAZE_SPAWN_EGG){
                 if(event.getClickedBlock().getWorld().getEnvironment() != World.Environment.NETHER){
                     player.sendMessage("§7Sorry, you can make blaze spawners in the §cNether§7.");
