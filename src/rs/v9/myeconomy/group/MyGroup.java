@@ -26,6 +26,7 @@ public class MyGroup implements Group {
     private Location home;
 
     public void init(String key){
+        this.key = UUID.fromString(key);
         read(key);
     }
 
