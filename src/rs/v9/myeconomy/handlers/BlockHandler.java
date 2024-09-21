@@ -186,7 +186,8 @@ public class BlockHandler {
                 Material.JUNGLE_FENCE_GATE,
                 Material.OAK_FENCE_GATE,
                 Material.SPRUCE_FENCE_GATE,
-                Material.WARPED_FENCE_GATE
+                Material.WARPED_FENCE_GATE,
+                Material.CRAFTER
         };
 
         return Arrays.asList(tmp);

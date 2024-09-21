@@ -4,8 +4,7 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.*;
 import org.bukkit.event.block.*;
 import org.bukkit.event.entity.*;
@@ -370,6 +369,41 @@ public class MyEventHandler implements Listener {
                 }
             }
         }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onEntityDamageByEntity(EntityDamageByEntityEvent event){
+        if(!(event.getEntity() instanceof ItemFrame || event.getEntity() instanceof Painting)){
+            return;
+        }
+
+        if(event.getDamager() instanceof Player){
+            Claim claim = getClaim(((Player) event.getDamager()).getPlayer().getLocation().getChunk());
+            if(claim == null){
+                return;
+            }
+
+            Player player = ((Player) event.getDamager()).getPlayer();
+            if(getPlayersGroup(player.getUniqueId()).getKey().equals(claim.getKey())){
+                return;
+            }
+        }
+
+        if(event.getDamager() instanceof Projectile){
+            if(!(((Projectile) event.getDamager()).getShooter() instanceof Player)){
+                Claim claim = getClaim(((Player) event.getDamager()).getPlayer().getLocation().getChunk());
+                if(claim == null){
+                    return;
+                }
+
+                Player player = (Player) ((Projectile) event.getDamager()).getShooter();
+                if(getPlayersGroup(player.getUniqueId()).getKey().equals(claim.getKey())){
+                    return;
+                }
+            }
+        }
+
+        event.setCancelled(true);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
