@@ -19,7 +19,6 @@ import static rs.v9.myeconomy.handlers.MapHandler.stopMapping;
 public class Main extends JavaPlugin {
 
     public static Plugin plugin;
-    //Fix bug with loading leaders of groups...
 
     @Override
     public void onEnable(){
