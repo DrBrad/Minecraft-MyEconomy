@@ -333,6 +333,46 @@ public class MyEventHandler implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
+    public void onInteract(PlayerInteractEvent event){
+        if(event.getAction() == Action.RIGHT_CLICK_BLOCK){
+            Block block = event.getClickedBlock();
+
+            Chunk chunk = block.getChunk();
+            if(inClaim(chunk)){
+                Claim claim = getClaim(chunk);
+                if(claim.getType() > 0){
+                    if(getSafeNoEdit().contains(block.getType())){
+                        if(event.getPlayer().isOp()){
+                            return;
+                        }
+
+                        if(!event.getPlayer().hasPermission("g.admin")){
+                            event.setCancelled(true);
+                            event.getPlayer().sendMessage("§cOnly server admins can interact with blocks in zones.");
+                        }
+                    }
+
+                }else if(getNoEdit().contains(block.getType())){
+                    MyGroup group = getPlayersGroup(event.getPlayer().getUniqueId());
+                    if(group != null){
+                        if(!group.getKey().equals(claim.getKey())){
+                            event.setCancelled(true);
+                            event.getPlayer().sendMessage("§cYou cannot interact with blocks in other groups claims.");
+
+                        }else if(!group.canBuild(event.getPlayer().getUniqueId())){
+                            event.setCancelled(true);
+                            event.getPlayer().sendMessage("§cYou cannot interact with blocks as a member.");
+                        }
+                    }else{
+                        event.setCancelled(true);
+                        event.getPlayer().sendMessage("§cYou cannot interact with blocks in other groups claims.");
+                    }
+                }
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onCreatureSpawn(CreatureSpawnEvent event){
         if(event.getSpawnReason().equals(CreatureSpawnEvent.SpawnReason.SPAWNER_EGG) ||
                 event.getSpawnReason().equals(CreatureSpawnEvent.SpawnReason.DISPENSE_EGG)){
