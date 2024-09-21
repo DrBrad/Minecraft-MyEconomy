@@ -226,6 +226,99 @@ commands:
       /back
 
 permissions:
+  g.admin:
+    default: false
+    description: Edit all claims and perform any faction command
+  g.help:
+    default: true
+    description: List of faction commands
+  g.create:
+    default: true
+    description: List of faction commands
+  g.invite:
+    default: true
+    description: Invites player to faction.
+  g.join:
+    default: true
+    description: Join faction from invite.
+  g.leave:
+    default: true
+    description: Leave your faction.
+  g.remove:
+    default: true
+    description: Remove player from your faction.
+  g.promote:
+    default: true
+    description: Promote player in faction.
+  g.demote:
+    default: true
+    description: Demote player in faction.
+  g.disband:
+    default: true
+    description: Deletes your faction.
+  g.claim:
+    default: true
+    description: Claim a chunk for your faction.
+  g.unclaim:
+    default: true
+    description: Removes claim from your faction.
+  g.autoclaim:
+    default: true
+    description: Automatically claim a chunk for your faction.
+  g.autounclaim:
+    default: true
+    description: Automatically removes claim from your faction.
+  g.home:
+    default: true
+    description: Teleport to your factions home.
+  g.sethome:
+    default: true
+    description: Set your factions home.
+  g.buypower:
+    default: true
+    description: Buy power for diamond, hold the diamond in your hand.
+  g.warp:
+    default: true
+    description: Teleport to one of your factions warps.
+  g.warps:
+    default: true
+    description: Lists all warps for your faction.
+  g.setwarp:
+    default: true
+    description: Set a warp for your faction.
+  g.delwarp:
+    default: true
+    description: Removes a warp from your faction.
+  g.power:
+    default: true
+    description: Check yours or another factions power.
+  g.list:
+    default: true
+    description: List of all of the factions.
+  g.rename:
+    default: true
+    description: Rename your faction something else.
+  g.chat:
+    default: true
+    description: Chat with only faction members or globally.
+  g.map:
+    default: true
+    description: See all faction claims chunks visually.
+  g.rank:
+    default: true
+    description: Get your rank in faction.
+  g.chown:
+    default: true
+    description: Change faction ownership.
+  g.setcolor:
+    default: true
+    description: Set factions color.
+  g.setdesc:
+    default: true
+    description: Set factions description.
+  g.version:
+    default: true
+    description: Get the version of this plugin.
   warp:
     default: true
     description: Warp to a location.
