@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="MyEconomy:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/MyEconomy_jar</output-path>
+    <root id="archive" name="MyEconomy.jar">
+      <element id="module-output" name="MyEconomy" />
+      <element id="extracted-dir" path="$USER_HOME$/libs/Dynmap-3.7-beta-7-spigot.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/libs/spigot-api-1.21.1-R0.1-20240907.094015-22.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/libs/json-20230227.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

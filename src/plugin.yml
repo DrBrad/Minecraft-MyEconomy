@@ -1,0 +1,264 @@
+name: MyEconomy
+version: 1.0
+author: DrBrad
+main: rs.v9.myeconomy.Main
+description: Im the best there is plain and simple, I mean I wake up and piss excellence
+api-version: 1.21
+commands:
+  g:
+    description: Group commands
+  g help:
+    description: List of group commands
+    usage: |
+      /g help
+  g ?:
+    description: List of group commands
+    usage: |
+      /g ?
+  g create:
+    description: Creates a group.
+    usage: |
+      /g create GROUP_NAME
+  g invite:
+    description: Invites player to group.
+    usage: |
+      /g invite PLAYER_NAME
+  g join:
+    description: Join group from invite.
+    usage: |
+      /g join
+  g leave:
+    description: Leave your group.
+    usage: |
+      /g leave
+  g remove:
+    description: Remove player from your group.
+    usage: |
+      /g remove PLAYER_NAME
+  g promote:
+    description: Promote player in group.
+    usage: |
+      /g promote PLAYER_NAME
+  g demote:
+    description: Demote player in group.
+    usage: |
+      /g demote PLAYER_NAME
+  g disband:
+    description: Deletes your group.
+    usage: |
+      /g disband
+  g claim:
+    description: Claim a chunk for your group.
+    usage: |
+      /g claim
+  g unclaim:
+    description: Removes claim from your group.
+    usage: |
+      /g unclaim
+  g autoclaim:
+    description: Automatically claim a chunk for your group.
+    usage: |
+      /g autclaim
+  g autounclaim:
+    description: Automatically removes claim from your group.
+    usage: |
+      /g autounclaim
+  g home:
+    description: Teleport to your groups home.
+    usage: |
+      /g home
+  g sethome:
+    description: Set your groups home.
+    usage: |
+      /g sethome
+  g warp:
+    description: Teleport to one of your groups warps.
+    usage: |
+      /g warp WARP_NAME
+  g warps:
+    description: Lists all warps for your group.
+    usage: |
+      /g warps
+  g setwarp:
+    description: Set a warp for your group.
+    usage: |
+      /g setwarp WARP_NAME
+  g delwarp:
+    description: Removes a warp from your group.
+    usage: |
+      /g delwarp WARP_NAME
+  g power:
+    description: Check yours or another groups power.
+    usage: |
+      /g power
+  g list:
+    description: List of all of the groups.
+    usage: |
+      /g list
+  g rename:
+    description: Rename your group something else.
+    usage: |
+      /g rename GROUP_NAME
+  g chat:
+    description: Chat with only group members or globally.
+    usage: |
+      /g chat
+  g map:
+    description: See all group claims chunks visually.
+    usage: |
+      /g map
+  g rank:
+    description: Get your rank in group.
+    usage: |
+      /g rank
+  g chown:
+    description: Change group ownership.
+    usage: |
+      /g chown PLAYER_NAME
+  g setpower:
+    description: Set groups power.
+    usage: |
+      /g setpower GROUP_NAME POWER_LEVEL
+  g setcolor:
+    description: Set groups color.
+    usage: |
+      /g setcolor COLOR
+  g setdesc:
+    description: Set groups description.
+    usage: |
+      /g setdesc GROUPS DESCRIPTION
+  g claim safezone:
+    description: Claim Safe-Zone for server.
+    usage: |
+      /g claim safezone
+  g unclaim safezone:
+    description: Unclaim Safe-Zone for server.
+    usage: |
+      /g unclaim safezone
+  g autoclaim safezone:
+    description: Automatically claims safezone.
+    usage: |
+      /g autclaim safezone
+  g autounclaim safezone:
+    description: Automatically removes safezone claims.
+    usage: |
+      /g autounclaim safezone
+  g claim pvpzone:
+    description: Claim Pvp-Zone for server.
+    usage: |
+      /g claim pvpzone
+  g unclaim pvpzone:
+    description: Unclaim Pvp-Zone for server.
+    usage: |
+      /g unclaim pvpzone
+  g autoclaim pvpzone:
+    description: Automatically claims pvpzone.
+    usage: |
+      /g autclaim pvpzone
+  g autounclaim pvpzone:
+    description: Automatically removes pvpzone claims.
+    usage: |
+      /g autounclaim pvpzone
+  g buypower:
+    description: Buy power for diamond, hold the diamond in your hand.
+    usage: |
+      /g buypower
+  g version:
+    description: Get the version of this plugin.
+    usage: |
+      /g version
+
+  warp:
+    description: Warp to a location.
+    usage: |
+      /warp WARP_NAME
+  warps:
+    description: List of server warps.
+    usage: |
+      /warps
+  setwarp:
+    description: Set server warp location.
+    usage: |
+      /setwarp WARP_NAME
+  delwarp:
+    description: Delete a server warp.
+    usage: |
+      /delwarp WARP_NAME
+  home:
+    description: Teleport to your home.
+    usage: |
+      /home
+  sethome:
+    description: Set your home.
+    usage: |
+      /sethome
+  spawn:
+    description: Teleport to server spawn.
+    usage: |
+      /spawn
+  setspawn:
+    description: Set server spawn.
+    usage: |
+      /setspawn
+  tpa:
+    description: Teleport to player.
+    usage: |
+      /tpa PLAYER_NAME
+  tpaa:
+    description: Accept players teleport request.
+    usage: |
+      /tpaa
+  tpad:
+    description: Deny players teleport request.
+    usage: |
+      /tpad
+  msg:
+    description: Message another player in private.
+    usage: |
+      /msg PLAYER_NAME
+  gamemode:
+    description: Change your gamemode
+    usage: |
+      /gamemode MODE
+  back:
+    description: Teleport back to previous location.
+    usage: |
+      /back
+
+permissions:
+  warp:
+    default: true
+    description: Warp to a location.
+  warps:
+    default: true
+    description: List of server warps.
+  setwarp:
+    default: false
+    description: Set server warp location.
+  delwarp:
+    default: false
+    description: Delete a server warp.
+  home:
+    default: true
+    description: Teleport to your home.
+  sethome:
+    default: true
+    description: Set your home.
+  spawn:
+    default: true
+    description: Teleport to server spawn.
+  setspawn:
+    default: false
+    description: Set server spawn.
+  tpa:
+    default: true
+    description: Teleport to player.
+  msg:
+    default: true
+    description: Message another player in private.
+  gamemode:
+    default: false
+    description: Change your gamemode
+  back:
+    default: true
+    description: Teleport back to previous location.
