@@ -401,7 +401,8 @@ public class MyEventHandler implements Listener {
             }
 
             Player player = ((Player) event.getDamager()).getPlayer();
-            if(getPlayersGroup(player.getUniqueId()).getKey().equals(claim.getKey())){
+            if(!getPlayersGroup(player.getUniqueId()).getKey().equals(claim.getKey())){
+                event.setCancelled(true);
                 return;
             }
         }
@@ -419,13 +420,11 @@ public class MyEventHandler implements Listener {
                 }
 
                 Player player = (Player) ((Projectile) event.getDamager()).getShooter();
-                if(getPlayersGroup(player.getUniqueId()).getKey().equals(claim.getKey())){
-                    return;
+                if(!getPlayersGroup(player.getUniqueId()).getKey().equals(claim.getKey())){
+                    event.setCancelled(true);
                 }
             }
         }
-
-        event.setCancelled(true);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
