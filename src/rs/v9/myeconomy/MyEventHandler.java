@@ -389,11 +389,10 @@ public class MyEventHandler implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event){
-        if(!(event.getEntity() instanceof ItemFrame || event.getEntity() instanceof Painting)){
-            return;
-        }
-
-        if(event.getDamager() instanceof Player){
+        if(event.getDamager() instanceof Player &&
+                (event.getEntity() instanceof Breedable ||
+                        event.getEntity() instanceof ItemFrame ||
+                        event.getEntity() instanceof Painting)){
             Claim claim = getClaim(((Player) event.getDamager()).getPlayer().getLocation().getChunk());
             if(claim == null){
                 return;
@@ -405,7 +404,10 @@ public class MyEventHandler implements Listener {
             }
         }
 
-        if(event.getDamager() instanceof Projectile){
+        if(event.getDamager() instanceof Projectile &&
+                (event.getEntity() instanceof Breedable ||
+                        event.getEntity() instanceof ItemFrame ||
+                        event.getEntity() instanceof Painting)){
             if(!(((Projectile) event.getDamager()).getShooter() instanceof Player)){
                 Claim claim = getClaim(((Player) event.getDamager()).getPlayer().getLocation().getChunk());
                 if(claim == null){
