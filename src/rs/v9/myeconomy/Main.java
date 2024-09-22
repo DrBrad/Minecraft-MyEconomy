@@ -22,8 +22,9 @@ public class Main extends JavaPlugin {
 
     public static Plugin plugin;
     public static DynmapCommonAPI dynmap;
-    
+
     //fix bug with claim no arrows used
+    //start using bencode instead of json
 
     @Override
     public void onLoad(){
