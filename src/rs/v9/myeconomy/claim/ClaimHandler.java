@@ -207,7 +207,7 @@ public class ClaimHandler {
                                     return true;
 
                                 }else{
-                                    player.sendMessage("§cAnother group owns this chunk and is stron enough to keep it.");
+                                    player.sendMessage("§cAnother group owns this chunk.");
                                 }
                             }else{
                                 player.sendMessage("§cYour group already claimed this chunk.");
