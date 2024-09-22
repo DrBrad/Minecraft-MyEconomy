@@ -593,6 +593,7 @@ public class MyEventHandler implements Listener {
 
                 }else{
                     MyGroup group = getGroupFromUUID(claim.getKey());
+
                     if(group != null){
                         event.getPlayer().sendTitle(getChatColor(group.getColor())+group.getName(), "", 0, 60, 0);
                     }

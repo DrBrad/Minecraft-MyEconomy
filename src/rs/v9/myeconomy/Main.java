@@ -8,6 +8,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.dynmap.DynmapCommonAPI;
+import org.dynmap.DynmapCommonAPIListener;
 import rs.v9.myeconomy.claim.ClaimHandler;
 import rs.v9.myeconomy.group.GroupHandler;
 import rs.v9.myeconomy.handlers.PlayerCooldown;
@@ -19,10 +21,22 @@ import static rs.v9.myeconomy.handlers.MapHandler.stopMapping;
 public class Main extends JavaPlugin {
 
     public static Plugin plugin;
+    public static DynmapCommonAPI dynmap;
+
+    @Override
+    public void onLoad(){
+        plugin = this;
+
+        DynmapCommonAPIListener.register(new DynmapCommonAPIListener(){
+            @Override
+            public void apiEnabled(DynmapCommonAPI dynmapCommonAPI){
+                dynmap = dynmapCommonAPI;
+            }
+        });
+    }
 
     @Override
     public void onEnable(){
-        plugin = this;
         Bukkit.getPluginManager().registerEvents(new MyEventHandler(), this);
         getCommand("g").setExecutor(new GroupCommands());
 

@@ -4,6 +4,8 @@ author: DrBrad
 main: rs.v9.myeconomy.Main
 description: Im the best there is plain and simple, I mean I wake up and piss excellence
 api-version: 1.21
+depend:
+  - dynmap
 commands:
   g:
     description: Group commands
