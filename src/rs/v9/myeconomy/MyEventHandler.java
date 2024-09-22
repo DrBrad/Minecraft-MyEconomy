@@ -197,26 +197,26 @@ public class MyEventHandler implements Listener {
             }
         }
 
-        if(event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getClickedBlock().getType() == Material.SPAWNER){
-            Player player = event.getPlayer();
-            Material material = player.getItemInHand().getType();
+        if(event.getAction() == Action.RIGHT_CLICK_BLOCK){
+            if(event.getClickedBlock().getType() == Material.SPAWNER){
+                Player player = event.getPlayer();
+                Material material = player.getItemInHand().getType();
 
-            if(material == Material.BLAZE_SPAWN_EGG){
-                if(event.getClickedBlock().getWorld().getEnvironment() != World.Environment.NETHER){
-                    player.sendMessage("§7Sorry, you can make blaze spawners in the §cNether§7.");
+                if(material == Material.BLAZE_SPAWN_EGG){
+                    if(event.getClickedBlock().getWorld().getEnvironment() != World.Environment.NETHER){
+                        player.sendMessage("§7Sorry, you can make blaze spawners in the §cNether§7.");
+                        event.setCancelled(true);
+                        return;
+                    }
+                }else if(material != Material.SKELETON_SPAWN_EGG && material != Material.ZOMBIE_SPAWN_EGG && material != Material.BLAZE_SPAWN_EGG &&
+                        material != Material.SPIDER_SPAWN_EGG && material != Material.SILVERFISH_SPAWN_EGG && material != Material.MAGMA_CUBE_SPAWN_EGG &&
+                        material != Material.CAVE_SPIDER_SPAWN_EGG && material != Material.PIG_SPAWN_EGG){
+                    player.sendMessage("§cSorry, you cant make a spawner with this creature.");
                     event.setCancelled(true);
                     return;
                 }
-            }else if(material != Material.SKELETON_SPAWN_EGG && material != Material.ZOMBIE_SPAWN_EGG && material != Material.BLAZE_SPAWN_EGG &&
-                    material != Material.SPIDER_SPAWN_EGG && material != Material.SILVERFISH_SPAWN_EGG && material != Material.MAGMA_CUBE_SPAWN_EGG &&
-                    material != Material.CAVE_SPIDER_SPAWN_EGG && material != Material.PIG_SPAWN_EGG){
-                player.sendMessage("§cSorry, you cant make a spawner with this creature.");
-                event.setCancelled(true);
-                return;
             }
-        }
 
-        if(event.getAction() == Action.RIGHT_CLICK_BLOCK){
             Block block = event.getClickedBlock();
 
             Chunk chunk = block.getChunk();
@@ -346,7 +346,7 @@ public class MyEventHandler implements Listener {
             }
         }
     }
-
+/*
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onInteract(PlayerInteractEvent event){
         if(event.getAction() == Action.RIGHT_CLICK_BLOCK){
@@ -386,51 +386,44 @@ public class MyEventHandler implements Listener {
             }
         }
     }
-
+*/
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event){
-        if(event.getDamager() instanceof Player &&
-                ((event.getEntity().isCustomNameVisible() && !event.getEntity().getType().equals(EntityType.PLAYER)) ||
-                        event.getEntity() instanceof MushroomCow ||
-                        event.getEntity() instanceof IronGolem ||
-                        event.getEntity() instanceof Golem ||
-                        event.getEntity() instanceof Breedable ||
-                        event.getEntity() instanceof Minecart ||
-                        event.getEntity() instanceof Boat ||
-                        event.getEntity() instanceof ItemFrame ||
-                        event.getEntity() instanceof Painting)){
-            Claim claim = getClaim(((Player) event.getDamager()).getPlayer().getLocation().getChunk());
-            if(claim == null || claim.getType() == 0){
+        if((event.getEntity().getCustomName() != null && !event.getEntity().getType().equals(EntityType.PLAYER)) ||
+                event.getEntity() instanceof MushroomCow ||
+                event.getEntity() instanceof Golem ||
+                event.getEntity() instanceof Snowman ||
+                event.getEntity() instanceof Breedable ||
+                event.getEntity() instanceof ItemFrame ||
+                event.getEntity() instanceof Painting){
+            Player player = null;
+
+            if(event.getDamager() instanceof Player){
+                player = ((Player) event.getDamager()).getPlayer();
+            }
+
+            if(event.getDamager().getType() == EntityType.ARROW &&
+                    ((Projectile) event.getDamager()).getShooter() instanceof Player){
+                player = (Player) ((Projectile) event.getDamager()).getShooter();
+            }
+
+            if(player == null){
                 return;
             }
 
-            Player player = ((Player) event.getDamager()).getPlayer();
-            if(!getPlayersGroup(player.getUniqueId()).getKey().equals(claim.getKey())){
+            Claim claim = getClaim(event.getEntity().getLocation().getChunk());
+            if(claim == null){
+                return;
+            }
+
+            MyGroup group = getPlayersGroup(player.getUniqueId());
+            if(group == null){
                 event.setCancelled(true);
                 return;
             }
-        }
 
-        if(event.getDamager() instanceof Projectile &&
-                ((event.getEntity().isCustomNameVisible() && !event.getEntity().getType().equals(EntityType.PLAYER)) ||
-                        event.getEntity() instanceof MushroomCow ||
-                        event.getEntity() instanceof IronGolem ||
-                        event.getEntity() instanceof Golem ||
-                        event.getEntity() instanceof Breedable ||
-                        event.getEntity() instanceof Minecart ||
-                        event.getEntity() instanceof Boat ||
-                        event.getEntity() instanceof ItemFrame ||
-                        event.getEntity() instanceof Painting)){
-            if(!(((Projectile) event.getDamager()).getShooter() instanceof Player)){
-                Claim claim = getClaim(((Player) event.getDamager()).getPlayer().getLocation().getChunk());
-                if(claim == null || claim.getType() == 0){
-                    return;
-                }
-
-                Player player = (Player) ((Projectile) event.getDamager()).getShooter();
-                if(!getPlayersGroup(player.getUniqueId()).getKey().equals(claim.getKey())){
-                    event.setCancelled(true);
-                }
+            if(!claim.getKey().equals(group.getKey())){
+                event.setCancelled(true);
             }
         }
     }

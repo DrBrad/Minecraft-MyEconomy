@@ -56,8 +56,6 @@ public class ClaimHandler {
 
         System.out.println("Loading markers into Dynmap!");
 
-        JSONObject claims = getClaims();
-
         Iterator<String> it = claims.keys();
 
         while(it.hasNext()){
@@ -392,10 +390,6 @@ public class ClaimHandler {
 
             write();
         }
-    }
-
-    public static JSONObject getClaims(){
-        return claims;
     }
 
 
