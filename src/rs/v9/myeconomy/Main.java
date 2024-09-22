@@ -22,6 +22,8 @@ public class Main extends JavaPlugin {
 
     public static Plugin plugin;
     public static DynmapCommonAPI dynmap;
+    
+    //fix bug with claim no arrows used
 
     @Override
     public void onLoad(){
