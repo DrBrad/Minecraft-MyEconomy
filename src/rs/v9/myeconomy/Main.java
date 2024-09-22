@@ -85,7 +85,6 @@ public class Main extends JavaPlugin {
 
         getServer().addRecipe(spawner);
 
-
         getServer().addRecipe(new FurnaceRecipe(new ItemStack(Material.LEATHER), Material.ROTTEN_FLESH));
     }
 }
