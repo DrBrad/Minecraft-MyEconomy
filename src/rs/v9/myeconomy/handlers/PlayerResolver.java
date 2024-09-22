@@ -19,19 +19,10 @@ public class PlayerResolver {
     public PlayerResolver(){
         if(plugin.getDataFolder().exists()){
             try{
-                File playersFile = new File(plugin.getDataFolder()+File.separator+"player_resolver.json");
+                File playersFile = new File(plugin.getDataFolder()+File.separator+"player_resolver.ser");
                 if(playersFile.exists()){
-                    //players = new JSONObject(new JSONTokener(new FileInputStream(playersFile)));
-                    JSONObject players = new JSONObject(new JSONTokener(new FileInputStream(playersFile)));
-
-                    for(String key : players.keySet()){
-                        this.players.put(key, UUID.fromString(players.getString(key)));
-                    }
-
-                    write();
-
-                    /*
                     DataInputStream in = new DataInputStream(new FileInputStream(playersFile));
+
                     while(in.available() > 0){
                         byte[] b = new byte[in.readInt()];
                         in.read(b);
@@ -44,7 +35,6 @@ public class PlayerResolver {
 
                         players.put(key, value);
                     }
-                    System.out.println("RESOLV: "+players.size());*/
                 }
             }catch(Exception e){
                 e.printStackTrace();

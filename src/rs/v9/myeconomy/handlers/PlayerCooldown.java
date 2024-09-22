@@ -19,19 +19,10 @@ public class PlayerCooldown {
     public PlayerCooldown(){
         if(plugin.getDataFolder().exists()){
             try{
-                File playersFile = new File(plugin.getDataFolder()+File.separator+"player_cooldown.json");
+                File playersFile = new File(plugin.getDataFolder()+File.separator+"player_cooldown.ser");
                 if(playersFile.exists()){
-                    JSONObject players = new JSONObject(new JSONTokener(new FileInputStream(playersFile)));
-
-                    for(String key : players.keySet()){
-                        this.players.put(UUID.fromString(key), players.getLong(key));
-                    }
-
-                    write();
-
-
-                    /*
                     DataInputStream in = new DataInputStream(new FileInputStream(playersFile));
+
                     while(in.available() > 0){
                         byte[] b = new byte[in.readInt()];
                         in.read(b);
@@ -41,7 +32,7 @@ public class PlayerCooldown {
                         long value = in.readLong();
 
                         players.put(key, value);
-                    }*/
+                    }
                 }
             }catch(Exception e){
                 e.printStackTrace();

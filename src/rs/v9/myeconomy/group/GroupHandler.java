@@ -29,18 +29,10 @@ public class GroupHandler {
 
         //READING TIME
         try{
-            File playersFile = new File(plugin.getDataFolder()+File.separator+"players.json");
+            File playersFile = new File(plugin.getDataFolder()+File.separator+"players.ser");
             if(playersFile.exists()){
-                JSONObject players = new JSONObject(new JSONTokener(new FileInputStream(playersFile)));
-
-                for(String key : players.keySet()){
-                    this.players.put(UUID.fromString(key), players.getString(key));
-                }
-
-                write();
-
-                /*
                 DataInputStream in = new DataInputStream(new FileInputStream(playersFile));
+
                 while(in.available() > 0){
                     byte[] b = new byte[in.readInt()];
                     in.read(b);
@@ -53,7 +45,6 @@ public class GroupHandler {
 
                     players.put(key, value);
                 }
-                System.out.println("GROUP: "+players.size());*/
             }
         }catch(Exception e){
             e.printStackTrace();

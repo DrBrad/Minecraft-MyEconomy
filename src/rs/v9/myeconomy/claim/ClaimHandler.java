@@ -36,18 +36,10 @@ public class ClaimHandler {
     public ClaimHandler(){
         if(plugin.getDataFolder().exists()){
             try{
-                File claimsFile = new File(plugin.getDataFolder()+File.separator+"claims.json");
+                File claimsFile = new File(plugin.getDataFolder()+File.separator+"claims.ser");
                 if(claimsFile.exists()){
-                    JSONObject claims = new JSONObject(new JSONTokener(new FileInputStream(claimsFile)));
-
-                    for(String key : claims.keySet()){
-                        this.claims.put(key, new Claim(UUID.fromString(claims.getJSONObject(key).getString("k")), claims.getJSONObject(key).getInt("t")));
-                    }
-
-                    write();
-
-                    /*
                     DataInputStream in = new DataInputStream(new FileInputStream(claimsFile));
+
                     while(in.available() > 0){
                         byte[] b = new byte[in.readInt()];
                         in.read(b);
@@ -62,7 +54,6 @@ public class ClaimHandler {
 
                         claims.put(key, new Claim(uuid, type));
                     }
-                    System.out.println("CLAIMS: "+claims.size());*/
                 }
 
                 if(dynmap != null){
