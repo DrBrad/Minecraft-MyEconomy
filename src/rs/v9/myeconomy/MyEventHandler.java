@@ -390,8 +390,9 @@ public class MyEventHandler implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event){
         if(event.getDamager() instanceof Player &&
-                ((event.getEntity().isCustomNameVisible() && event.getEntity().getType().equals(EntityType.PLAYER)) ||
+                ((event.getEntity().isCustomNameVisible() && !event.getEntity().getType().equals(EntityType.PLAYER)) ||
                         event.getEntity() instanceof MushroomCow ||
+                        event.getEntity() instanceof IronGolem ||
                         event.getEntity() instanceof Golem ||
                         event.getEntity() instanceof Breedable ||
                         event.getEntity() instanceof Minecart ||
@@ -411,8 +412,9 @@ public class MyEventHandler implements Listener {
         }
 
         if(event.getDamager() instanceof Projectile &&
-                ((event.getEntity().isCustomNameVisible() && event.getEntity().getType().equals(EntityType.PLAYER)) ||
+                ((event.getEntity().isCustomNameVisible() && !event.getEntity().getType().equals(EntityType.PLAYER)) ||
                         event.getEntity() instanceof MushroomCow ||
+                        event.getEntity() instanceof IronGolem ||
                         event.getEntity() instanceof Golem ||
                         event.getEntity() instanceof Breedable ||
                         event.getEntity() instanceof Minecart ||
