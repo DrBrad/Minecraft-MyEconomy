@@ -14,6 +14,7 @@ import rs.v9.myeconomy.group.Zone;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.UUID;
 
 import static org.bukkit.Bukkit.getServer;
@@ -26,7 +27,8 @@ import static rs.v9.myeconomy.group.GroupHandler.*;
 
 public class ClaimHandler {
 
-    private static JSONObject claims = new JSONObject();
+    private static Map<String, Claim> claims = new HashMap<>();
+    //private static JSONObject claims = new JSONObject();
     private static HashMap<String, AreaMarker> markers = new HashMap<>();
     private static HashMap<UUID, AutoClaim> autoClaiming = new HashMap<>();
     private static MarkerSet markerSet;
@@ -36,7 +38,31 @@ public class ClaimHandler {
             try{
                 File claimsFile = new File(plugin.getDataFolder()+File.separator+"claims.json");
                 if(claimsFile.exists()){
-                    claims = new JSONObject(new JSONTokener(new FileInputStream(claimsFile)));
+                    JSONObject claims = new JSONObject(new JSONTokener(new FileInputStream(claimsFile)));
+
+                    for(String key : claims.keySet()){
+                        this.claims.put(key, new Claim(UUID.fromString(claims.getJSONObject(key).getString("k")), claims.getJSONObject(key).getInt("t")));
+                    }
+
+                    write();
+
+                    /*
+                    DataInputStream in = new DataInputStream(new FileInputStream(claimsFile));
+                    while(in.available() > 0){
+                        byte[] b = new byte[in.readInt()];
+                        in.read(b);
+
+                        String key = new String(b);
+
+                        b = new byte[in.readInt()];
+                        in.read(b);
+                        UUID uuid = UUID.fromString(new String(b));
+
+                        int type = in.readInt();
+
+                        claims.put(key, new Claim(uuid, type));
+                    }
+                    System.out.println("CLAIMS: "+claims.size());*/
                 }
 
                 if(dynmap != null){
@@ -56,19 +82,18 @@ public class ClaimHandler {
 
         System.out.println("Loading markers into Dynmap!");
 
-        Iterator<String> it = claims.keys();
+        //Iterator<String> it = claims.keys();
 
-        while(it.hasNext()){
-            String key = it.next();
+        for(String key : claims.keySet()){
             String[] tokens = key.split("\\|");
 
             Chunk chunk = getServer().getWorld(tokens[0]).getChunkAt(Integer.parseInt(tokens[1]), Integer.parseInt(tokens[2]));
             String worldName = chunk.getWorld().getName();
             double[] xPoints = { chunk.getX()*16, (chunk.getX()*16)+16, (chunk.getX()*16)+16, chunk.getX()*16 };
             double[] zPoints = { chunk.getZ()*16, chunk.getZ()*16, (chunk.getZ()*16)+16, (chunk.getZ()*16)+16 };
-            UUID uuid = UUID.fromString(claims.getJSONObject(key).getString("k"));
+            UUID uuid = claims.get(key).getKey();
 
-            if(claims.getJSONObject(key).getInt("t") > 0){
+            if(claims.get(key).getType() > 0){
                 Zone zone = getZoneByUUID(uuid);
 
                 if(zone != null){
@@ -187,17 +212,17 @@ public class ClaimHandler {
 
     private static boolean claimForGroup(Player player, String key, MyGroup group){
         if(group.getPower() > 0){
-            if(claims.has(key)){
-                Claim claim = new Claim(UUID.fromString(claims.getJSONObject(key).getString("k")), claims.getJSONObject(key).getInt("t"));
+            if(claims.containsKey(key)){
+                //Claim claim = new Claim(UUID.fromString(claims.get(key).getKey(), claims.getJSONObject(key).getInt("t"));
                 //Claim claim = claims.get(key);
-                if(claim.getType() == 0){
-                    Group claimedGroup = getGroupFromUUID(claim.getKey());
+                if(claims.get(key).getType() == 0){
+                    Group claimedGroup = getGroupFromUUID(claims.get(key).getKey());
                     if(claimedGroup != null){
                         if(claimedGroup.getType() == 0){
                             if(!claimedGroup.getKey().equals(group.getKey())){
                                 if(((MyGroup) claimedGroup).getPower() < 0){
-                                    claims.getJSONObject(key).put("k", group.getKey().toString());
-                                    claims.getJSONObject(key).put("t", group.getType());
+                                    claims.get(key).setKey(group.getKey());
+                                    claims.get(key).setType(group.getType());
                                     group.setPower(group.getPower()-getClaimCost());
                                     ((MyGroup) claimedGroup).setPower(((MyGroup) claimedGroup).getPower()+getClaimCost());
                                     write();
@@ -214,8 +239,8 @@ public class ClaimHandler {
                             player.sendMessage("§cThis chunk is claimed by a zone, you cannot over claim this chunk.");
                         }
                     }else{
-                        claims.getJSONObject(key).put("k", group.getKey().toString());
-                        claims.getJSONObject(key).put("t", group.getType());
+                        claims.get(key).setKey(group.getKey());
+                        claims.get(key).setType(group.getType());
                         group.setPower(group.getPower()-getClaimCost());
                         write();
                         player.sendMessage("§7You have §aclaimed§7 this chunk for "+group.getName()+".");
@@ -225,10 +250,7 @@ public class ClaimHandler {
                     player.sendMessage("§cThis chunk is claimed by a zone, you cannot over claim this chunk.");
                 }
             }else{
-                JSONObject jclaim = new JSONObject();
-                jclaim.put("k", group.getKey().toString());
-                jclaim.put("t", group.getType());
-                claims.put(key, jclaim);
+                claims.put(key, new Claim(group.getKey(), group.getType()));
                 group.setPower(group.getPower()-getClaimCost());
                 write();
                 player.sendMessage("§7You have §aclaimed§7 this chunk for "+group.getName()+".");
@@ -242,29 +264,32 @@ public class ClaimHandler {
 
 
     private static boolean claimForZone(Player player, String key, Zone zone){
-        if(claims.has(key)){
-            Claim claim = new Claim(UUID.fromString(claims.getJSONObject(key).getString("k")), claims.getJSONObject(key).getInt("t"));
+        if(claims.containsKey(key)){
+            //Claim claim = new Claim(UUID.fromString(claims.getJSONObject(key).getString("k")), claims.getJSONObject(key).getInt("t"));
             //Claim claim = claims.get(key);
-            if(claim.getType() != zone.getType()){
-                Group claimedGroup = getGroupFromUUID(claim.getKey());
+            if(claims.get(key).getType() != zone.getType()){
+                Group claimedGroup = getGroupFromUUID(claims.get(key).getKey());
                 if(claimedGroup != null){
                     if(claimedGroup.getType() == 0){
                         ((MyGroup) claimedGroup).setPower(((MyGroup) claimedGroup).getPower()+getClaimCost());
                     }
                 }
 
-                claims.getJSONObject(key).put("k", zone.getKey().toString());
-                claims.getJSONObject(key).put("t", zone.getType());
+                claims.get(key).setKey(zone.getKey());
+                claims.get(key).setType(zone.getType());
+                //claims.getJSONObject(key).put("k", zone.getKey().toString());
+                //claims.getJSONObject(key).put("t", zone.getType());
 
                 write();
                 player.sendMessage("§7You have §aclaimed§7 this chunk for "+zone.getName()+".");
                 return true;
             }
         }else{
-            JSONObject jclaim = new JSONObject();
-            jclaim.put("k", zone.getKey().toString());
-            jclaim.put("t", zone.getType());
-            claims.put(key, jclaim);
+            //JSONObject jclaim = new JSONObject();
+            //jclaim.put("k", zone.getKey().toString());
+            //jclaim.put("t", zone.getType());
+            //claims.put(key, jclaim);
+            claims.put(key, new Claim(zone.getKey(), zone.getType()));
 
             write();
             player.sendMessage("§7You have §aclaimed§7 this chunk for "+zone.getName()+".");
@@ -295,10 +320,10 @@ public class ClaimHandler {
         if(group.canClaim(player.getUniqueId())){
             String key = getChunkName(chunk);
 
-            if(claims.has(key)){
-                Claim claim = new Claim(UUID.fromString(claims.getJSONObject(key).getString("k")), claims.getJSONObject(key).getInt("t"));
+            if(claims.containsKey(key)){
+                //Claim claim = new Claim(UUID.fromString(claims.get(key).getString("k")), claims.getJSONObject(key).getInt("t"));
                 //Claim claim = claims.get(key);
-                if(claim.getType() == group.getType() && claim.getKey().equals(group.getKey())){
+                if(claims.get(key).getType() == group.getType() && claims.get(key).getKey().equals(group.getKey())){
                     claims.remove(key);
 
                     //AREA MARKER
@@ -336,13 +361,13 @@ public class ClaimHandler {
 
     public static boolean inClaim(Chunk chunk){
         String key = getChunkName(chunk);
-        return claims.has(key);
+        return claims.containsKey(key);
     }
 
     public static Claim getClaim(Chunk chunk){
         String key = getChunkName(chunk);
-        if(claims.has(key)){
-            return new Claim(UUID.fromString(claims.getJSONObject(key).getString("k")), claims.getJSONObject(key).getInt("t"));
+        if(claims.containsKey(key)){
+            return claims.get(key);//new Claim(UUID.fromString(claims.get(key).getString("k")), claims.getJSONObject(key).getInt("t"));
             //return claims.get(key);
         }
         return null;
@@ -372,13 +397,11 @@ public class ClaimHandler {
     }
 
     public static void unclaimAllForGroup(UUID uuid){
-        if(claims.length() > 0){
-            for(int i = claims.names().length()-1; i > -1; i--){
-                String key = claims.names().getString(i);
-                if(claims.getJSONObject(claims.names().getString(i)).getString("k").equals(uuid.toString())){
+        if(claims.size() > 0){
+            for(String key : claims.keySet()){
+                if(claims.get(key).getKey().equals(uuid)){
                     claims.remove(key);
 
-                    //AREA MARKER
                     if(dynmap != null){
                         AreaMarker marker = markers.remove(key);
                         if(marker != null){
@@ -386,9 +409,9 @@ public class ClaimHandler {
                         }
                     }
                 }
-            }
 
-            write();
+                write();
+            }
         }
     }
 
@@ -419,10 +442,31 @@ public class ClaimHandler {
                 }
 
                 try{
+                    /*
                     FileWriter out = new FileWriter(new File(plugin.getDataFolder()+File.separator+"claims.json"));
                     out.write(claims.toString());
                     out.flush();
                     out.close();
+                    */
+
+
+                    DataOutputStream out = new DataOutputStream(new FileOutputStream(new File(plugin.getDataFolder()+File.separator+"claims.ser")));
+
+                    for(String key : claims.keySet()){
+                        byte[] b = key.getBytes();
+                        out.writeInt(b.length);
+                        out.write(b);
+
+                        b = claims.get(key).getKey().toString().getBytes();
+                        out.writeInt(b.length);
+                        out.write(b);
+
+                        out.writeInt(claims.get(key).getType());
+                    }
+
+                    out.flush();
+                    out.close();
+
                 }catch(Exception e){
                     e.printStackTrace();
                 }

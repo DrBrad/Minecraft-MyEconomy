@@ -17,7 +17,8 @@ public class GroupHandler {
     private static ArrayList<UUID> chat = new ArrayList<>();
 
     private static HashMap<UUID, UUID> invites = new HashMap<>();
-    private static JSONObject players = new JSONObject();
+    //private static JSONObject players = new JSONObject();
+    private static Map<UUID, String> players = new HashMap<>();
     private static HashMap<UUID, MyGroup> groupsByUUID = new HashMap<>();
     private static HashMap<String, UUID> groupsByName = new HashMap<>();
     private static Zone safeZone, pvpZone;
@@ -30,7 +31,29 @@ public class GroupHandler {
         try{
             File playersFile = new File(plugin.getDataFolder()+File.separator+"players.json");
             if(playersFile.exists()){
-                players = new JSONObject(new JSONTokener(new FileInputStream(playersFile)));
+                JSONObject players = new JSONObject(new JSONTokener(new FileInputStream(playersFile)));
+
+                for(String key : players.keySet()){
+                    this.players.put(UUID.fromString(key), players.getString(key));
+                }
+
+                write();
+
+                /*
+                DataInputStream in = new DataInputStream(new FileInputStream(playersFile));
+                while(in.available() > 0){
+                    byte[] b = new byte[in.readInt()];
+                    in.read(b);
+
+                    UUID key = UUID.fromString(new String(b));
+
+                    b = new byte[in.readInt()];
+                    in.read(b);
+                    String value = new String(b);
+
+                    players.put(key, value);
+                }
+                System.out.println("GROUP: "+players.size());*/
             }
         }catch(Exception e){
             e.printStackTrace();
@@ -95,16 +118,16 @@ public class GroupHandler {
     }
 
     public static MyGroup getPlayersGroup(UUID uuid){
-        if(players.has(uuid.toString())){
-            if(groupsByUUID.containsKey(UUID.fromString(players.getString(uuid.toString())))){
-                return groupsByUUID.get(UUID.fromString(players.getString(uuid.toString())));
+        if(players.containsKey(uuid)){
+            if(groupsByUUID.containsKey(UUID.fromString(players.get(uuid)))){
+                return groupsByUUID.get(UUID.fromString(players.get(uuid)));
             }
         }
         return null;
     }
 
     public static boolean isPlayerInGroup(UUID uuid){
-        return players.has(uuid.toString());
+        return players.containsKey(uuid);
     }
 
     public static boolean isGroup(String name){
@@ -127,9 +150,9 @@ public class GroupHandler {
         groupsByName.put(group.getName().toLowerCase(), group.getKey());
         //}
 
-        players.put(uuid.toString(), group.getKey().toString());
+        players.put(uuid, group.getKey().toString());
 
-        writePlayers();
+        write();
     }
 
     public static void renameGroup(String oldName, String name){
@@ -153,8 +176,8 @@ public class GroupHandler {
 
         for(String suuid : group.getPlayers()){
             UUID uuid = UUID.fromString(suuid);
-            if(players.has(uuid.toString())){
-                players.remove(uuid.toString());
+            if(players.containsKey(uuid)){
+                players.remove(uuid);
             }
 
             if(isAutoClaiming(uuid)){
@@ -166,7 +189,7 @@ public class GroupHandler {
                 player.getPlayer().sendMessage("§cYour group has been disbanded, you are no longer a part of a group!");
             }
         }
-        writePlayers();
+        write();
 
         File groupFolder = new File(plugin.getDataFolder()+File.separator+"group"+File.separator+group.getKey());
         plugin.getServer().broadcastMessage(groupFolder.getPath().toString());
@@ -189,19 +212,19 @@ public class GroupHandler {
     }
 
     public static void addPlayerToGroup(UUID uuid, UUID groupName){
-        players.put(uuid.toString(), groupName.toString());
-        writePlayers();
+        players.put(uuid, groupName.toString());
+        write();
     }
 
     public static void removePlayerFromGroup(UUID uuid){
-        if(players.has(uuid.toString())){
-            players.remove(uuid.toString());
+        if(players.containsKey(uuid)){
+            players.remove(uuid);
 
             if(isAutoClaiming(uuid)){
                 stopAutoClaiming(uuid);
             }
 
-            writePlayers();
+            write();
         }
     }
 
@@ -278,16 +301,30 @@ public class GroupHandler {
         return names.contains(name.toLowerCase());
     }
 
-    public static void writePlayers(){
+    private static void write(){
         try{
             if(!plugin.getDataFolder().exists()){
                 plugin.getDataFolder().mkdirs();
             }
 
-            FileWriter out = new FileWriter(new File(plugin.getDataFolder()+File.separator+"players.json"));
-            out.write(players.toString());
+            DataOutputStream out = new DataOutputStream(new FileOutputStream(new File(plugin.getDataFolder()+File.separator+"players.ser")));
+
+            for(UUID key : players.keySet()){
+                byte[] b = key.toString().getBytes();
+                out.writeInt(b.length);
+                out.write(b);
+
+                b = players.get(key).getBytes();
+                out.writeInt(b.length);
+                out.write(b);
+            }
+
+
+            //FileWriter out = new FileWriter(new File(plugin.getDataFolder()+File.separator+"players.json"));
+            //out.write(players.toString());
             out.flush();
             out.close();
+
         }catch(Exception e){
             e.printStackTrace();
         }
