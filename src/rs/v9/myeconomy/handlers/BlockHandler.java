@@ -11,6 +11,7 @@ public class BlockHandler {
         Material[] tmp = {
                 Material.CHEST,
                 Material.TRAPPED_CHEST,
+                Material.BARREL,
                 Material.SHULKER_BOX,
                 Material.ANVIL,
                 Material.ENDER_CHEST,
