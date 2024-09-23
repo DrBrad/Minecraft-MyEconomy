@@ -14,7 +14,6 @@ public class BlockHandler {
                 Material.BARREL,
                 Material.SHULKER_BOX,
                 Material.ANVIL,
-                Material.ENDER_CHEST,
                 Material.CHIPPED_ANVIL,
                 Material.DAMAGED_ANVIL,
                 Material.BLACK_SHULKER_BOX,
