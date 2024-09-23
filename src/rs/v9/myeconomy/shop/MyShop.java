@@ -4,6 +4,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -12,8 +14,12 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Merchant;
 import org.bukkit.inventory.MerchantRecipe;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.*;
 
+import static rs.v9.myeconomy.Main.plugin;
 import static rs.v9.myeconomy.shop.ShopHandler.trading;
 
 public class MyShop {
@@ -213,6 +219,37 @@ public class MyShop {
     }
 
     public void writeData(){
+        File shopFolder = new File(plugin.getDataFolder()+File.separator+"shop"+File.separator+uuid.toString());
+        if(!shopFolder.exists()){
+            shopFolder.mkdirs();
+        }
+
+        try{
+            File warpsFile = new File(shopFolder.getPath()+File.separator+"config.yml");
+            if(warpsFile.exists()){
+                OutputStream out = new FileOutputStream(warpsFile);
+                out.flush();
+                out.close();
+            }
+
+            FileConfiguration config = YamlConfiguration.loadConfiguration(warpsFile);
+
+            /*
+            for(String warpKey : warps.keySet()){
+                config.set(warpKey+".world", warps.get(warpKey).getWorld().getName());
+                config.set(warpKey+".x", warps.get(warpKey).getX());
+                config.set(warpKey+".y", warps.get(warpKey).getY());
+                config.set(warpKey+".z", warps.get(warpKey).getZ());
+                config.set(warpKey+".yaw", warps.get(warpKey).getYaw());
+                config.set(warpKey+".pitch", warps.get(warpKey).getPitch());
+            }
+            */
+
+            config.save(warpsFile);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
         /*
         File groupFolder = new File(plugin.getDataFolder()+File.separator+"group"+File.separator+key);
         if(!groupFolder.exists()){
