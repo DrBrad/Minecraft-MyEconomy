@@ -15,6 +15,7 @@ import java.util.UUID;
 import static rs.v9.myeconomy.group.GroupHandler.createGroup;
 import static rs.v9.myeconomy.handlers.MobHandler.getAllowedShops;
 import static rs.v9.myeconomy.shop.ShopHandler.createShop;
+import static rs.v9.myeconomy.shop.ShopHandler.getShopByName;
 
 public class ShopCommands implements CommandExecutor, TabExecutor {
 
@@ -32,6 +33,12 @@ public class ShopCommands implements CommandExecutor, TabExecutor {
 
                     case "create":
                         return create(((Player) commandSender), args);
+
+                    case "remove":
+                        return remove(((Player) commandSender), args);
+
+                    case "open":
+                        return open(((Player) commandSender), args);
                 }
 
             }else{
@@ -58,6 +65,12 @@ public class ShopCommands implements CommandExecutor, TabExecutor {
 
                         case "remove":
                             tabComplete.add("SHOP_NAME");
+                            //tabComplete.add("ENTITY_TYPE");
+                            break;
+
+                        case "open":
+                            tabComplete.add("stock");
+                            tabComplete.add("received");
                             break;
                     }
                 }else{
@@ -152,7 +165,7 @@ public class ShopCommands implements CommandExecutor, TabExecutor {
                         if(getAllowedShops().contains(type)){
                             MyShop shop = new MyShop(name).create(name, player.getLocation(), type);
                             if(shop != null){
-                                createShop(shop.getUUID(), shop);
+                                createShop(player, shop);
                                 player.sendMessage("§7You have successfully created the shop §c"+name+"§7.");
 
                             }else{
@@ -183,6 +196,39 @@ public class ShopCommands implements CommandExecutor, TabExecutor {
             if(args.length > 1){
                 String name = args[1];
 
+                return true;
+            }else{
+                player.sendMessage("§cPlease specify a shop name.");
+            }
+            return false;
+        }else{
+            player.sendMessage("§cYou don't have permission to perform this command.");
+            return false;
+        }
+    }
+
+    public boolean open(Player player, String[] args){
+        if(player.hasPermission("s.open")){
+            if(args.length > 2){
+                String type = args[1];
+                String name = args[2];
+                MyShop shop = getShopByName(player, name);
+
+                if(shop != null){
+                    System.out.println(shop.getName()+" NAME");
+                    switch(type){
+                        case "stock":
+                            shop.openStock(player);
+                            break;
+
+                        case "received":
+                            shop.openReceive(player);
+                            break;
+                    }
+                }else{
+                    player.sendMessage("§cShop doesn't exist.");
+                }
+                return true;
             }else{
                 player.sendMessage("§cPlease specify a shop name.");
             }

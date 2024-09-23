@@ -183,7 +183,15 @@ commands:
   s create:
     description: Create a shop.
     usage: |
-      /s create SHOP_NAME
+      /s create SHOP_NAME ENTITY_TYPE
+  s remove:
+    description: Remove a shop.
+    usage: |
+      /s remove SHOP_NAME
+  s open:
+    description: Open stock and received items.
+    usage: |
+      /s open INV_TYPE SHOP_NAME
 
   warp:
     description: Warp to a location.

@@ -53,12 +53,13 @@ public class MyShop {
         player.openMerchant(merchant, true);
     }
 
-    public void openStock(){
-
+    public void openStock(Player player){
+        System.out.println("OPENING");
+        player.openInventory(stock);
     }
 
-    public void openReceive(){
-
+    public void openReceive(Player player){
+        player.openInventory(received);
     }
 
     public void addTrade(ItemStack receive, ItemStack give){
@@ -91,6 +92,10 @@ public class MyShop {
         return uuid;
     }
 
+    public String getName(){
+        return name;
+    }
+
     public MyShop create(String name, Location location, EntityType type){
         LivingEntity entity = (LivingEntity) location.getWorld().spawnEntity(location, type);
         entity.setCustomName(name);
@@ -102,6 +107,8 @@ public class MyShop {
         uuid = entity.getUniqueId();
 
         merchant = Bukkit.createMerchant("Shop");
+        stock = Bukkit.createInventory(null, 36, "Stock");
+        received = Bukkit.createInventory(null, 36, "Received");
 
         addTrade(new ItemStack(Material.ROTTEN_FLESH), new ItemStack(Material.SPAWNER));
 
@@ -115,9 +122,6 @@ public class MyShop {
 
     public Inventory getStock(){
         return stock;
-
-        /*
-        */
     }
 
     public Inventory getReceived(){
