@@ -147,6 +147,10 @@ public class MyShop {
         return name;
     }
 
+    public UUID getEntityUUID(){
+        return entity.getUniqueId();
+    }
+
     public MyShop create(String name, Location location, EntityType type){
         this.name = name;
 
@@ -157,7 +161,7 @@ public class MyShop {
         entity.setAI(false);
         entity.setGravity(false);
         entity.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(1.0);
-        key = entity.getUniqueId();
+        key = UUID.randomUUID();
 
         merchant = Bukkit.createMerchant("Shop");
         stock = Bukkit.createInventory(null, 36, "Stock");
