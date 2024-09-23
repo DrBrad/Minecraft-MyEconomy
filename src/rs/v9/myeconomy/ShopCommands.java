@@ -5,21 +5,16 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import rs.v9.myeconomy.handlers.MobHandler;
 import rs.v9.myeconomy.shop.MyShop;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
-import static rs.v9.myeconomy.group.GroupHandler.createGroup;
 import static rs.v9.myeconomy.handlers.MobHandler.getAllowedShops;
-import static rs.v9.myeconomy.shop.ShopHandler.createShop;
-import static rs.v9.myeconomy.shop.ShopHandler.getShopByName;
+import static rs.v9.myeconomy.shop.ShopHandler.*;
 
 public class ShopCommands implements CommandExecutor, TabExecutor {
 
@@ -217,13 +212,17 @@ public class ShopCommands implements CommandExecutor, TabExecutor {
 
                     if(type != null){
                         if(getAllowedShops().contains(type)){
-                            MyShop shop = new MyShop(name).create(name, player.getLocation(), type);
-                            if(shop != null){
-                                createShop(player, shop);
-                                player.sendMessage("§7You have successfully created the shop §c"+name+"§7.");
+                            if(!hasShopName(player, name)){
+                                MyShop shop = new MyShop(name).create(name, player.getLocation(), type);
+                                if(shop != null){
+                                    createShop(player, shop);
+                                    player.sendMessage("§7You have successfully created the shop §c"+name+"§7.");
 
+                                }else{
+                                    player.sendMessage("§cFailed to create shop.");
+                                }
                             }else{
-                                player.sendMessage("§cFailed to create shop.");
+                                player.sendMessage("§cYou already have a shop with this name.");
                             }
                         }else{
                             player.sendMessage("§cEntity type is not allowed.");
@@ -249,6 +248,19 @@ public class ShopCommands implements CommandExecutor, TabExecutor {
         if(player.hasPermission("s.remove")){
             if(args.length > 1){
                 String name = args[1];
+
+                MyShop shop = getShopByName(player, name);
+                if(shop != null){
+                    if(shop.delete()){
+                        deleteShop(player, shop);
+                        player.sendMessage("§7You have successfully disbanded the group §c"+shop.getName()+"§7.");
+
+                    }else{
+                        player.sendMessage("§cFailed to delete shop.");
+                    }
+                }else{
+                    player.sendMessage("§cYou don't have a shop with this name.");
+                }
 
                 return true;
             }else{
@@ -305,6 +317,7 @@ public class ShopCommands implements CommandExecutor, TabExecutor {
                             if(args.length > 6){
                                 try{
                                     shop.addTrade(new ItemStack(Material.valueOf(args[3]), Integer.parseInt(args[4])), new ItemStack(Material.valueOf(args[5]), Integer.parseInt(args[6])));
+                                    player.sendMessage("§7Added trade of §a"+args[3]+"§7 for §a"+args[5]);
                                 }catch(Exception e){
                                     e.printStackTrace();
                                     player.sendMessage("§cFailed to parse amount.");
@@ -319,6 +332,7 @@ public class ShopCommands implements CommandExecutor, TabExecutor {
                             try{
                                 int index = Integer.parseInt(args[3]);
                                 shop.removeTrade(index);
+                                player.sendMessage("§7Removed trade: §c"+args[3]);
 
                             }catch(Exception e){
                                 player.sendMessage("§cIndex was not a number.");

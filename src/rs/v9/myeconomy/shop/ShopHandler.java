@@ -4,7 +4,6 @@ import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.List;
 import java.util.UUID;
 
 import static rs.v9.myeconomy.Main.plugin;
@@ -14,7 +13,6 @@ public class ShopHandler {
     private static HashMap<UUID, MyShop> shops = new HashMap<>();
     private static HashMap<UUID, HashMap<String, UUID>> playersShopsByName = new HashMap<>();
     protected static HashMap<UUID, MyShop> trading = new HashMap<>();
-    //private static HashMap<String, List<UUID>> playersShopsByName = new HashMap<>();
 
     public ShopHandler(){
         File groupFolder = new File(plugin.getDataFolder()+File.separator+"shop");
@@ -38,12 +36,20 @@ public class ShopHandler {
         }
     }
 
-    public static boolean isShop(UUID uuid){
-        return shops.containsKey(uuid);
+    public static void deleteShop(Player player, MyShop shop){
+        shops.remove(playersShopsByName.get(player.getUniqueId()).remove(shop.getName()));
     }
 
     public static MyShop getShop(UUID uuid){
         return shops.get(uuid);
+    }
+
+    public static boolean hasShopName(Player player, String name){
+        if(!playersShopsByName.containsKey(player.getUniqueId())){
+            return false;
+        }
+
+        return playersShopsByName.get(player.getUniqueId()).containsKey(name);
     }
 
     public static MyShop getShopByName(Player player, String name){

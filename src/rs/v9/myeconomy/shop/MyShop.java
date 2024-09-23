@@ -4,7 +4,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -148,16 +147,19 @@ public class MyShop {
         stock = Bukkit.createInventory(null, 36, "Stock");
         received = Bukkit.createInventory(null, 36, "Received");
 
-        addTrade(new ItemStack(Material.ROTTEN_FLESH), new ItemStack(Material.SPAWNER));
-
         return this;
     }
 
-    public void delete(){
+    public boolean delete(){
+        if(!stock.isEmpty() || !received.isEmpty()){
+            return false;
+        }
+
         entity.setInvulnerable(false);
         entity.remove();
-    }
 
+        return true;
+    }
 
     public void read(String key){
         try{
