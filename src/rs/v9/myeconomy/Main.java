@@ -25,6 +25,7 @@ public class Main extends JavaPlugin {
     public static DynmapCommonAPI dynmap;
 
     //start using bencode instead of json
+    //fix barrel bug
 
     @Override
     public void onLoad(){
