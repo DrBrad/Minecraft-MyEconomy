@@ -24,8 +24,7 @@ public class Main extends JavaPlugin {
     public static Plugin plugin;
     public static DynmapCommonAPI dynmap;
 
-    //start using bencode instead of json
-    //fix barrel bug
+    //somehow write data for inventory on close or click...
 
     @Override
     public void onLoad(){
@@ -43,7 +42,7 @@ public class Main extends JavaPlugin {
     public void onEnable(){
         Bukkit.getPluginManager().registerEvents(new MyEventHandler(), this);
         getCommand("g").setExecutor(new GroupCommands());
-        //getCommand("s").setExecutor(new ShopCommands());
+        getCommand("s").setExecutor(new ShopCommands());
 
         getCommand("warp").setExecutor(new MyCommands());
         getCommand("warps").setExecutor(new MyCommands());
@@ -65,7 +64,7 @@ public class Main extends JavaPlugin {
         new ClaimHandler();
         new PlayerResolver();
         new PlayerCooldown();
-        //new ShopHandler();
+        new ShopHandler();
 
         createRecipes();
     }

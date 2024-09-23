@@ -31,19 +31,19 @@ public class ShopHandler {
     }
 
     public static void createShop(Player player, MyShop shop){
-        shops.put(shop.getUUID(), shop);
+        shops.put(shop.getKey(), shop);
 
         if(playersShopsByName.containsKey(player.getUniqueId())){
-            playersShopsByName.get(player.getUniqueId()).put(shop.getName(), shop.getUUID());
+            playersShopsByName.get(player.getUniqueId()).put(shop.getName(), shop.getKey());
 
         }else{
             HashMap<String, UUID> s = new HashMap<>();
-            s.put(shop.getName(), shop.getUUID());
+            s.put(shop.getName(), shop.getKey());
             playersShopsByName.put(player.getUniqueId(), s);
         }
 
         if(dynmap != null){
-            markerSet.createMarker(shop.getUUID().toString(),
+            markerSet.createMarker(shop.getKey().toString(),
                     "Shop",
                     player.getLocation().getWorld().getName(),
                     player.getLocation().getX(),

@@ -14,6 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Merchant;
 import org.bukkit.inventory.MerchantRecipe;
 
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
@@ -24,7 +25,7 @@ import static rs.v9.myeconomy.shop.ShopHandler.trading;
 
 public class MyShop {
 
-    private UUID uuid;
+    private UUID key;
     private String name;
     private Merchant merchant;
     private Inventory stock, received;
@@ -95,6 +96,9 @@ public class MyShop {
 
         recipes.add(recipe);
         merchant.setRecipes(recipes);
+
+        writeTrades();
+        writeInventories();
     }
 
     public void removeTrade(int i){
@@ -125,12 +129,15 @@ public class MyShop {
             recipe.setMaxUses(recipe.getMaxUses()-recipe.getUses());
             recipe.setUses(0);
             stock.removeItem(new ItemStack(recipe.getResult().getType(), count-total));
-            received.addItem(new ItemStack(recipe.getIngredients().get(0).getType(), count-total));
+
+            for(ItemStack item : recipe.getIngredients()){
+                received.addItem(new ItemStack(item.getType(), count-total));
+            }
         }
     }
 
-    public UUID getUUID(){
-        return uuid;
+    public UUID getKey(){
+        return key;
     }
 
     public String getName(){
@@ -147,11 +154,13 @@ public class MyShop {
         entity.setAI(false);
         entity.setGravity(false);
         entity.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(1.0);
-        uuid = entity.getUniqueId();
+        key = entity.getUniqueId();
 
         merchant = Bukkit.createMerchant("Shop");
         stock = Bukkit.createInventory(null, 36, "Stock");
         received = Bukkit.createInventory(null, 36, "Received");
+
+        writeData();
 
         return this;
     }
@@ -219,7 +228,7 @@ public class MyShop {
     }
 
     public void writeData(){
-        File shopFolder = new File(plugin.getDataFolder()+File.separator+"shop"+File.separator+uuid.toString());
+        File shopFolder = new File(plugin.getDataFolder()+File.separator+"shop"+File.separator+key.toString());
         if(!shopFolder.exists()){
             shopFolder.mkdirs();
         }
@@ -233,52 +242,95 @@ public class MyShop {
             }
 
             FileConfiguration config = YamlConfiguration.loadConfiguration(warpsFile);
+            config.set("key", key.toString());
+            config.set("name", name);
 
-            /*
-            for(String warpKey : warps.keySet()){
-                config.set(warpKey+".world", warps.get(warpKey).getWorld().getName());
-                config.set(warpKey+".x", warps.get(warpKey).getX());
-                config.set(warpKey+".y", warps.get(warpKey).getY());
-                config.set(warpKey+".z", warps.get(warpKey).getZ());
-                config.set(warpKey+".yaw", warps.get(warpKey).getYaw());
-                config.set(warpKey+".pitch", warps.get(warpKey).getPitch());
-            }
-            */
+            config.set("location.world", entity.getLocation().getWorld().getName());
+            config.set("location.x", entity.getLocation().getX());
+            config.set("location.z", entity.getLocation().getZ());
 
             config.save(warpsFile);
+
         }catch(Exception e){
             e.printStackTrace();
         }
+    }
 
-        /*
-        File groupFolder = new File(plugin.getDataFolder()+File.separator+"group"+File.separator+key);
-        if(!groupFolder.exists()){
-            groupFolder.mkdirs();
+    public void writeTrades(){
+        File shopFolder = new File(plugin.getDataFolder()+File.separator+"shop"+File.separator+key.toString());
+        if(!shopFolder.exists()){
+            shopFolder.mkdirs();
         }
 
         try{
-            File data = new File(groupFolder.getPath()+File.separator+"data.yml");
-            FileConfiguration config = YamlConfiguration.loadConfiguration(data);
+            DataOutputStream out = new DataOutputStream(new FileOutputStream(new File(plugin.getDataFolder()+File.separator+"recipes.ser")));
 
-            config.set("key", key.toString());
-            config.set("name", name);
-            config.set("color", color);
-            config.set("power", power);
-            config.set("description", description);
+            for(MerchantRecipe recipe : merchant.getRecipes()){
+                for(ItemStack item : recipe.getIngredients()){
+                    byte[] b = item.getType().name().getBytes();
+                    out.writeInt(b.length);
+                    out.write(b);
 
-            if(home != null){
-                config.set("home.world", home.getWorld().getName());
-                config.set("home.x", home.getX());
-                config.set("home.y", home.getY());
-                config.set("home.z", home.getZ());
-                config.set("home.yaw", home.getYaw());
-                config.set("home.pitch", home.getPitch());
+                    out.writeInt(item.getAmount());
+                }
+
+                out.write("|".getBytes());
+
+                byte[] b = recipe.getResult().getType().name().getBytes();
+                out.writeInt(b.length);
+                out.write(b);
+
+                out.writeInt(recipe.getResult().getAmount());
             }
 
-            config.save(data);
+            out.flush();
+            out.close();
+
         }catch(Exception e){
             e.printStackTrace();
         }
-        */
+    }
+
+    public void writeInventories(){
+        File shopFolder = new File(plugin.getDataFolder()+File.separator+"shop"+File.separator+key.toString());
+        if(!shopFolder.exists()){
+            shopFolder.mkdirs();
+        }
+
+        try{
+            DataOutputStream out = new DataOutputStream(new FileOutputStream(new File(plugin.getDataFolder()+File.separator+"stock.ser")));
+
+            for(int i = 0; i < stock.getSize(); i++){
+                byte[] b = stock.getItem(i).getType().name().getBytes();
+                out.writeInt(b.length);
+                out.write(b);
+
+                out.writeInt(stock.getItem(i).getAmount());
+            }
+
+            out.flush();
+            out.close();
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        try{
+            DataOutputStream out = new DataOutputStream(new FileOutputStream(new File(plugin.getDataFolder()+File.separator+"received.ser")));
+
+            for(int i = 0; i < received.getSize(); i++){
+                byte[] b = received.getItem(i).getType().name().getBytes();
+                out.writeInt(b.length);
+                out.write(b);
+
+                out.writeInt(received.getItem(i).getAmount());
+            }
+
+            out.flush();
+            out.close();
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 }
