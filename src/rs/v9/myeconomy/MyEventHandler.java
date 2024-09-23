@@ -233,7 +233,6 @@ public class MyEventHandler implements Listener {
             if(inClaim(chunk)){
                 Claim claim = getClaim(chunk);
                 if(claim.getType() > 0){
-                    System.out.println("SAFE ZONE");
                     if(!getSafeNoEdit().contains(block.getType())){
                         if(event.getPlayer().isOp()){
                             return;
@@ -247,7 +246,6 @@ public class MyEventHandler implements Listener {
 
                 }else if(getNoEdit().contains(block.getType())){
                     MyGroup group = getPlayersGroup(event.getPlayer().getUniqueId());
-                    System.out.println("GROUP ZONE");
                     if(group != null){
                         if(!group.getKey().equals(claim.getKey())){
                             event.setCancelled(true);
