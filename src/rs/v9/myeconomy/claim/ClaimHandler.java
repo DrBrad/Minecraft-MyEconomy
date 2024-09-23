@@ -73,8 +73,6 @@ public class ClaimHandler {
 
         System.out.println("Loading markers into Dynmap!");
 
-        //Iterator<String> it = claims.keys();
-
         for(String key : claims.keySet()){
             String[] tokens = key.split("\\|");
 

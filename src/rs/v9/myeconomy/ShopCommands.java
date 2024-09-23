@@ -8,11 +8,15 @@ import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import rs.v9.myeconomy.claim.Claim;
+import rs.v9.myeconomy.group.MyGroup;
 import rs.v9.myeconomy.shop.MyShop;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static rs.v9.myeconomy.claim.ClaimHandler.getClaim;
+import static rs.v9.myeconomy.group.GroupHandler.getPlayersGroup;
 import static rs.v9.myeconomy.handlers.MobHandler.getAllowedShops;
 import static rs.v9.myeconomy.shop.ShopHandler.*;
 
@@ -209,6 +213,15 @@ public class ShopCommands implements CommandExecutor, TabExecutor {
                 String name = args[1];
                 if(name.length() < 13 && name.length() > 1){
                     EntityType type = EntityType.valueOf(args[2]);
+
+                    MyGroup group = getPlayersGroup(player.getUniqueId());
+                    Claim claim = getClaim(player.getLocation().getChunk());
+                    if(claim != null){
+                        if(group == null || !claim.getKey().equals(group.getKey())){
+                            player.sendMessage("§cCannot create a shop in another groups claim.");
+                            return true;
+                        }
+                    }
 
                     if(type != null){
                         if(getAllowedShops().contains(type)){
