@@ -65,10 +65,23 @@ public class MyShop {
         MerchantRecipe recipe = new MerchantRecipe(receive, 10000);
         recipe.setExperienceReward(false);
         recipe.addIngredient(give);
-        merchant.setRecipe(merchant.getRecipeCount(), recipe);
+
+        List<MerchantRecipe> recipes;
+        if(merchant.getRecipeCount() < 1){
+            recipes = new ArrayList<>();
+        }else{
+            recipes = merchant.getRecipes();
+        }
+
+        recipes.add(recipe);
+        merchant.setRecipes(recipes);
     }
 
     public void removeTrade(int i){
+        if(merchant.getRecipeCount() < 1){
+            return;
+        }
+
         List<MerchantRecipe> recipes = merchant.getRecipes();
         recipes.remove(i);
         merchant.setRecipes(recipes);
@@ -89,6 +102,8 @@ public class MyShop {
         uuid = entity.getUniqueId();
 
         merchant = Bukkit.createMerchant("Shop");
+
+        addTrade(new ItemStack(Material.ROTTEN_FLESH), new ItemStack(Material.SPAWNER));
 
         return this;
     }
