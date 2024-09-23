@@ -4,8 +4,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -14,16 +12,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Merchant;
 import org.bukkit.inventory.MerchantRecipe;
-import org.json.JSONObject;
-import org.json.JSONTokener;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
-import static rs.v9.myeconomy.Main.plugin;
+import java.util.*;
 
 public class MyShop {
 
@@ -31,30 +21,46 @@ public class MyShop {
     private String name;
     private Merchant merchant;
     private Inventory stock, received;
-    private Entity entity;
-    /*
-     * NAME
-     * TYPE
-     * UUID
-     * STOCK
-     * RECEIVED
-     * */
+    private LivingEntity entity;
 
     public MyShop(){
     }
 
     public MyShop(String key){
-        //this.name = name;
         read(key);
     }
 
     public void openMerchant(Player player){
+        Map<Material, Integer> mats = new HashMap<>();
+        for(int i = 0; i < stock.getSize(); i++){
+            if(stock.getItem(i) == null || stock.getItem(i).getType().isAir()){
+                continue;
+            }
+
+            if(mats.containsKey(stock.getItem(i).getType())){
+                mats.put(stock.getItem(i).getType(), mats.get(stock.getItem(i).getType())+stock.getItem(i).getAmount());
+                continue;
+            }
+
+            mats.put(stock.getItem(i).getType(), stock.getItem(i).getAmount());
+        }
+
+        for(MerchantRecipe recipe : merchant.getRecipes()){
+            if(!mats.containsKey(recipe.getResult().getType()) || mats.get(recipe.getResult().getType()) < recipe.getResult().getAmount()){
+                recipe.setMaxUses(0);
+                continue;
+            }
+
+            recipe.setMaxUses(mats.get(recipe.getResult().getType())/recipe.getResult().getAmount());
+        }
 
         player.openMerchant(merchant, true);
     }
 
     public void openStock(Player player){
-        System.out.println("OPENING");
+
+
+
         player.openInventory(stock);
     }
 
@@ -63,7 +69,7 @@ public class MyShop {
     }
 
     public void addTrade(ItemStack receive, ItemStack give){
-        MerchantRecipe recipe = new MerchantRecipe(receive, 10000);
+        MerchantRecipe recipe = new MerchantRecipe(receive, 0);
         recipe.setExperienceReward(false);
         recipe.addIngredient(give);
 
@@ -97,7 +103,7 @@ public class MyShop {
     public MyShop create(String name, Location location, EntityType type){
         this.name = name;
 
-        LivingEntity entity = (LivingEntity) location.getWorld().spawnEntity(location, type);
+        entity = (LivingEntity) location.getWorld().spawnEntity(location, type);
         entity.setCustomName(name);
         entity.setInvulnerable(true);
         entity.setPersistent(true);

@@ -269,7 +269,6 @@ public class ShopCommands implements CommandExecutor, TabExecutor {
                 MyShop shop = getShopByName(player, name);
 
                 if(shop != null){
-                    System.out.println(shop.getName()+" NAME");
                     switch(type){
                         case "stock":
                             shop.openStock(player);
@@ -305,13 +304,7 @@ public class ShopCommands implements CommandExecutor, TabExecutor {
                         case "add":
                             if(args.length > 6){
                                 try{
-                                    System.out.println(args[3]+"  "+args[4]);
-                                    System.out.println(args[5]+"  "+args[6]);
-                                    ItemStack receive = new ItemStack(Material.valueOf(args[3]), Integer.parseInt(args[4]));
-                                    ItemStack give = new ItemStack(Material.valueOf(args[5]), Integer.parseInt(args[6]));
-                                    shop.addTrade(receive, give);
-                                    //shop.addTrade(new ItemStack(Material.valueOf(args[3]), Integer.parseInt(args[4])),
-                                    //        new ItemStack(Material.valueOf(args[5]), Integer.parseInt(args[6])));
+                                    shop.addTrade(new ItemStack(Material.valueOf(args[3]), Integer.parseInt(args[4])), new ItemStack(Material.valueOf(args[5]), Integer.parseInt(args[6])));
                                 }catch(Exception e){
                                     e.printStackTrace();
                                     player.sendMessage("§cFailed to parse amount.");
@@ -337,26 +330,6 @@ public class ShopCommands implements CommandExecutor, TabExecutor {
                     player.sendMessage("§cShop doesn't exist.");
                 }
 
-                /*
-                String type = args[1];
-                String name = args[2];
-                MyShop shop = getShopByName(player, name);
-
-                if(shop != null){
-                    System.out.println(shop.getName()+" NAME");
-                    switch(type){
-                        case "stock":
-                            shop.openStock(player);
-                            break;
-
-                        case "received":
-                            shop.openReceive(player);
-                            break;
-                    }
-                }else{
-                    player.sendMessage("§cShop doesn't exist.");
-                }
-                */
                 return true;
             }else{
                 player.sendMessage("§cPlease specify a shop name.");
