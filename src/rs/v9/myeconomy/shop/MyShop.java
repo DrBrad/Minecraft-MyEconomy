@@ -97,6 +97,8 @@ public class MyShop {
     }
 
     public MyShop create(String name, Location location, EntityType type){
+        this.name = name;
+
         LivingEntity entity = (LivingEntity) location.getWorld().spawnEntity(location, type);
         entity.setCustomName(name);
         entity.setInvulnerable(true);

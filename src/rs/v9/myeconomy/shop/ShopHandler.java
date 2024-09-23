@@ -12,7 +12,7 @@ import static rs.v9.myeconomy.Main.plugin;
 public class ShopHandler {
 
     private static HashMap<UUID, MyShop> shops = new HashMap<>();
-    private static HashMap<UUID, HashMap<String, UUID>> playersShopsByUUID = new HashMap<>();
+    private static HashMap<UUID, HashMap<String, UUID>> playersShopsByName = new HashMap<>();
     //private static HashMap<String, List<UUID>> playersShopsByName = new HashMap<>();
 
     public ShopHandler(){
@@ -27,13 +27,13 @@ public class ShopHandler {
     public static void createShop(Player player, MyShop shop){
         shops.put(shop.getUUID(), shop);
 
-        if(playersShopsByUUID.containsKey(player.getUniqueId())){
-            playersShopsByUUID.get(player.getUniqueId()).put(shop.getName(), shop.getUUID());
+        if(playersShopsByName.containsKey(player.getUniqueId())){
+            playersShopsByName.get(player.getUniqueId()).put(shop.getName(), shop.getUUID());
 
         }else{
             HashMap<String, UUID> s = new HashMap<>();
             s.put(shop.getName(), shop.getUUID());
-            playersShopsByUUID.put(player.getUniqueId(), s);
+            playersShopsByName.put(player.getUniqueId(), s);
         }
     }
 
@@ -47,18 +47,19 @@ public class ShopHandler {
     }
 
     public static MyShop getShopByName(Player player, String name){
-        if(!playersShopsByUUID.containsKey(player.getUniqueId())){
+        if(!playersShopsByName.containsKey(player.getUniqueId())){
             return null;
         }
 
-        if(!playersShopsByUUID.get(player.getUniqueId()).containsKey(name)){
+        if(!playersShopsByName.get(player.getUniqueId()).containsKey(name)){
             return null;
         }
 
-        if(!shops.containsKey(playersShopsByUUID.get(player.getUniqueId()).get(name))){
+        if(!shops.containsKey(playersShopsByName.get(player.getUniqueId()).get(name))){
             return null;
         }
 
-        return shops.get(playersShopsByUUID.get(player.getUniqueId()).get(name));
+        return shops.get(playersShopsByName.get(player.getUniqueId()).get(name));
+        //return shops.get(shops.keySet().toArray()[0]);
     }
 }
