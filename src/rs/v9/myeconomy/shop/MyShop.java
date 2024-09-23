@@ -15,6 +15,8 @@ import org.bukkit.inventory.MerchantRecipe;
 
 import java.util.*;
 
+import static rs.v9.myeconomy.shop.ShopHandler.trading;
+
 public class MyShop {
 
     private UUID uuid;
@@ -31,6 +33,10 @@ public class MyShop {
     }
 
     public void openMerchant(Player player){
+        if(merchant.isTrading()){
+            return;
+        }
+
         Map<Material, Integer> mats = new HashMap<>();
         for(int i = 0; i < stock.getSize(); i++){
             if(stock.getItem(i) == null || stock.getItem(i).getType().isAir()){
@@ -46,6 +52,8 @@ public class MyShop {
         }
 
         for(MerchantRecipe recipe : merchant.getRecipes()){
+            recipe.setUses(1);
+
             if(!mats.containsKey(recipe.getResult().getType()) || mats.get(recipe.getResult().getType()) < recipe.getResult().getAmount()){
                 recipe.setMaxUses(0);
                 continue;
@@ -54,12 +62,14 @@ public class MyShop {
             recipe.setMaxUses(mats.get(recipe.getResult().getType())/recipe.getResult().getAmount());
         }
 
+        trading.put(player.getUniqueId(), this);
         player.openMerchant(merchant, true);
     }
 
     public void openStock(Player player){
-
-
+        if(merchant.isTrading()){
+            return;
+        }
 
         player.openInventory(stock);
     }
@@ -90,6 +100,28 @@ public class MyShop {
         List<MerchantRecipe> recipes = new ArrayList<>(merchant.getRecipes());
         recipes.remove(i);
         merchant.setRecipes(recipes);
+    }
+
+    public void notifyTrade(MerchantRecipe recipe){
+        int total = (recipe.getMaxUses()-recipe.getUses())*recipe.getResult().getAmount();
+        int count = 0;
+
+        for(int i = 0; i < stock.getSize(); i++){
+            if(stock.getItem(i) == null || stock.getItem(i).getType().isAir()){
+                continue;
+            }
+
+            if(stock.getItem(i).getType().equals(recipe.getResult().getType())){
+                count += stock.getItem(i).getAmount();
+            }
+        }
+
+        if(count > total){
+            recipe.setMaxUses(recipe.getMaxUses()-recipe.getUses());
+            recipe.setUses(1);
+            stock.removeItem(new ItemStack(recipe.getResult().getType(), count-total));
+            received.addItem(new ItemStack(recipe.getIngredients().get(0).getType(), count-total));
+        }
     }
 
     public UUID getUUID(){
@@ -124,14 +156,6 @@ public class MyShop {
     public void delete(){
         entity.setInvulnerable(false);
         entity.remove();
-    }
-
-    public Inventory getStock(){
-        return stock;
-    }
-
-    public Inventory getReceived(){
-        return received;
     }
 
 

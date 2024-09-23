@@ -13,6 +13,7 @@ public class ShopHandler {
 
     private static HashMap<UUID, MyShop> shops = new HashMap<>();
     private static HashMap<UUID, HashMap<String, UUID>> playersShopsByName = new HashMap<>();
+    protected static HashMap<UUID, MyShop> trading = new HashMap<>();
     //private static HashMap<String, List<UUID>> playersShopsByName = new HashMap<>();
 
     public ShopHandler(){
@@ -42,7 +43,6 @@ public class ShopHandler {
     }
 
     public static MyShop getShop(UUID uuid){
-        System.out.println("TOTAL: "+shops.size()+"   "+uuid.toString());
         return shops.get(uuid);
     }
 
@@ -60,6 +60,13 @@ public class ShopHandler {
         }
 
         return shops.get(playersShopsByName.get(player.getUniqueId()).get(name));
-        //return shops.get(shops.keySet().toArray()[0]);
+    }
+
+    public static MyShop getShopByTrader(Player player){
+        return trading.get(player.getUniqueId());
+    }
+
+    public static void removeTrader(Player player){
+        trading.remove(player.getUniqueId());
     }
 }

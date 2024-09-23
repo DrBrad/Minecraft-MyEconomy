@@ -8,8 +8,11 @@ import org.bukkit.entity.*;
 import org.bukkit.event.*;
 import org.bukkit.event.block.*;
 import org.bukkit.event.entity.*;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.MerchantInventory;
 import rs.v9.myeconomy.claim.Claim;
 import rs.v9.myeconomy.group.MyGroup;
 import rs.v9.myeconomy.group.Zone;
@@ -28,7 +31,7 @@ import static rs.v9.myeconomy.handlers.MapHandler.isMapping;
 import static rs.v9.myeconomy.handlers.MapHandler.mapLandscape;
 import static rs.v9.myeconomy.handlers.PlayerCooldown.*;
 import static rs.v9.myeconomy.handlers.PlayerResolver.*;
-import static rs.v9.myeconomy.shop.ShopHandler.getShop;
+import static rs.v9.myeconomy.shop.ShopHandler.*;
 
 public class MyEventHandler implements Listener {
 
@@ -82,6 +85,8 @@ public class MyEventHandler implements Listener {
         if(xray.containsKey(event.getPlayer().getUniqueId())){
             xray.remove(event.getPlayer().getUniqueId());
         }
+
+        removeTrader(event.getPlayer());
     }
 
     @EventHandler
@@ -519,6 +524,30 @@ public class MyEventHandler implements Listener {
             Claim claim = getClaim(chunk);
             if(claim.getType() > 0){
                 event.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onInventoryClose(InventoryCloseEvent event){
+        if(event.getInventory() instanceof MerchantInventory){
+            removeTrader((Player) event.getPlayer());
+        }
+    }
+
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent event){
+        if(event.getInventory() instanceof MerchantInventory){
+            if(event.getSlot() != 2){
+                return;
+            }
+            MyShop shop = getShopByTrader((Player) event.getWhoClicked());
+
+            if(shop != null){
+                if(((MerchantInventory) event.getInventory()).getSelectedRecipe() == null){
+                    return;
+                }
+                shop.notifyTrade(((MerchantInventory) event.getInventory()).getSelectedRecipe());
             }
         }
     }
