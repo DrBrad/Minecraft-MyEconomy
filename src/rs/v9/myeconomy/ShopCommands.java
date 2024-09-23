@@ -1,27 +1,20 @@
 package rs.v9.myeconomy;
 
-import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
-import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import rs.v9.myeconomy.claim.Claim;
-import rs.v9.myeconomy.group.MyGroup;
+import rs.v9.myeconomy.shop.MyShop;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static rs.v9.myeconomy.Config.*;
-import static rs.v9.myeconomy.Main.plugin;
-import static rs.v9.myeconomy.claim.ClaimHandler.*;
-import static rs.v9.myeconomy.group.GroupHandler.*;
-import static rs.v9.myeconomy.handlers.Colors.*;
-import static rs.v9.myeconomy.handlers.GeneralHandler.teleport;
-import static rs.v9.myeconomy.handlers.MapHandler.*;
-import static rs.v9.myeconomy.handlers.PlayerResolver.getPlayer;
+import static rs.v9.myeconomy.group.GroupHandler.createGroup;
+import static rs.v9.myeconomy.handlers.MobHandler.getAllowedShops;
+import static rs.v9.myeconomy.shop.ShopHandler.createShop;
 
 public class ShopCommands implements CommandExecutor, TabExecutor {
 
@@ -150,12 +143,27 @@ public class ShopCommands implements CommandExecutor, TabExecutor {
 
     private boolean create(Player player, String[] args){
         if(player.hasPermission("s.create")){
-            if(args.length > 1){
+            if(args.length > 2){
                 String name = args[1];
                 if(name.length() < 13 && name.length() > 1){
+                    EntityType type = EntityType.valueOf(args[2]);
 
+                    if(type != null){
+                        if(getAllowedShops().contains(type)){
+                            MyShop shop = new MyShop(name).create(name, player.getLocation(), type);
+                            if(shop != null){
+                                createShop(shop.getUUID(), shop);
+                                player.sendMessage("§7You have successfully created the shop §c"+name+"§7.");
 
-
+                            }else{
+                                player.sendMessage("§cFailed to create shop.");
+                            }
+                        }else{
+                            player.sendMessage("§cEntity type is not allowed.");
+                        }
+                    }else{
+                        player.sendMessage("§cEntity type doesn't exist.");
+                    }
                 }else{
                     player.sendMessage("§cShop name exceeds character requirements.");
                 }
@@ -167,6 +175,21 @@ public class ShopCommands implements CommandExecutor, TabExecutor {
         }else{
             player.sendMessage("§cYou don't have permission to perform this command.");
             return true;
+        }
+    }
+
+    public boolean remove(Player player, String[] args){
+        if(player.hasPermission("s.remove")){
+            if(args.length > 1){
+                String name = args[1];
+
+            }else{
+                player.sendMessage("§cPlease specify a shop name.");
+            }
+            return false;
+        }else{
+            player.sendMessage("§cYou don't have permission to perform this command.");
+            return false;
         }
     }
 }

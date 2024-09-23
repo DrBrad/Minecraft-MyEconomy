@@ -170,6 +170,21 @@ commands:
     usage: |
       /g version
 
+  s:
+    description: Shop commands
+  s help:
+    description: List of shop commands
+    usage: |
+      /s help
+  s ?:
+    description: List of shop commands
+    usage: |
+      /s ?
+  s create:
+    description: Create a shop.
+    usage: |
+      /s create SHOP_NAME
+
   warp:
     description: Warp to a location.
     usage: |

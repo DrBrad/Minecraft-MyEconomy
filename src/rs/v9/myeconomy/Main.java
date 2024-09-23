@@ -41,6 +41,7 @@ public class Main extends JavaPlugin {
     public void onEnable(){
         Bukkit.getPluginManager().registerEvents(new MyEventHandler(), this);
         getCommand("g").setExecutor(new GroupCommands());
+        getCommand("s").setExecutor(new ShopCommands());
 
         getCommand("warp").setExecutor(new MyCommands());
         getCommand("warps").setExecutor(new MyCommands());

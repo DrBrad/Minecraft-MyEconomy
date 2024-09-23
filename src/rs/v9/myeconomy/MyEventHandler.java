@@ -13,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import rs.v9.myeconomy.claim.Claim;
 import rs.v9.myeconomy.group.MyGroup;
 import rs.v9.myeconomy.group.Zone;
+import rs.v9.myeconomy.shop.MyShop;
 
 import java.util.*;
 
@@ -27,6 +28,7 @@ import static rs.v9.myeconomy.handlers.MapHandler.isMapping;
 import static rs.v9.myeconomy.handlers.MapHandler.mapLandscape;
 import static rs.v9.myeconomy.handlers.PlayerCooldown.*;
 import static rs.v9.myeconomy.handlers.PlayerResolver.*;
+import static rs.v9.myeconomy.shop.ShopHandler.getShop;
 
 public class MyEventHandler implements Listener {
 
@@ -359,6 +361,8 @@ public class MyEventHandler implements Listener {
                 event.getEntity() instanceof Snowman ||
                 event.getEntity() instanceof Breedable ||
                 event.getEntity() instanceof ItemFrame ||
+                event.getEntity() instanceof Minecart ||
+                event.getEntity() instanceof Boat ||
                 event.getEntity() instanceof Painting){
             Player player = null;
 
@@ -389,6 +393,31 @@ public class MyEventHandler implements Listener {
             if(!claim.getKey().equals(group.getKey())){
                 event.setCancelled(true);
             }
+        }
+    }
+
+    @EventHandler
+    public void onEntityDamage(EntityDamageEvent event){
+        if(event.getEntity().isInvulnerable()){
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onEntityTarget(EntityTargetEvent event){
+        if(event.getEntity().isInvulnerable()){
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onPlayerInteractEntity(PlayerInteractEntityEvent event){
+        LivingEntity entity = (LivingEntity) event.getRightClicked();
+
+        MyShop shop = getShop(entity.getUniqueId());
+        if(shop != null){
+            shop.openMerchant(event.getPlayer());
+            event.setCancelled(true);
         }
     }
 
