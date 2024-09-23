@@ -8,11 +8,11 @@ import org.bukkit.entity.*;
 import org.bukkit.event.*;
 import org.bukkit.event.block.*;
 import org.bukkit.event.entity.*;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantInventory;
+import org.bukkit.inventory.MerchantRecipe;
 import rs.v9.myeconomy.claim.Claim;
 import rs.v9.myeconomy.group.MyGroup;
 import rs.v9.myeconomy.group.Zone;
@@ -21,6 +21,7 @@ import rs.v9.myeconomy.shop.MyShop;
 import java.util.*;
 
 import static rs.v9.myeconomy.Config.*;
+import static rs.v9.myeconomy.Main.plugin;
 import static rs.v9.myeconomy.claim.ClaimHandler.*;
 import static rs.v9.myeconomy.group.GroupHandler.*;
 import static rs.v9.myeconomy.handlers.BlockHandler.*;
@@ -528,14 +529,14 @@ public class MyEventHandler implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onInventoryClose(InventoryCloseEvent event){
         if(event.getInventory() instanceof MerchantInventory){
             removeTrader((Player) event.getPlayer());
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onInventoryClick(InventoryClickEvent event){
         if(event.getInventory() instanceof MerchantInventory){
             if(event.getSlot() != 2){
@@ -547,19 +548,14 @@ public class MyEventHandler implements Listener {
                 if(((MerchantInventory) event.getInventory()).getSelectedRecipe() == null){
                     return;
                 }
-                shop.notifyTrade(((MerchantInventory) event.getInventory()).getSelectedRecipe());
-            }
-        }
-    }
 
-    @EventHandler
-    public void onEntityInteract(EntityInteractEvent event){
-        Chunk chunk = event.getEntity().getLocation().getChunk();
-
-        if(inClaim(chunk)){
-            Claim claim = getClaim(chunk);
-            if(claim.getType() > 0){
-                event.setCancelled(true);
+                MerchantRecipe recipe = ((MerchantInventory) event.getInventory()).getSelectedRecipe();
+                plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
+                    @Override
+                    public void run(){
+                        shop.notifyTrade(recipe);
+                    }
+                },0);
             }
         }
     }

@@ -51,7 +51,7 @@ public class MyShop {
         }
 
         for(MerchantRecipe recipe : merchant.getRecipes()){
-            recipe.setUses(1);
+            recipe.setUses(0);
 
             if(!mats.containsKey(recipe.getResult().getType()) || mats.get(recipe.getResult().getType()) < recipe.getResult().getAmount()){
                 recipe.setMaxUses(0);
@@ -117,7 +117,7 @@ public class MyShop {
 
         if(count > total){
             recipe.setMaxUses(recipe.getMaxUses()-recipe.getUses());
-            recipe.setUses(1);
+            recipe.setUses(0);
             stock.removeItem(new ItemStack(recipe.getResult().getType(), count-total));
             received.addItem(new ItemStack(recipe.getIngredients().get(0).getType(), count-total));
         }
