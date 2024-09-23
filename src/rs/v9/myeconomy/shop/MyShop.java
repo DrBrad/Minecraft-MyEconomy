@@ -250,6 +250,7 @@ public class MyShop {
 
             FileConfiguration config = YamlConfiguration.loadConfiguration(warpsFile);
             config.set("key", key.toString());
+            config.set("entity", entity.getUniqueId().toString());
             config.set("name", name);
 
             config.set("location.world", entity.getLocation().getWorld().getName());
