@@ -57,7 +57,7 @@ public class ShopHandler {
     private void initDynmap(){
         markerSet = dynmap.getMarkerAPI().getMarkerSet("myeconomy");
         if(markerSet == null){
-            markerSet = dynmap.getMarkerAPI().createMarkerSet("myeconomy", "claims", null, false);
+            markerSet = dynmap.getMarkerAPI().createMarkerSet("myeconomy", "shops", null, false);
         }
     }
 
