@@ -98,7 +98,6 @@ public class MyShop {
         merchant.setRecipes(recipes);
 
         writeTrades();
-        writeInventories();
     }
 
     public void removeTrade(int i){
@@ -109,6 +108,7 @@ public class MyShop {
         List<MerchantRecipe> recipes = new ArrayList<>(merchant.getRecipes());
         recipes.remove(i);
         merchant.setRecipes(recipes);
+        writeTrades();
     }
 
     public void notifyTrade(MerchantRecipe recipe){
@@ -134,6 +134,9 @@ public class MyShop {
                 received.addItem(new ItemStack(item.getType(), count-total));
             }
         }
+
+        writeTrades();
+        writeInventories();
     }
 
     public UUID getKey(){
@@ -263,7 +266,7 @@ public class MyShop {
         }
 
         try{
-            DataOutputStream out = new DataOutputStream(new FileOutputStream(new File(plugin.getDataFolder()+File.separator+"recipes.ser")));
+            DataOutputStream out = new DataOutputStream(new FileOutputStream(new File(shopFolder+File.separator+"recipes.ser")));
 
             for(MerchantRecipe recipe : merchant.getRecipes()){
                 for(ItemStack item : recipe.getIngredients()){
@@ -298,9 +301,13 @@ public class MyShop {
         }
 
         try{
-            DataOutputStream out = new DataOutputStream(new FileOutputStream(new File(plugin.getDataFolder()+File.separator+"stock.ser")));
+            DataOutputStream out = new DataOutputStream(new FileOutputStream(new File(shopFolder+File.separator+"stock.ser")));
 
             for(int i = 0; i < stock.getSize(); i++){
+                if(stock.getItem(i) == null || stock.getItem(i).getType().isAir()){
+                    continue;
+                }
+
                 byte[] b = stock.getItem(i).getType().name().getBytes();
                 out.writeInt(b.length);
                 out.write(b);
@@ -316,9 +323,13 @@ public class MyShop {
         }
 
         try{
-            DataOutputStream out = new DataOutputStream(new FileOutputStream(new File(plugin.getDataFolder()+File.separator+"received.ser")));
+            DataOutputStream out = new DataOutputStream(new FileOutputStream(new File(shopFolder+File.separator+"received.ser")));
 
             for(int i = 0; i < received.getSize(); i++){
+                if(received.getItem(i) == null || received.getItem(i).getType().isAir()){
+                    continue;
+                }
+
                 byte[] b = received.getItem(i).getType().name().getBytes();
                 out.writeInt(b.length);
                 out.write(b);
