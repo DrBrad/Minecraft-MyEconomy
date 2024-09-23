@@ -67,11 +67,9 @@ public class MyShop {
         recipe.setExperienceReward(false);
         recipe.addIngredient(give);
 
-        List<MerchantRecipe> recipes;
-        if(merchant.getRecipeCount() < 1){
-            recipes = new ArrayList<>();
-        }else{
-            recipes = merchant.getRecipes();
+        List<MerchantRecipe> recipes = new ArrayList<>();
+        if(merchant.getRecipeCount() > 0){
+            recipes.addAll(merchant.getRecipes());
         }
 
         recipes.add(recipe);
@@ -83,7 +81,7 @@ public class MyShop {
             return;
         }
 
-        List<MerchantRecipe> recipes = merchant.getRecipes();
+        List<MerchantRecipe> recipes = new ArrayList<>(merchant.getRecipes());
         recipes.remove(i);
         merchant.setRecipes(recipes);
     }

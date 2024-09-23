@@ -192,6 +192,10 @@ commands:
     description: Open stock and received items.
     usage: |
       /s open INV_TYPE SHOP_NAME
+  s trade:
+    description: Add or remove a trade from shop.
+    usage: |
+      /s trade add SHOP_NAME MATERIAL MATERIAL
 
   warp:
     description: Warp to a location.

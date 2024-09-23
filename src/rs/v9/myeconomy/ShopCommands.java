@@ -1,11 +1,15 @@
 package rs.v9.myeconomy;
 
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import rs.v9.myeconomy.handlers.MobHandler;
 import rs.v9.myeconomy.shop.MyShop;
 
 import java.util.ArrayList;
@@ -39,6 +43,9 @@ public class ShopCommands implements CommandExecutor, TabExecutor {
 
                     case "open":
                         return open(((Player) commandSender), args);
+
+                    case "trade":
+                        return trade(((Player) commandSender), args);
                 }
 
             }else{
@@ -57,27 +64,74 @@ public class ShopCommands implements CommandExecutor, TabExecutor {
                 String cmd = args[0].toLowerCase();
                 ArrayList<String> tabComplete = new ArrayList<>();
 
-                if(args.length > 1){
+                if(args.length == 5 || args.length == 7){
+                    switch(cmd){
+                        case "trade":
+                            switch(args[1]){
+                                case "add":
+                                    tabComplete.add("AMOUNT");
+                                    break;
+                            }
+                            break;
+                    }
+
+                }else if(args.length == 4 || args.length == 6){
+                    switch(cmd){
+                        case "trade":
+                            switch(args[1]){
+                                case "add":
+                                    for(Material mat : Material.values()){
+                                        tabComplete.add(mat.toString());
+                                    }
+                                    break;
+
+                                case "remove":
+                                    tabComplete.add("INDEX");
+                                    break;
+                            }
+                            break;
+                    }
+
+                }else if(args.length == 3){
                     switch(cmd){
                         case "create":
-                            tabComplete.add("SHOP_NAME");
+                            for(EntityType mob : getAllowedShops()){
+                                tabComplete.add(mob.name());
+                            }
                             break;
 
                         case "remove":
+                        case "open":
+                        case "trade":
                             tabComplete.add("SHOP_NAME");
-                            //tabComplete.add("ENTITY_TYPE");
+                            break;
+                    }
+
+                }else if(args.length == 2){
+                    switch(cmd){
+                        case "create":
+                        case "remove":
+                            tabComplete.add("SHOP_NAME");
                             break;
 
                         case "open":
                             tabComplete.add("stock");
                             tabComplete.add("received");
                             break;
+
+                        case "trade":
+                            tabComplete.add("add");
+                            tabComplete.add("remove");
+                            break;
                     }
+
                 }else{
                     tabComplete.add("help");
                     tabComplete.add("?");
                     tabComplete.add("create");
                     tabComplete.add("remove");
+                    tabComplete.add("open");
+                    tabComplete.add("trade");
                 }
 
                 return tabComplete;
@@ -228,6 +282,81 @@ public class ShopCommands implements CommandExecutor, TabExecutor {
                 }else{
                     player.sendMessage("§cShop doesn't exist.");
                 }
+                return true;
+            }else{
+                player.sendMessage("§cPlease specify a shop name.");
+            }
+            return false;
+        }else{
+            player.sendMessage("§cYou don't have permission to perform this command.");
+            return false;
+        }
+    }
+
+    public boolean trade(Player player, String[] args){
+        if(player.hasPermission("s.trade")){
+            if(args.length > 3){
+                String type = args[1];
+                String name = args[2];
+                MyShop shop = getShopByName(player, name);
+
+                if(shop != null){
+                    switch(type){
+                        case "add":
+                            if(args.length > 6){
+                                try{
+                                    System.out.println(args[3]+"  "+args[4]);
+                                    System.out.println(args[5]+"  "+args[6]);
+                                    ItemStack receive = new ItemStack(Material.valueOf(args[3]), Integer.parseInt(args[4]));
+                                    ItemStack give = new ItemStack(Material.valueOf(args[5]), Integer.parseInt(args[6]));
+                                    shop.addTrade(receive, give);
+                                    //shop.addTrade(new ItemStack(Material.valueOf(args[3]), Integer.parseInt(args[4])),
+                                    //        new ItemStack(Material.valueOf(args[5]), Integer.parseInt(args[6])));
+                                }catch(Exception e){
+                                    e.printStackTrace();
+                                    player.sendMessage("§cFailed to parse amount.");
+                                }
+
+                            }else{
+                                player.sendMessage("§cYou must specify what you want to trade for.");
+                            }
+                            break;
+
+                        case "remove":
+                            try{
+                                int index = Integer.parseInt(args[3]);
+                                shop.removeTrade(index);
+
+                            }catch(Exception e){
+                                player.sendMessage("§cIndex was not a number.");
+                            }
+                            break;
+                    }
+
+                }else{
+                    player.sendMessage("§cShop doesn't exist.");
+                }
+
+                /*
+                String type = args[1];
+                String name = args[2];
+                MyShop shop = getShopByName(player, name);
+
+                if(shop != null){
+                    System.out.println(shop.getName()+" NAME");
+                    switch(type){
+                        case "stock":
+                            shop.openStock(player);
+                            break;
+
+                        case "received":
+                            shop.openReceive(player);
+                            break;
+                    }
+                }else{
+                    player.sendMessage("§cShop doesn't exist.");
+                }
+                */
                 return true;
             }else{
                 player.sendMessage("§cPlease specify a shop name.");
