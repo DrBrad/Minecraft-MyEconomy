@@ -14,6 +14,7 @@ import rs.v9.myeconomy.claim.ClaimHandler;
 import rs.v9.myeconomy.group.GroupHandler;
 import rs.v9.myeconomy.handlers.PlayerCooldown;
 import rs.v9.myeconomy.handlers.PlayerResolver;
+import rs.v9.myeconomy.shop.ShopHandler;
 
 import static rs.v9.myeconomy.handlers.MapHandler.isMapping;
 import static rs.v9.myeconomy.handlers.MapHandler.stopMapping;
@@ -63,6 +64,7 @@ public class Main extends JavaPlugin {
         new ClaimHandler();
         new PlayerResolver();
         new PlayerCooldown();
+        new ShopHandler();
 
         createRecipes();
     }

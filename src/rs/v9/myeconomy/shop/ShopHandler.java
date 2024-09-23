@@ -1,11 +1,13 @@
 package rs.v9.myeconomy.shop;
 
 import org.bukkit.entity.Player;
+import org.dynmap.markers.MarkerSet;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.UUID;
 
+import static rs.v9.myeconomy.Main.dynmap;
 import static rs.v9.myeconomy.Main.plugin;
 
 public class ShopHandler {
@@ -13,6 +15,7 @@ public class ShopHandler {
     private static HashMap<UUID, MyShop> shops = new HashMap<>();
     private static HashMap<UUID, HashMap<String, UUID>> playersShopsByName = new HashMap<>();
     protected static HashMap<UUID, MyShop> trading = new HashMap<>();
+    private static MarkerSet markerSet;
 
     public ShopHandler(){
         File groupFolder = new File(plugin.getDataFolder()+File.separator+"shop");
@@ -20,6 +23,10 @@ public class ShopHandler {
             for(File groupFile : groupFolder.listFiles()){
                 MyShop shop = new MyShop(groupFile.getName());
             }
+        }
+
+        if(dynmap != null){
+            initDynmap();
         }
     }
 
@@ -33,6 +40,24 @@ public class ShopHandler {
             HashMap<String, UUID> s = new HashMap<>();
             s.put(shop.getName(), shop.getUUID());
             playersShopsByName.put(player.getUniqueId(), s);
+        }
+
+        if(dynmap != null){
+            markerSet.createMarker(shop.getUUID().toString(),
+                    "Shop",
+                    player.getLocation().getWorld().getName(),
+                    player.getLocation().getX(),
+                    player.getLocation().getY(),
+                    player.getLocation().getZ(),
+                    dynmap.getMarkerAPI().getMarkerIcon("building"),
+                    false);
+        }
+    }
+
+    private void initDynmap(){
+        markerSet = dynmap.getMarkerAPI().getMarkerSet("myeconomy");
+        if(markerSet == null){
+            markerSet = dynmap.getMarkerAPI().createMarkerSet("myeconomy", "claims", null, false);
         }
     }
 
