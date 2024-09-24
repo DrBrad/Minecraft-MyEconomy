@@ -230,9 +230,9 @@ public class ShopCommands implements CommandExecutor, TabExecutor {
                     if(type != null){
                         if(getAllowedShops().contains(type)){
                             if(!hasShopName(player, name)){
-                                MyShop shop = new MyShop(name).create(name, player.getLocation(), type);
+                                MyShop shop = new MyShop(name).create(player, name, type);
                                 if(shop != null){
-                                    createShop(player, shop);
+                                    createShop(shop);
                                     player.sendMessage("§7You have successfully created the shop §a"+name+"§7.");
 
                                 }else{

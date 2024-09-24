@@ -12,10 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Merchant;
 import org.bukkit.inventory.MerchantRecipe;
 
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.*;
 
 import static rs.v9.myeconomy.Main.plugin;
@@ -24,11 +21,11 @@ import static rs.v9.myeconomy.shop.ShopHandler.trading;
 
 public class MyShop {
 
-    private UUID key;
+    private UUID key, playerUUID, entityUUID;
     private String name;
     private Merchant merchant;
     private Inventory stock, received;
-    private EntityType type;
+    private EntityType entityType;
     private Location location;
     private LivingEntity entity;
 
@@ -74,7 +71,7 @@ public class MyShop {
     }
 
     public void openStock(Player player){
-        if(merchant.isTrading()){
+        if(merchant.isTrading() || !player.getUniqueId().equals(playerUUID)){
             return;
         }
 
@@ -82,6 +79,10 @@ public class MyShop {
     }
 
     public void openReceive(Player player){
+        if(!player.getUniqueId().equals(playerUUID)){
+            return;
+        }
+
         player.openInventory(received);
     }
 
@@ -160,13 +161,13 @@ public class MyShop {
     }
 
     public UUID getEntityUUID(){
-        return entity.getUniqueId();
+        return entityUUID;
     }
 
-    public MyShop create(String name, Location location, EntityType type){
+    public MyShop create(Player player, String name, EntityType entityType){
         this.name = name;
-        this.location = location;
-        this.type = type;
+        this.location = player.getLocation();
+        this.entityType = entityType;
 
         key = UUID.randomUUID();
 
@@ -182,7 +183,12 @@ public class MyShop {
     }
 
     public void spawn(){
-        entity = (LivingEntity) location.getWorld().spawnEntity(location, type);
+        if(Bukkit.getServer().getEntity(entityUUID) != null){
+            System.out.println("ENTITY ALREADY EXISTS...");
+            return;
+        }
+
+        entity = (LivingEntity) location.getWorld().spawnEntity(location, entityType);
         if(entity instanceof Ageable){
             ((Ageable) entity).setAdult();
         }
@@ -208,6 +214,14 @@ public class MyShop {
         writeData();
     }
 
+    public Location getLocation(){
+        return location;
+    }
+
+    public UUID getPlayerUUID(){
+        return playerUUID;
+    }
+
     public boolean delete(){
         if(!stock.isEmpty() || !received.isEmpty() || merchant.isTrading()){
             return false;
@@ -229,50 +243,39 @@ public class MyShop {
 
     public void read(String key){
         try{
-            /*
-            File groupFolder = new File(plugin.getDataFolder()+File.separator+"group"+File.separator+key);
+            File shopFolder = new File(plugin.getDataFolder()+File.separator+"shop"+File.separator+key);
 
-            if(groupFolder.exists()){
-                File data = new File(groupFolder.getPath()+File.separator+"data.yml");
-                FileConfiguration config = YamlConfiguration.loadConfiguration(data);
+            if(!shopFolder.exists()){
+                return;
+            }
 
-                this.key = UUID.fromString(config.getString("key"));
-                name = config.getString("name");
-                color = config.getInt("color");
-                power = config.getInt("power");
-                description = config.getString("description");
+            File configFile = new File(shopFolder.getPath()+File.separator+"data.yml");
+            FileConfiguration config = YamlConfiguration.loadConfiguration(configFile);
 
-                if(config.contains("home")){
-                    String world = config.getString("home.world");
-                    double x = config.getDouble("home.x");
-                    double y = config.getDouble("home.y");
-                    double z = config.getDouble("home.z");
-                    float yaw = (float) config.getDouble("home.yaw");
-                    float pitch = (float) config.getDouble("home.pitch");
-                    home = new Location(Bukkit.getWorld(world), x, y, z, yaw, pitch);
-                }
+            this.key = UUID.fromString(config.getString("key"));
+            playerUUID = UUID.fromString(config.getString("player.uuid"));
+            entityUUID = UUID.fromString(config.getString("entity.uuid"));
+            name = config.getString("name");
+            entityType = EntityType.valueOf(config.getString("entity.type"));
 
-                //READ ALL THE RANKS
-                File ranksFile = new File(groupFolder.getPath()+File.separator+"ranks.json");
-                if(ranksFile.exists()){
-                    ranks = new JSONObject(new JSONTokener(new FileInputStream(ranksFile)));
-                }
+            String world = config.getString("location.world");
+            double x = config.getDouble("location.x");
+            double y = config.getDouble("location.y");
+            double z = config.getDouble("location.z");
+            float yaw = (float) config.getDouble("location.yaw");
+            float pitch = (float) config.getDouble("location.pitch");
 
-                //READ ALL THE WARPS
-                File warpsFile = new File(groupFolder.getPath()+File.separator+"warps.yml");
-                config = YamlConfiguration.loadConfiguration(warpsFile);
+            location = new Location(Bukkit.getWorld(world), x, y, z, yaw, pitch);
 
-                for(String warpKey : config.getKeys(false)){
-                    Location location = new Location(Bukkit.getWorld(config.getString(warpKey+".world")),
-                            config.getDouble(warpKey+".x"),
-                            config.getDouble(warpKey+".y"),
-                            config.getDouble(warpKey+".z"),
-                            (float)config.getDouble(warpKey+".yaw"),
-                            (float)config.getDouble(warpKey+".pitch"));
+            spawn();
 
-                    warps.put(warpKey, location);
-                }
-            }*/
+            File recipesFile = new File(shopFolder+File.separator+"recipes.ser");
+            if(recipesFile.exists()){
+                DataInputStream in = new DataInputStream(new FileInputStream(recipesFile));
+
+
+            }
+
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -285,17 +288,18 @@ public class MyShop {
         }
 
         try{
-            File warpsFile = new File(shopFolder.getPath()+File.separator+"config.yml");
-            if(warpsFile.exists()){
-                OutputStream out = new FileOutputStream(warpsFile);
+            File configFile = new File(shopFolder.getPath()+File.separator+"config.yml");
+            if(configFile.exists()){
+                OutputStream out = new FileOutputStream(configFile);
                 out.flush();
                 out.close();
             }
 
-            FileConfiguration config = YamlConfiguration.loadConfiguration(warpsFile);
+            FileConfiguration config = YamlConfiguration.loadConfiguration(configFile);
             config.set("key", key.toString());
-            config.set("entity.uuid", entity.getUniqueId().toString());
-            config.set("entity.type", entity.getType());
+            config.set("player.uuid", playerUUID.toString());
+            config.set("entity.uuid", entityUUID.toString());
+            config.set("entity.type", entityType.name());
             config.set("name", name);
 
             config.set("location.world", location.getWorld().getName());
@@ -305,7 +309,7 @@ public class MyShop {
             config.set("location.yaw", location.getYaw());
             config.set("location.pitch", location.getPitch());
 
-            config.save(warpsFile);
+            config.save(configFile);
 
         }catch(Exception e){
             e.printStackTrace();

@@ -23,10 +23,11 @@ public class ShopHandler {
     private static MarkerSet markerSet;
 
     public ShopHandler(){
-        File groupFolder = new File(plugin.getDataFolder()+File.separator+"shop");
-        if(groupFolder.exists()){
-            for(File groupFile : groupFolder.listFiles()){
+        File shopFolder = new File(plugin.getDataFolder()+File.separator+"shop");
+        if(shopFolder.exists()){
+            for(File groupFile : shopFolder.listFiles()){
                 MyShop shop = new MyShop(groupFile.getName());
+                createShop(shop);
             }
         }
 
@@ -35,26 +36,26 @@ public class ShopHandler {
         }
     }
 
-    public static void createShop(Player player, MyShop shop){
+    public static void createShop(MyShop shop){
         shops.put(shop.getKey(), shop);
         shopsByEntityUUID.put(shop.getEntityUUID(), shop.getKey());
 
-        if(playersShopsByName.containsKey(player.getUniqueId())){
-            playersShopsByName.get(player.getUniqueId()).put(shop.getName(), shop.getKey());
+        if(playersShopsByName.containsKey(shop.getPlayerUUID())){
+            playersShopsByName.get(shop.getPlayerUUID()).put(shop.getName(), shop.getKey());
 
         }else{
             HashMap<String, UUID> s = new HashMap<>();
             s.put(shop.getName(), shop.getKey());
-            playersShopsByName.put(player.getUniqueId(), s);
+            playersShopsByName.put(shop.getPlayerUUID(), s);
         }
 
         if(dynmap != null){
             markers.put(shop.getKey(), markerSet.createMarker(shop.getKey().toString(),
                     "Shop",
-                    player.getLocation().getWorld().getName(),
-                    player.getLocation().getX(),
-                    player.getLocation().getY(),
-                    player.getLocation().getZ(),
+                    shop.getLocation().getWorld().getName(),
+                    shop.getLocation().getX(),
+                    shop.getLocation().getY(),
+                    shop.getLocation().getZ(),
                     dynmap.getMarkerAPI().getMarkerIcon("building"),
                     false));
         }
