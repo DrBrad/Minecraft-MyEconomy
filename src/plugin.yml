@@ -349,22 +349,22 @@ permissions:
     default: true
     description: Get the version of this plugin.
 
-  s help:
+  s.help:
     default: true
     description: List of shop commands
-  s ?:
+  s.?:
     default: true
     description: List of shop commands
-  s create:
+  s.create:
     default: true
     description: Create a shop.
-  s remove:
+  s.remove:
     default: true
     description: Remove a shop.
-  s open:
+  s.open:
     default: true
     description: Open stock and received items.
-  s trade:
+  s.trade:
     default: true
     description: Add or remove a trade from shop.
 
