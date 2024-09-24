@@ -1,6 +1,7 @@
 package rs.v9.myeconomy.shop;
 
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.dynmap.markers.MarkerSet;
 
 import java.io.File;
@@ -16,6 +17,7 @@ public class ShopHandler {
     private static HashMap<UUID, HashMap<String, UUID>> playersShopsByName = new HashMap<>();
     private static HashMap<UUID, UUID> shopsByEntityUUID = new HashMap<>();
     protected static HashMap<UUID, MyShop> trading = new HashMap<>();
+    protected static HashMap<Inventory, UUID> inventories = new HashMap<>();
     private static MarkerSet markerSet;
 
     public ShopHandler(){
@@ -110,5 +112,17 @@ public class ShopHandler {
 
     public static void removeTrader(Player player){
         trading.remove(player.getUniqueId());
+    }
+
+    public static boolean containsInventory(Inventory inventory){
+        return inventories.containsKey(inventory);
+    }
+
+    public static MyShop getInventory(Inventory inventory){
+        if(!inventories.containsKey(inventory)){
+            return null;
+        }
+
+        return shops.get(inventories.get(inventory));
     }
 }

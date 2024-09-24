@@ -21,6 +21,7 @@ import java.io.OutputStream;
 import java.util.*;
 
 import static rs.v9.myeconomy.Main.plugin;
+import static rs.v9.myeconomy.shop.ShopHandler.inventories;
 import static rs.v9.myeconomy.shop.ShopHandler.trading;
 
 public class MyShop {
@@ -135,8 +136,19 @@ public class MyShop {
             }
         }
 
-        writeTrades();
-        writeInventories();
+        writeStock();
+        writeReceived();
+    }
+
+    public void notifyStorage(Inventory inventory){
+        if(inventory == stock){
+            writeStock();
+            return;
+        }
+
+        if(inventory == received){
+            writeReceived();
+        }
     }
 
     public UUID getKey(){
@@ -165,7 +177,9 @@ public class MyShop {
 
         merchant = Bukkit.createMerchant("Shop");
         stock = Bukkit.createInventory(null, 36, "Stock");
+        inventories.put(stock, key);
         received = Bukkit.createInventory(null, 36, "Received");
+        inventories.put(received, key);
 
         writeData();
 
@@ -173,9 +187,12 @@ public class MyShop {
     }
 
     public boolean delete(){
-        if(!stock.isEmpty() || !received.isEmpty()){
+        if(!stock.isEmpty() || !received.isEmpty() || merchant.isTrading()){
             return false;
         }
+
+        inventories.remove(stock);
+        inventories.remove(received);
 
         entity.setInvulnerable(false);
         entity.remove();
@@ -302,7 +319,7 @@ public class MyShop {
         }
     }
 
-    public void writeInventories(){
+    public void writeStock(){
         File shopFolder = new File(plugin.getDataFolder()+File.separator+"shop"+File.separator+key.toString());
         if(!shopFolder.exists()){
             shopFolder.mkdirs();
@@ -328,6 +345,13 @@ public class MyShop {
 
         }catch(Exception e){
             e.printStackTrace();
+        }
+    }
+
+    public void writeReceived(){
+        File shopFolder = new File(plugin.getDataFolder()+File.separator+"shop"+File.separator+key.toString());
+        if(!shopFolder.exists()){
+            shopFolder.mkdirs();
         }
 
         try{

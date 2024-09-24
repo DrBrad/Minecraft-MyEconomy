@@ -443,8 +443,6 @@ public class MyEventHandler implements Listener {
         }
     }
 
-
-
     @EventHandler
     public void onHurt(EntityDamageByEntityEvent event){
         if(event.getEntity() instanceof Player){
@@ -552,6 +550,21 @@ public class MyEventHandler implements Listener {
                     @Override
                     public void run(){
                         shop.notifyTrade(recipe);
+                    }
+                },0);
+            }
+
+            return;
+        }
+
+        if(event.getInventory().getSize() == 36){
+            MyShop shop = getInventory(event.getInventory());
+
+            if(shop != null){
+                plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
+                    @Override
+                    public void run(){
+                        shop.notifyStorage(event.getInventory());
                     }
                 },0);
             }
