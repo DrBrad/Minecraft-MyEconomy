@@ -93,7 +93,9 @@ public class MyCommands implements CommandExecutor, TabExecutor {
                 switch(cmd){
                     case "tpa":
                         for(Player player : Bukkit.getOnlinePlayers()){
-                            tabComplete.add(player.getName());
+                            if(player.getName().startsWith(args[0]) || args[0].equals("")){
+                                tabComplete.add(player.getName());
+                            }
                         }
                         break;
 

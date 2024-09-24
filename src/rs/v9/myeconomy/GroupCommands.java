@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static rs.v9.myeconomy.Config.*;
+import static rs.v9.myeconomy.group.GroupHandler.getListOfGroupNames;
 import static rs.v9.myeconomy.handlers.GeneralHandler.*;
 import static rs.v9.myeconomy.claim.ClaimHandler.*;
 import static rs.v9.myeconomy.group.GroupHandler.*;
@@ -152,33 +153,16 @@ public class GroupCommands implements CommandExecutor, TabExecutor {
                             break;
 
                         case "invite":
-                            if(group != null){
-                                for(Player player : Bukkit.getOnlinePlayers()){
-                                    tabComplete.add(player.getName());
-                                }
-                            }
-                            break;
-
                         case "remove":
-                            if(group != null){
-                                for(String uuid : group.getPlayers()){
-                                    tabComplete.add(Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName());
-                                }
-                            }
-                            break;
-
                         case "promote":
-                            if(group != null){
-                                for(String uuid : group.getPlayers()){
-                                    tabComplete.add(Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName());
-                                }
-                            }
-                            break;
-
                         case "demote":
+                        case "chown":
                             if(group != null){
                                 for(String uuid : group.getPlayers()){
-                                    tabComplete.add(Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName());
+                                    String name = Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName();
+                                    if(name.startsWith(args[1]) || args[1].equals("")){
+                                        tabComplete.add(name);
+                                    }
                                 }
                             }
                             break;
@@ -207,17 +191,13 @@ public class GroupCommands implements CommandExecutor, TabExecutor {
                             }
                             break;
 
-                        case "chown":
-                            if(group != null){
-                                for(String uuid : group.getPlayers()){
-                                    tabComplete.add(Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName());
-                                }
-                            }
-                            break;
-
                         case "setcolor":
                             if(group != null){
-                                tabComplete.addAll(getAllColors());
+                                for(String color : getAllColors()){
+                                    if(color.startsWith(args[1].toUpperCase()) || args[1].equals("")){
+                                        tabComplete.add(color.toLowerCase());
+                                    }
+                                }
                             }
                             break;
 
@@ -234,7 +214,11 @@ public class GroupCommands implements CommandExecutor, TabExecutor {
                                 }
 
                             }else if(args.length == 2){
-                                tabComplete.addAll(getListOfGroupNames());
+                                for(String name : getListOfGroupNames()){
+                                    if(name.startsWith(args[1]) || args[1].equals("")){
+                                        tabComplete.add(name);
+                                    }
+                                }
                             }
                             break;
 
@@ -1011,7 +995,7 @@ public class GroupCommands implements CommandExecutor, TabExecutor {
     private boolean setColor(Player player, String[] args){
         if(player.hasPermission("g.setcolor")){
             if(args.length > 1){
-                String color = args[1];
+                String color = args[1].toUpperCase();
 
                 MyGroup group = getPlayersGroup(player.getUniqueId());
                 if(group != null){
