@@ -183,7 +183,6 @@ public class GroupHandler {
         write();
 
         File groupFolder = new File(plugin.getDataFolder()+File.separator+"group"+File.separator+group.getKey());
-        plugin.getServer().broadcastMessage(groupFolder.getPath().toString());
 
         deleteFolder(groupFolder);
     }

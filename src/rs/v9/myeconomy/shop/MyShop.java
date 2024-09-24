@@ -69,7 +69,7 @@ public class MyShop {
             recipe.setMaxUses(mats.get(recipe.getResult().getType())/recipe.getResult().getAmount());
         }
 
-        trading.put(player.getUniqueId(), this);
+        trading.put(player.getUniqueId(), key);
         player.openMerchant(merchant, true);
     }
 
@@ -177,7 +177,6 @@ public class MyShop {
         inventories.put(received, key);
 
         spawn();
-        writeData();
 
         return this;
     }
@@ -193,7 +192,9 @@ public class MyShop {
             entity.getEquipment().setLeggings(null);
             entity.getEquipment().setBoots(null);
         }
+        entity.setRemoveWhenFarAway(false);
         entity.setCustomName(name);
+        entity.setCustomNameVisible(true);
         entity.setInvulnerable(true);
         entity.setPersistent(true);
         entity.setVisualFire(false);
@@ -204,6 +205,7 @@ public class MyShop {
         entity.setSilent(true);
         entity.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(1.0);
         entity.setFreezeTicks(0);
+        writeData();
     }
 
     public boolean delete(){
@@ -216,6 +218,11 @@ public class MyShop {
 
         entity.setInvulnerable(false);
         entity.remove();
+
+        File shopFolder = new File(plugin.getDataFolder()+File.separator+"shop"+File.separator+key.toString());
+        if(shopFolder.exists()){
+            shopFolder.mkdirs();
+        }
 
         return true;
     }

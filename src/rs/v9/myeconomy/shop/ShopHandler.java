@@ -2,6 +2,7 @@ package rs.v9.myeconomy.shop;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.dynmap.markers.Marker;
 import org.dynmap.markers.MarkerSet;
 
 import java.io.File;
@@ -15,8 +16,10 @@ public class ShopHandler {
 
     private static HashMap<UUID, MyShop> shops = new HashMap<>();
     private static HashMap<UUID, HashMap<String, UUID>> playersShopsByName = new HashMap<>();
-    private static HashMap<UUID, UUID> shopsByEntityUUID = new HashMap<>(), trading = new HashMap<>();
+    private static HashMap<UUID, UUID> shopsByEntityUUID = new HashMap<>();;
+    protected static HashMap<UUID, UUID> trading = new HashMap<>();
     protected static HashMap<Inventory, UUID> inventories = new HashMap<>();
+    private static HashMap<UUID, Marker> markers = new HashMap<>();
     private static MarkerSet markerSet;
 
     public ShopHandler(){
@@ -46,14 +49,14 @@ public class ShopHandler {
         }
 
         if(dynmap != null){
-            markerSet.createMarker(shop.getKey().toString(),
+            markers.put(shop.getKey(), markerSet.createMarker(shop.getKey().toString(),
                     "Shop",
                     player.getLocation().getWorld().getName(),
                     player.getLocation().getX(),
                     player.getLocation().getY(),
                     player.getLocation().getZ(),
                     dynmap.getMarkerAPI().getMarkerIcon("building"),
-                    false);
+                    false));
         }
     }
 
@@ -67,6 +70,28 @@ public class ShopHandler {
     public static void deleteShop(Player player, MyShop shop){
         shopsByEntityUUID.remove(shop.getEntityUUID());
         shops.remove(playersShopsByName.get(player.getUniqueId()).remove(shop.getName()));
+
+        File shopFolder = new File(plugin.getDataFolder()+File.separator+"shop"+File.separator+shop.getKey());
+
+        deleteFolder(shopFolder);
+
+        if(dynmap != null){
+            markers.remove(shop.getKey()).deleteMarker();
+        }
+    }
+
+    private static void deleteFolder(File folder){
+        File[] files = folder.listFiles();
+        if(files != null){
+            for(File f: files){
+                if(f.isDirectory()){
+                    deleteFolder(f);
+                }else{
+                    f.delete();
+                }
+            }
+        }
+        folder.delete();
     }
 
     public static MyShop getShop(UUID uuid){
