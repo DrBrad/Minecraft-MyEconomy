@@ -58,10 +58,6 @@ public class MyEventHandler implements Listener {
         }
 
         setPlayerCooldown(event.getPlayer().getUniqueId());
-
-        if(isXRay()){
-            antiXRay(event.getPlayer(), event.getPlayer().getLocation().getChunk());
-        }
     }
 
     @EventHandler
@@ -351,7 +347,7 @@ public class MyEventHandler implements Listener {
 
         if(isXRay()){
             if(!event.isCancelled()){
-                if(xray.containsKey(event.getPlayer())){
+                if(xray.containsKey(event.getPlayer().getUniqueId())){
                     isNextToOre(event.getPlayer(), event.getBlock());
                 }
             }
@@ -732,9 +728,10 @@ public class MyEventHandler implements Listener {
 
                 for(int x = 0; x < 16; x++){
                     for(int z = 0; z < 16; z++){
-                        for(int y = chunk.getWorld().getLogicalHeight(); y < chunk.getWorld().getHighestBlockAt(
+                        int height = chunk.getWorld().getHighestBlockAt(
                                 (int)chunk.getBlock(x, 0, z).getLocation().getX(),
-                                (int)chunk.getBlock(x, 0, z).getLocation().getZ()).getY(); y++){
+                                (int)chunk.getBlock(x, 0, z).getLocation().getZ()).getY();
+                        for(int y = chunk.getWorld().getMinHeight(); y < height; y++){
                             Block block = chunk.getBlock(x, y, z);
                             if(xrayBlocks.contains(block.getType())){
                                 if(!isOreExposed(block)){
@@ -777,31 +774,38 @@ public class MyEventHandler implements Listener {
 
     private void isNextToOre(Player player, Block block){
         List<Material> ores = getXRayBlocks();
+        System.out.println("NEXT TO ORE");
 
         Block sideBlock = block.getLocation().getWorld().getBlockAt(block.getLocation().add(1, 0, 0));
         if(ores.contains(sideBlock.getType())){
+            System.out.println("REVERT XRAY");
             player.sendBlockChange(sideBlock.getLocation(), sideBlock.getBlockData());
         }
         sideBlock = block.getLocation().getWorld().getBlockAt(block.getLocation().subtract(1, 0, 0));
         if(ores.contains(sideBlock.getType())){
+            System.out.println("REVERT XRAY");
             player.sendBlockChange(sideBlock.getLocation(), sideBlock.getBlockData());
         }
 
         sideBlock = block.getLocation().getWorld().getBlockAt(block.getLocation().add(0, 1, 0));
         if(ores.contains(sideBlock.getType())){
+            System.out.println("REVERT XRAY");
             player.sendBlockChange(sideBlock.getLocation(), sideBlock.getBlockData());
         }
         sideBlock = block.getLocation().getWorld().getBlockAt(block.getLocation().subtract(0, 1, 0));
         if(ores.contains(sideBlock.getType())){
+            System.out.println("REVERT XRAY");
             player.sendBlockChange(sideBlock.getLocation(), sideBlock.getBlockData());
         }
 
         sideBlock = block.getLocation().getWorld().getBlockAt(block.getLocation().add(0, 0, 1));
         if(ores.contains(sideBlock.getType())){
+            System.out.println("REVERT XRAY");
             player.sendBlockChange(sideBlock.getLocation(), sideBlock.getBlockData());
         }
         sideBlock = block.getLocation().getWorld().getBlockAt(block.getLocation().subtract(0, 0, 1));
         if(ores.contains(sideBlock.getType())){
+            System.out.println("REVERT XRAY");
             player.sendBlockChange(sideBlock.getLocation(), sideBlock.getBlockData());
         }
     }
