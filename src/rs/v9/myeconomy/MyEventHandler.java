@@ -556,27 +556,25 @@ public class MyEventHandler implements Listener {
         if(inClaim(chunk)){
             Claim claim = getClaim(chunk);
             if(claim != null && claim.getType() > 0){
-                event.setCancelled(true);
-                event.getLocation().getWorld().spawnParticle(Particle.EXPLOSION, event.getLocation(), 3);
+                event.blockList().clear();
                 return;
             }
         }
 
-        for(Block block : event.blockList()){
+        List<Block> blocks = new ArrayList<>(event.blockList());
+        event.blockList().clear();
+
+        for(Block block : blocks){
             if(block.getType().equals(Material.AIR)){
                 continue;
             }
 
             Claim claim = getClaim(block.getChunk());
-            if(claim != null && claim.getType() > 0){
-                if(!event.isCancelled()){
-                    event.setCancelled(true);
-                    event.getLocation().getWorld().spawnParticle(Particle.EXPLOSION, event.getLocation(), 3);
-                }
+            if(claim != null){
                 continue;
             }
 
-            block.setType(Material.AIR);
+            event.blockList().add(block);
         }
     }
 
