@@ -6,9 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Merchant;
@@ -167,11 +165,24 @@ public class MyShop {
         this.name = name;
 
         entity = (LivingEntity) location.getWorld().spawnEntity(location, type);
+        if(entity instanceof Ageable){
+            ((Ageable) entity).setAdult();
+        }
+        if(entity.getEquipment() != null){
+            entity.getEquipment().setHelmet(null);
+            entity.getEquipment().setChestplate(null);
+            entity.getEquipment().setLeggings(null);
+            entity.getEquipment().setBoots(null);
+        }
         entity.setCustomName(name);
         entity.setInvulnerable(true);
         entity.setPersistent(true);
+        entity.setVisualFire(false);
         entity.setAI(false);
         entity.setGravity(false);
+        entity.setCanPickupItems(false);
+        entity.setInvisible(false);
+        entity.setSilent(true);
         entity.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(1.0);
         key = UUID.randomUUID();
 

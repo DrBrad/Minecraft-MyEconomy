@@ -97,7 +97,9 @@ public class ShopCommands implements CommandExecutor, TabExecutor {
                     switch(cmd){
                         case "create":
                             for(EntityType mob : getAllowedShops()){
-                                tabComplete.add(mob.name());
+                                if(mob.name().startsWith(args[2].toUpperCase()) || args[2].equals("")){
+                                    tabComplete.add(mob.name().toLowerCase());
+                                }
                             }
                             break;
 
@@ -214,7 +216,7 @@ public class ShopCommands implements CommandExecutor, TabExecutor {
             if(args.length > 2){
                 String name = args[1];
                 if(name.length() < 13 && name.length() > 1){
-                    EntityType type = EntityType.valueOf(args[2]);
+                    EntityType type = EntityType.valueOf(args[2].toUpperCase());
 
                     MyGroup group = getPlayersGroup(player.getUniqueId());
                     Claim claim = getClaim(player.getLocation().getChunk());
