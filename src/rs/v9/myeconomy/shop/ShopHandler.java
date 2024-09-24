@@ -33,7 +33,7 @@ public class ShopHandler {
 
     public static void createShop(Player player, MyShop shop){
         shops.put(shop.getKey(), shop);
-        shopsByEntityUUID.put(shop.getKey(), shop.getEntityUUID());
+        shopsByEntityUUID.put(shop.getEntityUUID(), shop.getKey());
 
         if(playersShopsByName.containsKey(player.getUniqueId())){
             playersShopsByName.get(player.getUniqueId()).put(shop.getName(), shop.getKey());

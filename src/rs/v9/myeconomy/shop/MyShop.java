@@ -255,7 +255,10 @@ public class MyShop {
 
             config.set("location.world", entity.getLocation().getWorld().getName());
             config.set("location.x", entity.getLocation().getX());
+            config.set("location.y", entity.getLocation().getY());
             config.set("location.z", entity.getLocation().getZ());
+            config.set("location.yaw", entity.getLocation().getYaw());
+            config.set("location.pitch", entity.getLocation().getPitch());
 
             config.save(warpsFile);
 
