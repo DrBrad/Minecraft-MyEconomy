@@ -450,7 +450,7 @@ public class MyEventHandler implements Listener {
 
     @EventHandler
     public void onPlayerInteractEntity(PlayerInteractEntityEvent event){
-        if(event instanceof LivingEntity){
+        if(event.getRightClicked() instanceof LivingEntity){
             LivingEntity entity = (LivingEntity) event.getRightClicked();
 
             MyShop shop = getShopByEntityUUID(entity.getUniqueId());
