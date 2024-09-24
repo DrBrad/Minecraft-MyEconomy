@@ -553,13 +553,16 @@ public class MyEventHandler implements Listener {
         if(inClaim(chunk)){
             Claim claim = getClaim(chunk);
             if(claim != null && claim.getType() > 0){
+                List<Block> blocks = new ArrayList<>(event.blockList());
                 event.blockList().clear();
+                regenBlocks(event.getLocation(), blocks);
                 return;
             }
         }
 
         List<Block> blocks = new ArrayList<>(event.blockList());
         event.blockList().clear();
+        List<Block> regen = new ArrayList<>();
 
         for(Block block : blocks){
             if(block.getType().equals(Material.AIR)){
@@ -568,27 +571,15 @@ public class MyEventHandler implements Listener {
 
             Claim claim = getClaim(block.getChunk());
             if(claim != null){
-                List<Player> players = new ArrayList<>();
-                for(Entity entity : event.getLocation().getChunk().getEntities()){
-                    if(entity instanceof Player){
-                        players.add(((Player) entity));
-                        ((Player) entity).sendBlockChange(block.getLocation(), Material.AIR.createBlockData());
-                    }
-                }
-
-                plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
-                    @Override
-                    public void run(){
-                        for(Player player : players){
-                            player.sendBlockChange(block.getLocation(), block.getBlockData());
-                        }
-                    }
-                }, random.nextInt(121)+40);
-
+                regen.add(block);
                 continue;
             }
 
             event.blockList().add(block);
+        }
+
+        if(!regen.isEmpty()){
+            regenBlocks(event.getLocation(), regen);
         }
     }
 
@@ -818,6 +809,25 @@ public class MyEventHandler implements Listener {
         sideBlock = block.getLocation().getWorld().getBlockAt(block.getLocation().subtract(0, 0, 1));
         if(ores.contains(sideBlock.getType())){
             player.sendBlockChange(sideBlock.getLocation(), sideBlock.getBlockData());
+        }
+    }
+
+    private void regenBlocks(Location location, List<Block> blocks){
+        Collection<Player> players = location.getWorld().getPlayersSeeingChunk(location.getChunk());
+
+        for(Block block : blocks){
+            for(Player player : players){
+                player.sendBlockChange(block.getLocation(), Material.AIR.createBlockData());
+            }
+
+            plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
+                @Override
+                public void run(){
+                    for(Player player : players){
+                        player.sendBlockChange(block.getLocation(), block.getBlockData());
+                    }
+                }
+            }, random.nextInt(121)+40);
         }
     }
 }
