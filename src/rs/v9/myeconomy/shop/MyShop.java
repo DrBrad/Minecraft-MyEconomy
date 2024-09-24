@@ -195,9 +195,12 @@ public class MyShop {
     }
 
     public void spawn(){
+        if(!location.getWorld().isChunkLoaded(location.getChunk())){
+            location.getWorld().loadChunk(location.getChunk());
+        }
+
         Entity entity = Bukkit.getServer().getEntity(entityUUID);
         if(entity != null && entity.isValid()){
-            entityUUID = entity.getUniqueId();
             return;
         }
 
