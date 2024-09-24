@@ -185,8 +185,9 @@ public class MyShop {
 
     public void spawn(){
         try{
-            if(Bukkit.getServer().getEntity(entityUUID) != null){
-                System.out.println("ENTITY ALREADY EXISTS...");
+            entity = (LivingEntity) Bukkit.getServer().getEntity(entityUUID);
+            if(entity != null){
+                entityUUID = entity.getUniqueId();
                 return;
             }
         }catch(Exception e){
@@ -310,10 +311,45 @@ public class MyShop {
             }
 
 
-
+            File stockFile = new File(shopFolder+File.separator+"stock.ser");
             stock = Bukkit.createInventory(null, 36, "Stock");
+            if(stockFile.exists()){
+                DataInputStream in = new DataInputStream(new FileInputStream(stockFile));
+
+                int i = 0;
+                while(in.available() > 0){
+                    byte[] b = new byte[in.readInt()];
+                    in.read(b);
+
+                    Material mat = Material.valueOf(new String(b));
+                    int amount = in.readInt();
+
+                    stock.setItem(i, new ItemStack(mat, amount));
+                    i++;
+                }
+            }
+
             inventories.put(stock, this.key);
+
+
+            File receivedFile = new File(shopFolder+File.separator+"received.ser");
             received = Bukkit.createInventory(null, 36, "Received");
+            if(receivedFile.exists()){
+                DataInputStream in = new DataInputStream(new FileInputStream(receivedFile));
+
+                int i = 0;
+                while(in.available() > 0){
+                    byte[] b = new byte[in.readInt()];
+                    in.read(b);
+
+                    Material mat = Material.valueOf(new String(b));
+                    int amount = in.readInt();
+
+                    received.setItem(i, new ItemStack(mat, amount));
+                    i++;
+                }
+            }
+
             inventories.put(received, this.key);
 
         }catch(Exception e){
