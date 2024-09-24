@@ -24,6 +24,8 @@ public class Main extends JavaPlugin {
     public static Plugin plugin;
     public static DynmapCommonAPI dynmap;
 
+    //could trades be messed up if you swap between trades when max uses is capped?
+
     @Override
     public void onLoad(){
         plugin = this;
