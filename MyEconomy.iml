@@ -7,8 +7,9 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="json-20230227" level="project" />
     <orderEntry type="library" name="DynmapCoreAPI-3.7-beta-6" level="project" />
     <orderEntry type="library" name="spigot-api-1.21.1-R0.1-20240907.094015-22" level="project" />
+    <orderEntry type="library" name="DynmapCoreAPI-3.7-beta-6" level="project" />
+    <orderEntry type="library" name="json-20230227" level="project" />
   </component>
 </module>

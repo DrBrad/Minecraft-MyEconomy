@@ -85,7 +85,11 @@ public class MyShop {
         player.openInventory(received);
     }
 
-    public void addTrade(ItemStack receive, ItemStack give){
+    public boolean addTrade(ItemStack receive, ItemStack give){
+        if(receive.getType().isAir() || give.getType().isAir() || merchant.getRecipeCount() >= 16){
+            return false;
+        }
+
         MerchantRecipe recipe = new MerchantRecipe(receive, 0);
         recipe.setExperienceReward(false);
         recipe.addIngredient(give);
@@ -99,6 +103,7 @@ public class MyShop {
         merchant.setRecipes(recipes);
 
         writeTrades();
+        return true;
     }
 
     public void removeTrade(int i){
@@ -133,6 +138,14 @@ public class MyShop {
 
             for(ItemStack item : recipe.getIngredients()){
                 received.addItem(new ItemStack(item.getType(), count-total));
+            }
+
+            for(MerchantRecipe r : merchant.getRecipes()){
+                if(r.equals(recipe) || !r.getResult().getType().equals(recipe.getResult().getType())){
+                    continue;
+                }
+
+                r.setMaxUses(total/r.getResult().getAmount());
             }
         }
 

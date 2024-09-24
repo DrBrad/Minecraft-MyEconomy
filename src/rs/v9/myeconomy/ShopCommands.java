@@ -292,8 +292,12 @@ public class ShopCommands implements CommandExecutor, TabExecutor {
                         case "add":
                             if(args.length > 6){
                                 try{
-                                    shop.addTrade(new ItemStack(Material.valueOf(args[3].toUpperCase()), Integer.parseInt(args[4])), new ItemStack(Material.valueOf(args[5].toUpperCase()), Integer.parseInt(args[6])));
-                                    player.sendMessage("§7Added trade of §a"+args[3]+"§7 for §a"+args[5]);
+                                    if(shop.addTrade(new ItemStack(Material.valueOf(args[3].toUpperCase()), Integer.parseInt(args[4])), new ItemStack(Material.valueOf(args[5].toUpperCase()), Integer.parseInt(args[6])))){
+                                        player.sendMessage("§7Added trade of §a"+args[3]+"§7 for §a"+args[5]);
+                                    }else{
+                                        player.sendMessage("§cYou either used unallowed air material or have to many shops already.");
+                                    }
+
                                 }catch(Exception e){
                                     e.printStackTrace();
                                     player.sendMessage("§cFailed to parse amount.");

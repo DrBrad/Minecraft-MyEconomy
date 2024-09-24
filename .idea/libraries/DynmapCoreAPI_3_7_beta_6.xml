@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="DynmapCoreAPI-3.7-beta-6">
     <CLASSES>
-      <root url="jar://$USER_HOME$/libs/DynmapCoreAPI-3.7-beta-6.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/DynmapCoreAPI-3.7-beta-6.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
