@@ -28,6 +28,8 @@ public class MyShop {
     private String name;
     private Merchant merchant;
     private Inventory stock, received;
+    private EntityType type;
+    private Location location;
     private LivingEntity entity;
 
     public MyShop(){
@@ -163,7 +165,24 @@ public class MyShop {
 
     public MyShop create(String name, Location location, EntityType type){
         this.name = name;
+        this.location = location;
+        this.type = type;
 
+        key = UUID.randomUUID();
+
+        merchant = Bukkit.createMerchant("Shop");
+        stock = Bukkit.createInventory(null, 36, "Stock");
+        inventories.put(stock, key);
+        received = Bukkit.createInventory(null, 36, "Received");
+        inventories.put(received, key);
+
+        spawn();
+        writeData();
+
+        return this;
+    }
+
+    public void spawn(){
         entity = (LivingEntity) location.getWorld().spawnEntity(location, type);
         if(entity instanceof Ageable){
             ((Ageable) entity).setAdult();
@@ -184,17 +203,7 @@ public class MyShop {
         entity.setInvisible(false);
         entity.setSilent(true);
         entity.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(1.0);
-        key = UUID.randomUUID();
-
-        merchant = Bukkit.createMerchant("Shop");
-        stock = Bukkit.createInventory(null, 36, "Stock");
-        inventories.put(stock, key);
-        received = Bukkit.createInventory(null, 36, "Received");
-        inventories.put(received, key);
-
-        writeData();
-
-        return this;
+        entity.setFreezeTicks(0);
     }
 
     public boolean delete(){
@@ -278,15 +287,16 @@ public class MyShop {
 
             FileConfiguration config = YamlConfiguration.loadConfiguration(warpsFile);
             config.set("key", key.toString());
-            config.set("entity", entity.getUniqueId().toString());
+            config.set("entity.uuid", entity.getUniqueId().toString());
+            config.set("entity.type", entity.getType());
             config.set("name", name);
 
-            config.set("location.world", entity.getLocation().getWorld().getName());
-            config.set("location.x", entity.getLocation().getX());
-            config.set("location.y", entity.getLocation().getY());
-            config.set("location.z", entity.getLocation().getZ());
-            config.set("location.yaw", entity.getLocation().getYaw());
-            config.set("location.pitch", entity.getLocation().getPitch());
+            config.set("location.world", location.getWorld().getName());
+            config.set("location.x", location.getX());
+            config.set("location.y", location.getY());
+            config.set("location.z", location.getZ());
+            config.set("location.yaw", location.getYaw());
+            config.set("location.pitch", location.getPitch());
 
             config.save(warpsFile);
 

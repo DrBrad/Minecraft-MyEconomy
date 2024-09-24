@@ -15,8 +15,7 @@ public class ShopHandler {
 
     private static HashMap<UUID, MyShop> shops = new HashMap<>();
     private static HashMap<UUID, HashMap<String, UUID>> playersShopsByName = new HashMap<>();
-    private static HashMap<UUID, UUID> shopsByEntityUUID = new HashMap<>();
-    protected static HashMap<UUID, MyShop> trading = new HashMap<>();
+    private static HashMap<UUID, UUID> shopsByEntityUUID = new HashMap<>(), trading = new HashMap<>();
     protected static HashMap<Inventory, UUID> inventories = new HashMap<>();
     private static MarkerSet markerSet;
 
@@ -107,7 +106,11 @@ public class ShopHandler {
     }
 
     public static MyShop getShopByTrader(Player player){
-        return trading.get(player.getUniqueId());
+        if(!trading.containsKey(player.getUniqueId())){
+            return null;
+        }
+
+        return shops.get(trading.get(player.getUniqueId()));
     }
 
     public static void removeTrader(Player player){
