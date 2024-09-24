@@ -101,7 +101,9 @@ public class MyCommands implements CommandExecutor, TabExecutor {
                     case "gamemode":
                         if(args.length == 2){
                             for(Player player : Bukkit.getOnlinePlayers()){
-                                tabComplete.add(player.getName());
+                                if(player.getName().startsWith(args[1]) || args[1].equals("")){
+                                    tabComplete.add(player.getName());
+                                }
                             }
                         }else if(args.length == 1){
                             tabComplete.add("SURVIVAL");
