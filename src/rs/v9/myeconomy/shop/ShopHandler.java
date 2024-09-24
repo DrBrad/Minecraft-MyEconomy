@@ -50,6 +50,11 @@ public class ShopHandler {
         }
 
         if(dynmap != null){
+            markerSet = dynmap.getMarkerAPI().getMarkerSet("myeconomy");
+            if(markerSet == null){
+                markerSet = dynmap.getMarkerAPI().createMarkerSet("myeconomy", "shops", null, false);
+            }
+
             markers.put(shop.getKey(), markerSet.createMarker(shop.getKey().toString(),
                     "Shop",
                     shop.getLocation().getWorld().getName(),

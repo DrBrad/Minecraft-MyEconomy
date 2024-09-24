@@ -134,6 +134,11 @@ public class ClaimHandler {
                     }
 
                     if(dynmap != null){
+                        markerSet = dynmap.getMarkerAPI().getMarkerSet("myeconomy");
+                        if(markerSet == null){
+                            markerSet = dynmap.getMarkerAPI().createMarkerSet("myeconomy", "claims", null, false);
+                        }
+
                         AreaMarker marker = markers.remove(key);
                         if(marker != null){
                             marker.deleteMarker();
@@ -167,6 +172,11 @@ public class ClaimHandler {
                     }
 
                     if(dynmap != null){
+                        markerSet = dynmap.getMarkerAPI().getMarkerSet("myeconomy");
+                        if(markerSet == null){
+                            markerSet = dynmap.getMarkerAPI().createMarkerSet("myeconomy", "claims", null, false);
+                        }
+
                         AreaMarker marker = markers.remove(key);
                         if(marker != null){
                             marker.deleteMarker();

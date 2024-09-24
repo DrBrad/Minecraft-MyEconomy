@@ -170,6 +170,7 @@ public class MyShop {
         this.entityType = entityType;
 
         key = UUID.randomUUID();
+        playerUUID = player.getUniqueId();
 
         merchant = Bukkit.createMerchant("Shop");
         stock = Bukkit.createInventory(null, 36, "Stock");
@@ -183,12 +184,16 @@ public class MyShop {
     }
 
     public void spawn(){
-        if(Bukkit.getServer().getEntity(entityUUID) != null){
-            System.out.println("ENTITY ALREADY EXISTS...");
-            return;
+        try{
+            if(Bukkit.getServer().getEntity(entityUUID) != null){
+                System.out.println("ENTITY ALREADY EXISTS...");
+                return;
+            }
+        }catch(Exception e){
         }
 
         entity = (LivingEntity) location.getWorld().spawnEntity(location, entityType);
+        entityUUID = entity.getUniqueId();
         if(entity instanceof Ageable){
             ((Ageable) entity).setAdult();
         }
@@ -269,12 +274,47 @@ public class MyShop {
 
             spawn();
 
+            merchant = Bukkit.createMerchant("Shop");
+
             File recipesFile = new File(shopFolder+File.separator+"recipes.ser");
             if(recipesFile.exists()){
                 DataInputStream in = new DataInputStream(new FileInputStream(recipesFile));
 
+                List<MerchantRecipe> recipes = new ArrayList<>();
 
+                while(in.available() > 0){
+                    byte[] b = new byte[in.readInt()];
+                    in.read(b);
+
+                    Material mat = Material.valueOf(new String(b));
+                    int amount = in.readInt();
+
+                    MerchantRecipe recipe = new MerchantRecipe(new ItemStack(mat, amount), 0);
+                    int ingredients = in.readInt();
+
+
+                    for(int i = 0; i < ingredients; i++){
+                        b = new byte[in.readInt()];
+                        in.read(b);
+
+                        mat = Material.valueOf(new String(b));
+                        amount = in.readInt();
+
+                        recipe.addIngredient(new ItemStack(mat, amount));
+                    }
+
+                    recipes.add(recipe);
+                }
+
+                merchant.setRecipes(recipes);
             }
+
+
+
+            stock = Bukkit.createInventory(null, 36, "Stock");
+            inventories.put(stock, this.key);
+            received = Bukkit.createInventory(null, 36, "Received");
+            inventories.put(received, this.key);
 
         }catch(Exception e){
             e.printStackTrace();
@@ -288,7 +328,7 @@ public class MyShop {
         }
 
         try{
-            File configFile = new File(shopFolder.getPath()+File.separator+"config.yml");
+            File configFile = new File(shopFolder.getPath()+File.separator+"data.yml");
             if(configFile.exists()){
                 OutputStream out = new FileOutputStream(configFile);
                 out.flush();
@@ -326,21 +366,21 @@ public class MyShop {
             DataOutputStream out = new DataOutputStream(new FileOutputStream(new File(shopFolder+File.separator+"recipes.ser")));
 
             for(MerchantRecipe recipe : merchant.getRecipes()){
-                for(ItemStack item : recipe.getIngredients()){
-                    byte[] b = item.getType().name().getBytes();
-                    out.writeInt(b.length);
-                    out.write(b);
-
-                    out.writeInt(item.getAmount());
-                }
-
-                out.write("|".getBytes());
-
                 byte[] b = recipe.getResult().getType().name().getBytes();
                 out.writeInt(b.length);
                 out.write(b);
 
                 out.writeInt(recipe.getResult().getAmount());
+
+                out.writeInt(recipe.getIngredients().size());
+
+                for(ItemStack item : recipe.getIngredients()){
+                    b = item.getType().name().getBytes();
+                    out.writeInt(b.length);
+                    out.write(b);
+
+                    out.writeInt(item.getAmount());
+                }
             }
 
             out.flush();
