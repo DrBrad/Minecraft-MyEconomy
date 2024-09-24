@@ -10,6 +10,7 @@ import org.bukkit.event.block.*;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.*;
+import org.bukkit.event.vehicle.VehicleDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantInventory;
 import org.bukkit.inventory.MerchantRecipe;
@@ -397,6 +398,39 @@ public class MyEventHandler implements Listener {
             if(!claim.getKey().equals(group.getKey())){
                 event.setCancelled(true);
             }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onVehicleDamageEvent(VehicleDamageEvent event){
+        Player player = null;
+
+        if(event.getAttacker() instanceof Player){
+            player = ((Player) event.getAttacker()).getPlayer();
+        }
+
+        if(event.getAttacker().getType() == EntityType.ARROW &&
+                ((Projectile) event.getAttacker()).getShooter() instanceof Player){
+            player = (Player) ((Projectile) event.getAttacker()).getShooter();
+        }
+
+        if(player == null){
+            return;
+        }
+
+        Claim claim = getClaim(event.getVehicle().getLocation().getChunk());
+        if(claim == null){
+            return;
+        }
+
+        MyGroup group = getPlayersGroup(player.getUniqueId());
+        if(group == null){
+            event.setCancelled(true);
+            return;
+        }
+
+        if(!claim.getKey().equals(group.getKey())){
+            event.setCancelled(true);
         }
     }
 

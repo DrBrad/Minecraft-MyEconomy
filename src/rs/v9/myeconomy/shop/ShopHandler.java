@@ -9,6 +9,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.UUID;
 
+import static rs.v9.myeconomy.Config.getMaxShops;
 import static rs.v9.myeconomy.Main.dynmap;
 import static rs.v9.myeconomy.Main.plugin;
 
@@ -146,6 +147,14 @@ public class ShopHandler {
 
     public static void removeTrader(Player player){
         trading.remove(player.getUniqueId());
+    }
+
+    public static boolean isPlayerShopCapped(Player player){
+        if(!playersShopsByName.containsKey(player.getUniqueId())){
+            return false;
+        }
+
+        return (getMaxShops()-playersShopsByName.get(player.getUniqueId()).size() <= 0);
     }
 
     public static boolean containsInventory(Inventory inventory){

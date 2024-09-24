@@ -16,8 +16,7 @@ import java.io.*;
 import java.util.*;
 
 import static rs.v9.myeconomy.Main.plugin;
-import static rs.v9.myeconomy.shop.ShopHandler.inventories;
-import static rs.v9.myeconomy.shop.ShopHandler.trading;
+import static rs.v9.myeconomy.shop.ShopHandler.*;
 
 public class MyShop {
 

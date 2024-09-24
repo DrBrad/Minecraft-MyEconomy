@@ -24,7 +24,6 @@ public class Main extends JavaPlugin {
     public static Plugin plugin;
     public static DynmapCommonAPI dynmap;
 
-    //limit ammount of shops per person...
     //disable minecart attack....
 
     @Override

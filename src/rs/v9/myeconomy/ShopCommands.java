@@ -15,6 +15,7 @@ import rs.v9.myeconomy.shop.MyShop;
 import java.util.ArrayList;
 import java.util.List;
 
+import static rs.v9.myeconomy.Config.isShops;
 import static rs.v9.myeconomy.claim.ClaimHandler.getClaim;
 import static rs.v9.myeconomy.group.GroupHandler.getPlayersGroup;
 import static rs.v9.myeconomy.handlers.MobHandler.getAllowedShops;
@@ -25,6 +26,11 @@ public class ShopCommands implements CommandExecutor, TabExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] args){
         if(commandSender instanceof Player){
+            if(!isShops()){
+                commandSender.sendMessage("§cShops are disabled.");
+                return true;
+            }
+
             if(args.length > 0){
                 String cmd = args[0].toLowerCase();
                 switch(cmd){
@@ -217,6 +223,11 @@ public class ShopCommands implements CommandExecutor, TabExecutor {
                 String name = args[1];
                 if(name.length() < 13 && name.length() > 1){
                     EntityType type = EntityType.valueOf(args[2].toUpperCase());
+
+                    if(isPlayerShopCapped(player)){
+                        player.sendMessage("§cYou have hit the max number of shops per player.");
+                        return true;
+                    }
 
                     MyGroup group = getPlayersGroup(player.getUniqueId());
                     Claim claim = getClaim(player.getLocation().getChunk());

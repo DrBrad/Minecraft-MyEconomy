@@ -27,12 +27,14 @@ public class Config {
             joinPower = 20,
             claimCost = 1,
             createWarpCost = 5,
+            maxShops = 6,
             XRayRadius = 2;
 
     private static boolean backTeleport = true,
             homeTeleport = true,
             groupHome = true,
             groupWarp = true,
+            shops = true,
             XRay = false;
 
     public Config(){
@@ -91,6 +93,9 @@ public class Config {
                 config.set("group.home", true);
                 config.set("group.warp", true);
                 config.set("group.ranks", new String[]{ "Member", "Recruit", "Admin", "Owner" });
+
+                config.set("shop.enabled", true);
+                config.set("shop.max-per-player", 6);
 
                 config.set("anti-xray.enabled", false);
                 config.set("anti-xray.radius", 2);
@@ -155,6 +160,14 @@ public class Config {
 
     public static String[] getRanks(){
         return ranks;
+    }
+
+    public static boolean isShops(){
+        return shops;
+    }
+
+    public static int getMaxShops(){
+        return maxShops;
     }
 
     public static boolean isXRay(){
