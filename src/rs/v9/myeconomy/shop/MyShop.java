@@ -235,7 +235,6 @@ public class MyShop {
         inventories.remove(stock);
         inventories.remove(received);
 
-        entity.setInvulnerable(false);
         entity.remove();
 
         File shopFolder = new File(plugin.getDataFolder()+File.separator+"shop"+File.separator+key.toString());
