@@ -473,7 +473,7 @@ public class MyEventHandler implements Listener {
 
         if(inClaim(chunk)){
             Claim claim = getClaim(chunk);
-            if(claim.getType() > 0){
+            if(claim != null && claim.getType() > 0){
                 event.setCancelled(true);
             }
         }
@@ -488,7 +488,7 @@ public class MyEventHandler implements Listener {
             if(inClaim(chunk)){
                 Claim claim = getClaim(chunk);
 
-                if(claim.getType() == 2){
+                if(claim != null && claim.getType() == 2){
                     event.setDamage(0.0F);
                     event.setCancelled(true);
                     if(event.getDamager() instanceof Player){
@@ -526,7 +526,7 @@ public class MyEventHandler implements Listener {
 
                 if(inClaim(chunk)){
                     Claim claim = getClaim(chunk);
-                    if(claim.getType() == 2){
+                    if(claim != null && claim.getType() == 2){
                         event.setCancelled(true);
                     }
                 }
@@ -542,7 +542,7 @@ public class MyEventHandler implements Listener {
 
             if(inClaim(chunk)){
                 Claim claim = getClaim(chunk);
-                if(claim.getType() == 2){
+                if(claim != null && claim.getType() == 2){
                     event.setCancelled(true);
                 }
             }
@@ -555,9 +555,30 @@ public class MyEventHandler implements Listener {
 
         if(inClaim(chunk)){
             Claim claim = getClaim(chunk);
-            if(claim.getType() > 0){
+            if(claim != null && claim.getType() > 0){
                 event.setCancelled(true);
+                event.getLocation().getWorld().spawnParticle(Particle.EXPLOSION, event.getLocation(), 3);
+                return;
             }
+        }
+
+        for(Block block : event.blockList()){
+            if(block.getType().equals(Material.AIR)){
+                continue;
+            }
+
+            Claim claim = getClaim(block.getChunk());
+            if(claim != null && claim.getType() > 0){
+                event.blockList().remove(block);
+
+                if(!event.isCancelled()){
+                    event.setCancelled(true);
+                    event.getLocation().getWorld().spawnParticle(Particle.EXPLOSION, event.getLocation(), 3);
+                }
+                continue;
+            }
+
+            block.setType(Material.AIR);
         }
     }
 
