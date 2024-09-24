@@ -569,8 +569,6 @@ public class MyEventHandler implements Listener {
 
             Claim claim = getClaim(block.getChunk());
             if(claim != null && claim.getType() > 0){
-                event.blockList().remove(block);
-
                 if(!event.isCancelled()){
                     event.setCancelled(true);
                     event.getLocation().getWorld().spawnParticle(Particle.EXPLOSION, event.getLocation(), 3);
