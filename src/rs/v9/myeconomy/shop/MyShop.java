@@ -26,7 +26,6 @@ public class MyShop {
     private Inventory stock, received;
     private EntityType entityType;
     private Location location;
-    private LivingEntity entity;
 
     public MyShop(){
     }
@@ -196,39 +195,36 @@ public class MyShop {
     }
 
     public void spawn(){
-        try{
-            entity = (LivingEntity) Bukkit.getServer().getEntity(entityUUID);
-            if(entity != null){
-                entityUUID = entity.getUniqueId();
-                return;
-            }
-        }catch(Exception e){
+        Entity entity = Bukkit.getServer().getEntity(entityUUID);
+        if(entity != null && entity.isValid()){
+            entityUUID = entity.getUniqueId();
+            return;
         }
 
-        entity = (LivingEntity) location.getWorld().spawnEntity(location, entityType);
-        entityUUID = entity.getUniqueId();
-        if(entity instanceof Ageable){
-            ((Ageable) entity).setAdult();
+        LivingEntity livingEntity = (LivingEntity) location.getWorld().spawnEntity(location, entityType);
+        entityUUID = livingEntity.getUniqueId();
+        if(livingEntity instanceof Ageable){
+            ((Ageable) livingEntity).setAdult();
         }
-        if(entity.getEquipment() != null){
-            entity.getEquipment().setHelmet(null);
-            entity.getEquipment().setChestplate(null);
-            entity.getEquipment().setLeggings(null);
-            entity.getEquipment().setBoots(null);
+        if(livingEntity.getEquipment() != null){
+            livingEntity.getEquipment().setHelmet(null);
+            livingEntity.getEquipment().setChestplate(null);
+            livingEntity.getEquipment().setLeggings(null);
+            livingEntity.getEquipment().setBoots(null);
         }
-        entity.setRemoveWhenFarAway(false);
-        entity.setCustomName(name);
-        entity.setCustomNameVisible(true);
-        entity.setInvulnerable(true);
-        entity.setPersistent(true);
-        entity.setVisualFire(false);
-        entity.setAI(false);
-        entity.setGravity(false);
-        entity.setCanPickupItems(false);
-        entity.setInvisible(false);
-        entity.setSilent(true);
-        entity.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(1.0);
-        entity.setFreezeTicks(0);
+        livingEntity.setRemoveWhenFarAway(false);
+        livingEntity.setCustomName(name);
+        livingEntity.setCustomNameVisible(true);
+        livingEntity.setInvulnerable(true);
+        livingEntity.setPersistent(true);
+        livingEntity.setVisualFire(false);
+        livingEntity.setAI(false);
+        livingEntity.setGravity(false);
+        livingEntity.setCanPickupItems(false);
+        livingEntity.setInvisible(false);
+        livingEntity.setSilent(true);
+        livingEntity.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(1.0);
+        livingEntity.setFreezeTicks(0);
         writeData();
     }
 
@@ -248,7 +244,10 @@ public class MyShop {
         inventories.remove(stock);
         inventories.remove(received);
 
-        entity.remove();
+        Entity entity = Bukkit.getServer().getEntity(entityUUID);
+        if(entity != null && entity.isValid()){
+            entity.remove();
+        }
 
         File shopFolder = new File(plugin.getDataFolder()+File.separator+"shop"+File.separator+key.toString());
         if(shopFolder.exists()){
