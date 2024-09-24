@@ -195,13 +195,16 @@ public class MyShop {
     }
 
     public void spawn(){
-        if(!location.getWorld().isChunkLoaded(location.getChunk())){
-            location.getWorld().loadChunk(location.getChunk());
-        }
+        if(entityUUID != null){
+            if(!location.getWorld().isChunkLoaded(location.getChunk())){
+                location.getChunk().load();
+            }
 
-        Entity entity = Bukkit.getServer().getEntity(entityUUID);
-        if(entity != null && entity.isValid()){
-            return;
+            for(Entity entity : location.getChunk().getEntities()){
+                if(entity.getUniqueId().equals(entityUUID)){
+                    return;
+                }
+            }
         }
 
         LivingEntity livingEntity = (LivingEntity) location.getWorld().spawnEntity(location, entityType);
