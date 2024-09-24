@@ -31,10 +31,6 @@ public class ShopHandler {
                 createShop(shop);
             }
         }
-
-        if(dynmap != null){
-            initDynmap();
-        }
     }
 
     public static void createShop(MyShop shop){
@@ -57,20 +53,13 @@ public class ShopHandler {
             }
 
             markers.put(shop.getKey(), markerSet.createMarker(shop.getKey().toString(),
-                    "Shop",
+                    "Shop - "+shop.getName(),
                     shop.getLocation().getWorld().getName(),
                     shop.getLocation().getX(),
                     shop.getLocation().getY(),
                     shop.getLocation().getZ(),
                     dynmap.getMarkerAPI().getMarkerIcon("building"),
                     false));
-        }
-    }
-
-    private void initDynmap(){
-        markerSet = dynmap.getMarkerAPI().getMarkerSet("myeconomy");
-        if(markerSet == null){
-            markerSet = dynmap.getMarkerAPI().createMarkerSet("myeconomy", "shops", null, false);
         }
     }
 
