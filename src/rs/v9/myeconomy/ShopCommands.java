@@ -80,7 +80,9 @@ public class ShopCommands implements CommandExecutor, TabExecutor {
                             switch(args[1]){
                                 case "add":
                                     for(Material mat : Material.values()){
-                                        tabComplete.add(mat.toString());
+                                        if(mat.name().startsWith(args[args.length-1].toUpperCase()) || args[args.length-1].equals("")){
+                                            tabComplete.add(mat.toString().toLowerCase());
+                                        }
                                     }
                                     break;
 
@@ -329,7 +331,7 @@ public class ShopCommands implements CommandExecutor, TabExecutor {
                         case "add":
                             if(args.length > 6){
                                 try{
-                                    shop.addTrade(new ItemStack(Material.valueOf(args[3]), Integer.parseInt(args[4])), new ItemStack(Material.valueOf(args[5]), Integer.parseInt(args[6])));
+                                    shop.addTrade(new ItemStack(Material.valueOf(args[3].toUpperCase()), Integer.parseInt(args[4])), new ItemStack(Material.valueOf(args[5].toUpperCase()), Integer.parseInt(args[6])));
                                     player.sendMessage("§7Added trade of §a"+args[3]+"§7 for §a"+args[5]);
                                 }catch(Exception e){
                                     e.printStackTrace();
