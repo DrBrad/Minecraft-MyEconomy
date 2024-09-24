@@ -22,6 +22,13 @@ import static rs.v9.myeconomy.handlers.GeneralHandler.*;
 
 public class MyCommands implements CommandExecutor, TabExecutor {
 
+    private String[] gamemodes = {
+            "survival",
+            "creative",
+            "adventure",
+            "spectator"
+    };
+
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] args){
         if(commandSender instanceof Player){
@@ -106,10 +113,11 @@ public class MyCommands implements CommandExecutor, TabExecutor {
                                 }
                             }
                         }else if(args.length == 1){
-                            tabComplete.add("SURVIVAL");
-                            tabComplete.add("CREATIVE");
-                            tabComplete.add("ADVENTURE");
-                            tabComplete.add("SPECTATOR");
+                            for(String gamemode : gamemodes){
+                                if(gamemode.startsWith(args[0].toLowerCase()) || args[0].equals("")){
+                                    tabComplete.add(gamemode);
+                                }
+                            }
                         }
                         break;
                 }
@@ -527,30 +535,40 @@ public class MyCommands implements CommandExecutor, TabExecutor {
                     Player receiver = Bukkit.getPlayer(args[1]);
 
                     if(receiver != null && receiver.isOnline()){
-                        if(mode.equals("survival") || mode.equals("0")){
-                            receiver.setGameMode(GameMode.SURVIVAL);
-                            player.sendMessage("§7You have changed §6"+receiver.getName()+"§7 gamemode to §aSURVIVAL§7 mode.");
-                            receiver.sendMessage("§6"+player.getName()+"§7 has changed your gamemode to §aSURVIVAL§7 mode.");
-                            //Bukkit.broadcastMessage("§6"+player.getName()+"§7 has changed §6"+receiver.getName()+"§7 gamemode to §aSURVIVAL§7 mode.");
+                        switch(mode){
+                            case "survival":
+                            case "0":
+                                receiver.setGameMode(GameMode.SURVIVAL);
+                                player.sendMessage("§7You have changed §6"+receiver.getName()+"§7 gamemode to §aSURVIVAL§7 mode.");
+                                receiver.sendMessage("§6"+player.getName()+"§7 has changed your gamemode to §aSURVIVAL§7 mode.");
+                                //Bukkit.broadcastMessage("§6"+player.getName()+"§7 has changed §6"+receiver.getName()+"§7 gamemode to §aSURVIVAL§7 mode.");
+                                break;
 
-                        }else if(mode.equals("creative") || mode.equals("1")){
-                            receiver.setGameMode(GameMode.CREATIVE);
-                            player.sendMessage("§7You have changed §6"+receiver.getName()+"§7 gamemode to §aCREATIVE§7 mode.");
-                            receiver.sendMessage("§6"+player.getName()+"§7 has changed your gamemode to §aCREATIVE§7 mode.");
-                            //Bukkit.broadcastMessage("§6"+player.getName()+"§7 has changed §6"+receiver.getName()+"§7 gamemode to §aCREATIVE§7 mode.");
+                            case "creative":
+                            case "1":
+                                receiver.setGameMode(GameMode.CREATIVE);
+                                player.sendMessage("§7You have changed §6"+receiver.getName()+"§7 gamemode to §aCREATIVE§7 mode.");
+                                receiver.sendMessage("§6"+player.getName()+"§7 has changed your gamemode to §aCREATIVE§7 mode.");
+                                //Bukkit.broadcastMessage("§6"+player.getName()+"§7 has changed §6"+receiver.getName()+"§7 gamemode to §aCREATIVE§7 mode.");
+                                break;
 
-                        }else if(mode.equals("adventure") || mode.equals("2")){
-                            receiver.setGameMode(GameMode.ADVENTURE);
-                            player.sendMessage("§7You have changed §6"+receiver.getName()+"§7 gamemode to §aADVENTURE§7 mode.");
-                            receiver.sendMessage("§6"+player.getName()+"§7 has changed your gamemode to §aADVENTURE§7 mode.");
-                            //Bukkit.broadcastMessage("§6"+player.getName()+"§7 has changed §6"+receiver.getName()+"§7 gamemode to §aADVENTURE§7 mode.");
+                            case "adventure":
+                            case "2":
+                                receiver.setGameMode(GameMode.ADVENTURE);
+                                player.sendMessage("§7You have changed §6"+receiver.getName()+"§7 gamemode to §aADVENTURE§7 mode.");
+                                receiver.sendMessage("§6"+player.getName()+"§7 has changed your gamemode to §aADVENTURE§7 mode.");
+                                //Bukkit.broadcastMessage("§6"+player.getName()+"§7 has changed §6"+receiver.getName()+"§7 gamemode to §aADVENTURE§7 mode.");
+                                break;
 
-                        }else if(mode.equals("spectator") || mode.equals("3")){
-                            receiver.setGameMode(GameMode.SPECTATOR);
-                            player.sendMessage("§7You have changed §6"+receiver.getName()+"§7 gamemode to §aSPECTATOR§7 mode.");
-                            receiver.sendMessage("§6"+player.getName()+"§7 has changed your gamemode to §aSPECTATOR§7 mode.");
-                            //Bukkit.broadcastMessage("§6"+player.getName()+"§7 has changed §6"+receiver.getName()+"§7 gamemode to §aSPECTATOR§7 mode.");
+                            case "spectator":
+                            case "3":
+                                receiver.setGameMode(GameMode.SPECTATOR);
+                                player.sendMessage("§7You have changed §6"+receiver.getName()+"§7 gamemode to §aSPECTATOR§7 mode.");
+                                receiver.sendMessage("§6"+player.getName()+"§7 has changed your gamemode to §aSPECTATOR§7 mode.");
+                                //Bukkit.broadcastMessage("§6"+player.getName()+"§7 has changed §6"+receiver.getName()+"§7 gamemode to §aSPECTATOR§7 mode.");
+                                break;
                         }
+
                     }else{
                         player.sendMessage("§cPlayer specified isn't online.");
                     }
