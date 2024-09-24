@@ -450,12 +450,14 @@ public class MyEventHandler implements Listener {
 
     @EventHandler
     public void onPlayerInteractEntity(PlayerInteractEntityEvent event){
-        LivingEntity entity = (LivingEntity) event.getRightClicked();
+        if(event instanceof LivingEntity){
+            LivingEntity entity = (LivingEntity) event.getRightClicked();
 
-        MyShop shop = getShopByEntityUUID(entity.getUniqueId());
-        if(shop != null){
-            shop.openMerchant(event.getPlayer());
-            event.setCancelled(true);
+            MyShop shop = getShopByEntityUUID(entity.getUniqueId());
+            if(shop != null){
+                shop.openMerchant(event.getPlayer());
+                event.setCancelled(true);
+            }
         }
     }
 

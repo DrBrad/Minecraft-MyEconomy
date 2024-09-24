@@ -348,6 +348,26 @@ permissions:
   g.version:
     default: true
     description: Get the version of this plugin.
+
+  s help:
+    default: true
+    description: List of shop commands
+  s ?:
+    default: true
+    description: List of shop commands
+  s create:
+    default: true
+    description: Create a shop.
+  s remove:
+    default: true
+    description: Remove a shop.
+  s open:
+    default: true
+    description: Open stock and received items.
+  s trade:
+    default: true
+    description: Add or remove a trade from shop.
+
   warp:
     default: true
     description: Warp to a location.
