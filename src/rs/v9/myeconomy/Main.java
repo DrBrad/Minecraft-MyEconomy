@@ -24,8 +24,6 @@ public class Main extends JavaPlugin {
     public static Plugin plugin;
     public static DynmapCommonAPI dynmap;
 
-    //disable minecart attack....
-
     @Override
     public void onLoad(){
         plugin = this;
