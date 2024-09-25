@@ -358,8 +358,7 @@ public class ClaimHandler {
     }
 
     public static boolean inClaim(Chunk chunk){
-        String key = getChunkName(chunk);
-        return claims.containsKey(key);
+        return claims.containsKey(getChunkName(chunk));
     }
 
     public static Claim getClaim(Chunk chunk){

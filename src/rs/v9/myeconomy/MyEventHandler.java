@@ -552,7 +552,7 @@ public class MyEventHandler implements Listener {
 
         if(inClaim(chunk)){
             Claim claim = getClaim(chunk);
-            if(claim != null && claim.getType() > 0){
+            if(claim != null){
                 List<Block> blocks = new ArrayList<>(event.blockList());
                 event.blockList().clear();
                 regenBlocks(event.getLocation(), blocks);
@@ -569,10 +569,12 @@ public class MyEventHandler implements Listener {
                 continue;
             }
 
-            Claim claim = getClaim(block.getChunk());
-            if(claim != null){
-                regen.add(block);
-                continue;
+            if(inClaim(chunk)){
+                Claim claim = getClaim(block.getChunk());
+                if(claim != null){
+                    regen.add(block);
+                    continue;
+                }
             }
 
             event.blockList().add(block);
