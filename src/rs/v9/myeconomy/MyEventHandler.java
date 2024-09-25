@@ -1,6 +1,7 @@
 package rs.v9.myeconomy;
 
 import org.bukkit.*;
+import org.bukkit.Color;
 import org.bukkit.block.Block;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.enchantments.Enchantment;
@@ -8,6 +9,7 @@ import org.bukkit.entity.*;
 import org.bukkit.event.*;
 import org.bukkit.event.block.*;
 import org.bukkit.event.entity.*;
+import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.*;
 import org.bukkit.event.vehicle.VehicleDamageEvent;
@@ -19,7 +21,9 @@ import rs.v9.myeconomy.group.MyGroup;
 import rs.v9.myeconomy.group.Zone;
 import rs.v9.myeconomy.shop.MyShop;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 import static rs.v9.myeconomy.Config.*;
 import static rs.v9.myeconomy.Main.plugin;
@@ -362,10 +366,21 @@ public class MyEventHandler implements Listener {
                 event.getEntity() instanceof Golem ||
                 event.getEntity() instanceof Snowman ||
                 event.getEntity() instanceof Breedable ||
-                event.getEntity() instanceof ItemFrame ||
                 event.getEntity() instanceof Minecart ||
                 event.getEntity() instanceof Boat ||
+                event.getEntity() instanceof Frame ||
                 event.getEntity() instanceof Painting){
+
+            if(event.getDamager() instanceof TNTPrimed){
+                if(inClaim(event.getEntity().getLocation().getChunk())){
+                    Claim claim = getClaim(event.getEntity().getLocation().getChunk());
+                    if(claim != null){
+                        event.setCancelled(true);
+                        return;
+                    }
+                }
+            }
+
             Player player = null;
 
             if(event.getDamager() instanceof Player){
@@ -400,6 +415,15 @@ public class MyEventHandler implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onVehicleDamageEvent(VehicleDamageEvent event){
+        if(event.getAttacker() instanceof TNTPrimed){
+            if(inClaim(event.getVehicle().getLocation().getChunk())){
+                Claim claim = getClaim(event.getVehicle().getLocation().getChunk());
+                if(claim != null){
+                    event.setCancelled(true);
+                }
+            }
+        }
+
         Player player = null;
 
         if(event.getAttacker() instanceof Player){
@@ -435,6 +459,30 @@ public class MyEventHandler implements Listener {
     public void onEntityDamage(EntityDamageEvent event){
         if(event.getEntity().isInvulnerable()){
             event.setCancelled(true);
+        }
+
+        switch(event.getCause()){
+            case BLOCK_EXPLOSION:
+            case ENTITY_EXPLOSION:
+                if(inClaim(event.getEntity().getLocation().getChunk())){
+                    Claim claim = getClaim(event.getEntity().getLocation().getChunk());
+                    if(claim != null){
+                        event.setCancelled(true);
+                    }
+                }
+                break;
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onHangingBreak(HangingBreakEvent event){
+        if(event.getCause() == HangingBreakEvent.RemoveCause.EXPLOSION){
+            if(inClaim(event.getEntity().getLocation().getChunk())){
+                Claim claim = getClaim(event.getEntity().getLocation().getChunk());
+                if(claim != null){
+                    event.setCancelled(true);
+                }
+            }
         }
     }
 
