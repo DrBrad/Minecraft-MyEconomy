@@ -24,7 +24,10 @@ public class Main extends JavaPlugin {
     public static Plugin plugin;
     public static DynmapCommonAPI dynmap;
 
-    //could trades be messed up if you swap between trades when max uses is capped?
+    //AFK marker for tablist
+    //modify label from recruit etc to using colors of crown emoji
+    //afk bot system
+    //allow TNT explosions as flag in claims
 
     @Override
     public void onLoad(){
