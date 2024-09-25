@@ -368,8 +368,7 @@ public class MyEventHandler implements Listener {
                 event.getEntity() instanceof Breedable ||
                 event.getEntity() instanceof Minecart ||
                 event.getEntity() instanceof Boat ||
-                event.getEntity() instanceof Frame ||
-                event.getEntity() instanceof Painting){
+                event.getEntity() instanceof Hanging){
 
             if(event.getDamager() instanceof TNTPrimed){
                 if(inClaim(event.getEntity().getLocation().getChunk())){
