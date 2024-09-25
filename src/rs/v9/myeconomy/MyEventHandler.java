@@ -616,7 +616,7 @@ public class MyEventHandler implements Listener {
                 continue;
             }
 
-            if(inClaim(chunk)){
+            if(inClaim(block.getChunk())){
                 Claim claim = getClaim(block.getChunk());
                 if(claim != null){
                     regen.add(block);
