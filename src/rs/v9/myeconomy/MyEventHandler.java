@@ -13,6 +13,7 @@ import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.*;
 import org.bukkit.event.vehicle.VehicleDamageEvent;
+import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantInventory;
 import org.bukkit.inventory.MerchantRecipe;
@@ -42,7 +43,6 @@ import static rs.v9.myeconomy.shop.ShopHandler.*;
 public class MyEventHandler implements Listener {
 
     private static HashMap<Player, UUID> enteredClaim = new HashMap<>();
-    private HashMap<UUID, ArrayList<Location>> xray = new HashMap<>();
     private Random random = new Random();
 
     @EventHandler
@@ -84,10 +84,6 @@ public class MyEventHandler implements Listener {
         }
 
         setPlayerCooldown(event.getPlayer().getUniqueId());
-
-        if(xray.containsKey(event.getPlayer().getUniqueId())){
-            xray.remove(event.getPlayer().getUniqueId());
-        }
 
         removeTrader(event.getPlayer());
     }
@@ -346,14 +342,6 @@ public class MyEventHandler implements Listener {
                     event.setCancelled(true);
                     event.getPlayer().sendMessage("§cYou cannot break blocks in other groups claims.");
                     return;
-                }
-            }
-        }
-
-        if(isXRay()){
-            if(!event.isCancelled()){
-                if(xray.containsKey(event.getPlayer().getUniqueId())){
-                    isNextToOre(event.getPlayer(), event.getBlock());
                 }
             }
         }
@@ -740,124 +728,6 @@ public class MyEventHandler implements Listener {
         }else if(key != null){
             enteredClaim.put(event.getPlayer(), null);
             event.getPlayer().sendTitle("§2Wilderness", "", 0, 60, 0);
-        }
-
-        if(isXRay()){
-            antiXRay(event.getPlayer(), event.getPlayer().getLocation().getChunk());
-        }
-    }
-
-    public void antiXRay(Player player, Chunk centerChunk){
-        if(xray.containsKey(player.getUniqueId())){
-            int size = xray.get(player.getUniqueId()).size();
-            if(size > 0){
-                for(int i = size; i > 0; i--){
-                    if(xray.get(player.getUniqueId()).size() > i){
-                        Location location = xray.get(player.getUniqueId()).get(i);
-                        if(location.getWorld() == centerChunk.getWorld()){
-                            if(player.getLocation().distance(location) > 100){
-                                xray.get(player.getUniqueId()).remove(i);
-                            }
-                        }else{
-                            xray.get(player.getUniqueId()).remove(i);
-                        }
-                    }
-                }
-            }
-        }else{
-            xray.put(player.getUniqueId(), new ArrayList<>());
-        }
-
-        ArrayList<Chunk> chunks = new ArrayList<>();
-
-        for(int x = -getXRayRadius(); x < getXRayRadius()+1; x++){
-            for(int z = -getXRayRadius(); z < getXRayRadius()+1; z++){
-                chunks.add(centerChunk.getBlock(0, 0, 0).getLocation().add(x*16, 0, z*16).getChunk());
-            }
-        }
-
-        List<Material> xrayBlocks = getXRayBlocks();
-
-        for(Chunk chunk : chunks){
-            if(!xray.get(player.getUniqueId()).contains(chunk.getBlock(0, 0, 0).getLocation())){
-                if(!xray.get(player.getUniqueId()).contains(chunk.getBlock(0, 0, 0).getLocation())){
-                    xray.get(player.getUniqueId()).add(chunk.getBlock(0, 0, 0).getLocation());
-                }
-
-                for(int x = 0; x < 16; x++){
-                    for(int z = 0; z < 16; z++){
-                        int height = chunk.getWorld().getHighestBlockAt(
-                                (int)chunk.getBlock(x, 0, z).getLocation().getX(),
-                                (int)chunk.getBlock(x, 0, z).getLocation().getZ()).getY();
-                        for(int y = chunk.getWorld().getMinHeight(); y < height; y++){
-                            Block block = chunk.getBlock(x, y, z);
-                            if(xrayBlocks.contains(block.getType())){
-                                if(!isOreExposed(block)){
-                                    player.sendBlockChange(block.getLocation(), Material.STONE.createBlockData());
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private boolean isOreExposed(Block block){
-        List<Material> air = getAir();
-
-        if(air.contains(block.getLocation().getWorld().getBlockAt(block.getLocation().add(1, 0, 0)).getType())){
-            return true;
-        }
-        if(air.contains(block.getLocation().getWorld().getBlockAt(block.getLocation().subtract(1, 0, 0)).getType())){
-            return true;
-        }
-
-        if(air.contains(block.getLocation().getWorld().getBlockAt(block.getLocation().add(0, 1, 0)).getType())){
-            return true;
-        }
-        if(air.contains(block.getLocation().getWorld().getBlockAt(block.getLocation().subtract(0, 1, 0)).getType())){
-            return true;
-        }
-
-        if(air.contains(block.getLocation().getWorld().getBlockAt(block.getLocation().add(0, 0, 1)).getType())){
-            return true;
-        }
-        if(air.contains(block.getLocation().getWorld().getBlockAt(block.getLocation().subtract(0, 0, 1)).getType())){
-            return true;
-        }
-
-        return false;
-    }
-
-    private void isNextToOre(Player player, Block block){
-        List<Material> ores = getXRayBlocks();
-
-        Block sideBlock = block.getLocation().getWorld().getBlockAt(block.getLocation().add(1, 0, 0));
-        if(ores.contains(sideBlock.getType())){
-            player.sendBlockChange(sideBlock.getLocation(), sideBlock.getBlockData());
-        }
-        sideBlock = block.getLocation().getWorld().getBlockAt(block.getLocation().subtract(1, 0, 0));
-        if(ores.contains(sideBlock.getType())){
-            player.sendBlockChange(sideBlock.getLocation(), sideBlock.getBlockData());
-        }
-
-        sideBlock = block.getLocation().getWorld().getBlockAt(block.getLocation().add(0, 1, 0));
-        if(ores.contains(sideBlock.getType())){
-            player.sendBlockChange(sideBlock.getLocation(), sideBlock.getBlockData());
-        }
-        sideBlock = block.getLocation().getWorld().getBlockAt(block.getLocation().subtract(0, 1, 0));
-        if(ores.contains(sideBlock.getType())){
-            player.sendBlockChange(sideBlock.getLocation(), sideBlock.getBlockData());
-        }
-
-        sideBlock = block.getLocation().getWorld().getBlockAt(block.getLocation().add(0, 0, 1));
-        if(ores.contains(sideBlock.getType())){
-            player.sendBlockChange(sideBlock.getLocation(), sideBlock.getBlockData());
-        }
-        sideBlock = block.getLocation().getWorld().getBlockAt(block.getLocation().subtract(0, 0, 1));
-        if(ores.contains(sideBlock.getType())){
-            player.sendBlockChange(sideBlock.getLocation(), sideBlock.getBlockData());
         }
     }
 

@@ -27,15 +27,13 @@ public class Config {
             joinPower = 20,
             claimCost = 1,
             createWarpCost = 5,
-            maxShops = 6,
-            XRayRadius = 2;
+            maxShops = 6;
 
     private static boolean backTeleport = true,
             homeTeleport = true,
             groupHome = true,
             groupWarp = true,
-            shops = true,
-            XRay = false;
+            shops = true;
 
     public Config(){
         if(!plugin.getDataFolder().exists()){
@@ -58,9 +56,6 @@ public class Config {
                 groupHome = config.getBoolean("group.home");
                 groupWarp = config.getBoolean("group.warp");
                 ranks = config.getStringList("group.ranks").toArray(new String[0]);
-
-                XRay = config.getBoolean("anti-xray.enabled");
-                XRayRadius = config.getInt("anti-xray.radius");
 
                 if(config.contains("spawn")){
                     spawn = new Location(Bukkit.getWorld(config.getString("spawn.world")),
@@ -96,9 +91,6 @@ public class Config {
 
                 config.set("shop.enabled", true);
                 config.set("shop.max-per-player", 6);
-
-                config.set("anti-xray.enabled", false);
-                config.set("anti-xray.radius", 2);
 
                 config.save(configFile);
             }
@@ -168,14 +160,6 @@ public class Config {
 
     public static int getMaxShops(){
         return maxShops;
-    }
-
-    public static boolean isXRay(){
-        return XRay;
-    }
-
-    public static int getXRayRadius(){
-        return XRayRadius;
     }
 
     public static void setSpawn(Location location){
