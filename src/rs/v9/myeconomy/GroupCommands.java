@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 import rs.v9.myeconomy.claim.Claim;
+import rs.v9.myeconomy.claim.Flags;
 import rs.v9.myeconomy.group.MyGroup;
 
 import java.util.ArrayList;
@@ -124,6 +125,12 @@ public class GroupCommands implements CommandExecutor, TabExecutor {
                     case "buypower":
                         return buyPower(((Player) commandSender), args);
 
+                    case "setflag":
+                        return setFlag(((Player) commandSender), args);
+
+                    case "flags":
+                        return getFlags((Player) commandSender);
+
                     case "version":
                         commandSender.sendMessage("§7MyEconomy version §c"+plugin.getDescription().getVersion()+"§7 by DrBrad.");
                         return true;
@@ -222,6 +229,19 @@ public class GroupCommands implements CommandExecutor, TabExecutor {
                             }
                             break;
 
+                        case "setflag":
+                            if(args.length == 3){
+                                for(Flags flag : Flags.values()){
+                                    if(flag.name().startsWith(args[1].toUpperCase()) || args[1].equals("")){
+                                        tabComplete.add(flag.name().toLowerCase());
+                                    }
+                                }
+                            }else if(args.length == 2){
+                                tabComplete.add("add");
+                                tabComplete.add("remove");
+                            }
+                            break;
+
                         case "claim":
                             tabComplete.add("safezone");
                             tabComplete.add("pvpzone");
@@ -273,6 +293,8 @@ public class GroupCommands implements CommandExecutor, TabExecutor {
                     tabComplete.add("rank");
                     tabComplete.add("setpower");
                     tabComplete.add("buypower");
+                    tabComplete.add("setflag");
+                    tabComplete.add("flags");
                     tabComplete.add("version");
                 }
 
@@ -328,6 +350,8 @@ public class GroupCommands implements CommandExecutor, TabExecutor {
                 }else if(args[1].equals("5")){
                     player.sendMessage("§c------- §fGroup commands (5/5) §c-------");
                     player.sendMessage("§c/g buypower: §7Buy power for diamond, hold the diamond in your hand.");
+                    player.sendMessage("§c/g setflag: §7Set flags for claim.");
+                    player.sendMessage("§c/g flags: §7Get a list of flags for claim.");
                     player.sendMessage("§c/g version: §7Get the version of this plugin.");
                     return true;
                 }
@@ -1109,6 +1133,15 @@ public class GroupCommands implements CommandExecutor, TabExecutor {
             player.sendMessage("§cYou don't have permission to perform this command.");
         }
         return true;
+    }
+
+    private boolean setFlag(Player player, String[] args){
+        return false;
+    }
+
+    private boolean getFlags(Player player){
+
+        return false;
     }
 
     public boolean warp(Player player, String[] args){

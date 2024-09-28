@@ -165,6 +165,14 @@ commands:
     description: Buy power for diamond, hold the diamond in your hand.
     usage: |
       /g buypower
+  g setflag:
+    description: Set flags for the claim.
+    usage: |
+      /g setflag
+  g flags:
+    description: Get a list of flags for claim.
+    usage: |
+      /g flags
   g version:
     description: Get the version of this plugin.
     usage: |
@@ -257,94 +265,100 @@ commands:
 permissions:
   g.admin:
     default: false
-    description: Edit all claims and perform any faction command
+    description: Edit all claims and perform any group command
   g.help:
     default: true
-    description: List of faction commands
+    description: List of group commands
   g.create:
     default: true
-    description: List of faction commands
+    description: List of group commands
   g.invite:
     default: true
-    description: Invites player to faction.
+    description: Invites player to group.
   g.join:
     default: true
-    description: Join faction from invite.
+    description: Join group from invite.
   g.leave:
     default: true
-    description: Leave your faction.
+    description: Leave your group.
   g.remove:
     default: true
-    description: Remove player from your faction.
+    description: Remove player from your group.
   g.promote:
     default: true
-    description: Promote player in faction.
+    description: Promote player in group.
   g.demote:
     default: true
-    description: Demote player in faction.
+    description: Demote player in group.
   g.disband:
     default: true
-    description: Deletes your faction.
+    description: Deletes your group.
   g.claim:
     default: true
-    description: Claim a chunk for your faction.
+    description: Claim a chunk for your group.
   g.unclaim:
     default: true
-    description: Removes claim from your faction.
+    description: Removes claim from your group.
   g.autoclaim:
     default: true
-    description: Automatically claim a chunk for your faction.
+    description: Automatically claim a chunk for your group.
   g.autounclaim:
     default: true
-    description: Automatically removes claim from your faction.
+    description: Automatically removes claim from your group.
   g.home:
     default: true
-    description: Teleport to your factions home.
+    description: Teleport to your groups home.
   g.sethome:
     default: true
-    description: Set your factions home.
+    description: Set your groups home.
   g.buypower:
     default: true
     description: Buy power for diamond, hold the diamond in your hand.
   g.warp:
     default: true
-    description: Teleport to one of your factions warps.
+    description: Teleport to one of your groups warps.
   g.warps:
     default: true
-    description: Lists all warps for your faction.
+    description: Lists all warps for your group.
   g.setwarp:
     default: true
-    description: Set a warp for your faction.
+    description: Set a warp for your group.
   g.delwarp:
     default: true
-    description: Removes a warp from your faction.
+    description: Removes a warp from your group.
   g.power:
     default: true
-    description: Check yours or another factions power.
+    description: Check yours or another groups power.
   g.list:
     default: true
-    description: List of all of the factions.
+    description: List of all of the groups.
   g.rename:
     default: true
-    description: Rename your faction something else.
+    description: Rename your group something else.
   g.chat:
     default: true
-    description: Chat with only faction members or globally.
+    description: Chat with only group members or globally.
   g.map:
     default: true
-    description: See all faction claims chunks visually.
+    description: See all group claims chunks visually.
   g.rank:
     default: true
-    description: Get your rank in faction.
+    description: Get your rank in group.
   g.chown:
     default: true
-    description: Change faction ownership.
+    description: Change group ownership.
   g.setcolor:
     default: true
-    description: Set factions color.
+    description: Set groups color.
   g.setdesc:
     default: true
-    description: Set factions description.
+    description: Set groups description.
+  g.setflag:
+    default: true
+    description: Set flags for the claim.
+  g.flags:
+    default: true
+    description: Get a list of flags for claim.
   g.version:
     default: true
     description: Get the version of this plugin.
