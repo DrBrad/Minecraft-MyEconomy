@@ -25,7 +25,6 @@ public class Main extends JavaPlugin {
     public static DynmapCommonAPI dynmap;
 
     //AFK marker for tablist
-    //modify label from recruit etc to using colors of crown emoji
     //afk bot system
     //allow TNT explosions as flag in claims
 
