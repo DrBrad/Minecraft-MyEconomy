@@ -1136,12 +1136,84 @@ public class GroupCommands implements CommandExecutor, TabExecutor {
     }
 
     private boolean setFlag(Player player, String[] args){
-        return false;
+        if(player.hasPermission("g.setflag")){
+            if(args.length > 2){
+                MyGroup group = getPlayersGroup(player.getUniqueId());
+                if(group != null){
+                    Claim claim = getClaim(player.getLocation().getChunk());
+                    if(claim == null){
+                        player.sendMessage("§cYou are not on a claimed chunk.");
+                        return true;
+                    }
+
+                    String type = args[1];
+                    String flag = args[2].toUpperCase();
+
+                    switch(type){
+                        case "add":
+                            if(claim.addFlag(Flags.valueOf(flag))){
+                                player.sendMessage("§7You have added the flag: §a"+flag+"§7.");
+                                modifiedClaim(claim);
+                                return true;
+                            }
+                            break;
+
+                        case "remove":
+                            if(claim.removeFlag(Flags.valueOf(flag))){
+                                player.sendMessage("§7You have removed the flag: §c"+flag+"§7.");
+                                modifiedClaim(claim);
+                                return true;
+                            }
+                            break;
+                    }
+
+                    player.sendMessage("§cUnable to set flag.");
+                    return true;
+
+                }else{
+                    player.sendMessage("§cYou are not a part of a group.");
+                }
+                return true;
+            }else{
+                player.sendMessage("§cPlease specify a warp name.");
+            }
+            return false;
+        }else{
+            player.sendMessage("§cYou don't have permission to perform this command.");
+            return true;
+        }
     }
 
     private boolean getFlags(Player player){
+        if(player.hasPermission("g.setflag")){
+            Claim claim = getClaim(player.getLocation().getChunk());
+            if(claim == null){
+                player.sendMessage("§cYou are not on a claimed chunk.");
+                return true;
+            }
 
-        return false;
+            if(claim.getTotalFlags() > 0){
+                StringBuilder builder = new StringBuilder();
+                List<Flags> flags = claim.getFlags();
+                builder.append(flags.get(0).name());
+
+                if(flags.size() > 1){
+                    for(int i = 1; i < flags.size(); i++){
+                        builder.append("§7, §a"+flags.get(i).name());
+                    }
+                }
+
+                player.sendMessage("§7This claim has the following flags: §a"+builder.toString()+"§7.");
+                return true;
+            }
+
+            player.sendMessage("§cThis claim has no flags.");
+            return true;
+
+        }else{
+            player.sendMessage("§cYou don't have permission to perform this command.");
+            return true;
+        }
     }
 
     public boolean warp(Player player, String[] args){

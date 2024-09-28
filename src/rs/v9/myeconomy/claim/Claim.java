@@ -40,12 +40,13 @@ public class Claim implements Serializable {
         return flags;
     }
 
-    public void addFlag(Flags flag){
-        flags.add(flag);
+    public boolean addFlag(Flags flag){
+        return flags.add(flag);
     }
 
-    public void removeFlag(Flags flag){
+    public boolean removeFlag(Flags flag){
         flags.remove(flag);
+        return true;
     }
 
     public boolean hasFlag(Flags flag){

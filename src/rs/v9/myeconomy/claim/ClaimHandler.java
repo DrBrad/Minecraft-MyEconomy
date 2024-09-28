@@ -426,6 +426,9 @@ public class ClaimHandler {
         }
     }
 
+    public static void modifiedClaim(Claim claim){
+        write();
+    }
 
 
 
