@@ -13,16 +13,15 @@ import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.*;
 import org.bukkit.event.vehicle.VehicleDamageEvent;
-import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantInventory;
 import org.bukkit.inventory.MerchantRecipe;
 import rs.v9.myeconomy.claim.Claim;
+import rs.v9.myeconomy.claim.Flags;
 import rs.v9.myeconomy.group.MyGroup;
 import rs.v9.myeconomy.group.Zone;
 import rs.v9.myeconomy.shop.MyShop;
 
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 
@@ -230,6 +229,10 @@ public class MyEventHandler implements Listener {
             Chunk chunk = block.getChunk();
             if(inClaim(chunk)){
                 Claim claim = getClaim(chunk);
+                if(claim.hasFlag(Flags.NO_CHEST_PROTECTION)){
+                    return;
+                }
+
                 if(claim.getType() > 0){
                     if(!getSafeNoEdit().contains(block.getType())){
                         if(event.getPlayer().isOp()){
@@ -361,7 +364,7 @@ public class MyEventHandler implements Listener {
             if(event.getDamager() instanceof TNTPrimed){
                 if(inClaim(event.getEntity().getLocation().getChunk())){
                     Claim claim = getClaim(event.getEntity().getLocation().getChunk());
-                    if(claim != null){
+                    if(claim != null && !claim.hasFlag(Flags.NO_ENTITY_PROTECTION)){
                         event.setCancelled(true);
                         return;
                     }
@@ -384,7 +387,7 @@ public class MyEventHandler implements Listener {
             }
 
             Claim claim = getClaim(event.getEntity().getLocation().getChunk());
-            if(claim == null){
+            if(claim == null || claim.hasFlag(Flags.NO_ENTITY_PROTECTION)){
                 return;
             }
 
@@ -405,7 +408,7 @@ public class MyEventHandler implements Listener {
         if(event.getAttacker() instanceof TNTPrimed){
             if(inClaim(event.getVehicle().getLocation().getChunk())){
                 Claim claim = getClaim(event.getVehicle().getLocation().getChunk());
-                if(claim != null){
+                if(claim != null && !claim.hasFlag(Flags.NO_ENTITY_PROTECTION)){
                     event.setCancelled(true);
                 }
             }
@@ -427,7 +430,7 @@ public class MyEventHandler implements Listener {
         }
 
         Claim claim = getClaim(event.getVehicle().getLocation().getChunk());
-        if(claim == null){
+        if(claim == null || claim.hasFlag(Flags.NO_ENTITY_PROTECTION)){
             return;
         }
 
@@ -453,7 +456,7 @@ public class MyEventHandler implements Listener {
             case ENTITY_EXPLOSION:
                 if(inClaim(event.getEntity().getLocation().getChunk())){
                     Claim claim = getClaim(event.getEntity().getLocation().getChunk());
-                    if(claim != null){
+                    if(claim != null && !claim.hasFlag(Flags.NO_ENTITY_PROTECTION)){
                         event.setCancelled(true);
                     }
                 }
@@ -489,6 +492,7 @@ public class MyEventHandler implements Listener {
             if(shop != null){
                 shop.openMerchant(event.getPlayer());
                 event.setCancelled(true);
+                event.getPlayer().sendMessage("§cAnother player is currently trading, please wait until they are done.");
             }
         }
     }
@@ -587,7 +591,7 @@ public class MyEventHandler implements Listener {
 
         if(inClaim(chunk)){
             Claim claim = getClaim(chunk);
-            if(claim != null){
+            if(claim != null && !claim.hasFlag(Flags.EXPLOSION_ALLOWED)){
                 List<Block> blocks = new ArrayList<>(event.blockList());
                 event.blockList().clear();
                 regenBlocks(event.getLocation(), blocks);
@@ -606,7 +610,7 @@ public class MyEventHandler implements Listener {
 
             if(inClaim(block.getChunk())){
                 Claim claim = getClaim(block.getChunk());
-                if(claim != null){
+                if(claim != null && !claim.hasFlag(Flags.EXPLOSION_ALLOWED)){
                     regen.add(block);
                     continue;
                 }

@@ -7,6 +7,18 @@ public enum Flags {
         public byte getByteValue(){
             return 0x01;
         }
+    },
+    NO_CHEST_PROTECTION {
+        @Override
+        public byte getByteValue(){
+            return 0x02;
+        }
+    },
+    NO_ENTITY_PROTECTION {
+        @Override
+        public byte getByteValue(){
+            return 0x03;
+        }
     }, NONE;
 
     public byte getByteValue(){
