@@ -232,7 +232,7 @@ public class GroupCommands implements CommandExecutor, TabExecutor {
                         case "setflag":
                             if(args.length == 3){
                                 for(Flags flag : Flags.values()){
-                                    if(flag.name().startsWith(args[1].toUpperCase()) || args[1].equals("")){
+                                    if(flag.name().startsWith(args[2].toUpperCase()) || args[2].equals("")){
                                         tabComplete.add(flag.name().toLowerCase());
                                     }
                                 }
@@ -1147,28 +1147,32 @@ public class GroupCommands implements CommandExecutor, TabExecutor {
                     }
 
                     String type = args[1];
-                    String flag = args[2].toUpperCase();
+                    try{
+                        Flags flag = Flags.valueOf(args[2].toUpperCase());
 
-                    switch(type){
-                        case "add":
-                            if(claim.addFlag(Flags.valueOf(flag))){
-                                player.sendMessage("§7You have added the flag: §a"+flag+"§7.");
-                                modifiedClaim(claim);
-                                return true;
-                            }
-                            break;
+                        switch(type){
+                            case "add":
+                                if(claim.addFlag(flag)){
+                                    player.sendMessage("§7You have added the flag: §a"+flag+"§7.");
+                                    modifiedClaim(claim);
+                                    return true;
+                                }
+                                break;
 
-                        case "remove":
-                            if(claim.removeFlag(Flags.valueOf(flag))){
-                                player.sendMessage("§7You have removed the flag: §c"+flag+"§7.");
-                                modifiedClaim(claim);
-                                return true;
-                            }
-                            break;
+                            case "remove":
+                                if(claim.removeFlag(flag)){
+                                    player.sendMessage("§7You have removed the flag: §c"+flag+"§7.");
+                                    modifiedClaim(claim);
+                                    return true;
+                                }
+                                break;
+                        }
+
+                        player.sendMessage("§cUnable to set flag.");
+                        return true;
+                    }catch(Exception e){
+                        player.sendMessage("§cUnknown flag provided.");
                     }
-
-                    player.sendMessage("§cUnable to set flag.");
-                    return true;
 
                 }else{
                     player.sendMessage("§cYou are not a part of a group.");

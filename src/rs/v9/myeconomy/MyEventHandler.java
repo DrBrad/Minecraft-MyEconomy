@@ -412,15 +412,15 @@ public class MyEventHandler implements Listener {
                     event.setCancelled(true);
                 }
             }
+
+            return;
         }
 
         Player player = null;
 
         if(event.getAttacker() instanceof Player){
             player = ((Player) event.getAttacker()).getPlayer();
-        }
-
-        if(event.getAttacker().getType() == EntityType.ARROW &&
+        }else if(event.getAttacker().getType() == EntityType.ARROW &&
                 ((Projectile) event.getAttacker()).getShooter() instanceof Player){
             player = (Player) ((Projectile) event.getAttacker()).getShooter();
         }

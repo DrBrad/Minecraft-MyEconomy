@@ -45,13 +45,14 @@ public class ClaimHandler {
                         in.read(b);
                         UUID uuid = UUID.fromString(new String(b));
 
-                        //int type = in.readInt();
+                        int type = in.readInt();
 
 
-                        //claims.put(key, new Claim(uuid, type, new ArrayList<>()));
+                        claims.put(key, new Claim(uuid, type, new ArrayList<>()));
 
 
 
+                        /*
                         int type = in.readByte();
 
                         List<Flags> flags = new ArrayList<>();
@@ -64,9 +65,10 @@ public class ClaimHandler {
                         }
 
                         claims.put(key, new Claim(uuid, type, flags));
+                        */
 
                     }
-                    //write();
+                    write();
                 }
 
                 if(dynmap != null){
