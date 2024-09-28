@@ -36,6 +36,7 @@ public class MyShop {
 
     public void openMerchant(Player player){
         if(merchant.isTrading()){
+            player.sendMessage("§cAnother player is currently trading, please wait until they are done.");
             return;
         }
 

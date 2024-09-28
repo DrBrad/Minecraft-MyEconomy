@@ -492,7 +492,6 @@ public class MyEventHandler implements Listener {
             if(shop != null){
                 shop.openMerchant(event.getPlayer());
                 event.setCancelled(true);
-                event.getPlayer().sendMessage("§cAnother player is currently trading, please wait until they are done.");
             }
         }
     }
