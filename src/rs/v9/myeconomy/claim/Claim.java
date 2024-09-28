@@ -1,16 +1,19 @@
 package rs.v9.myeconomy.claim;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.UUID;
 
 public class Claim implements Serializable {
 
     private UUID key;
     private int type;
+    private List<Flags> flags;
 
-    public Claim(UUID key, int type){
+    public Claim(UUID key, int type, List<Flags> flags){
         this.key = key;
         this.type = type;
+        this.flags = flags;
     }
 
     public void setKey(UUID key){
@@ -27,5 +30,25 @@ public class Claim implements Serializable {
 
     public int getType(){
         return type;
+    }
+
+    public int getTotalFlags(){
+        return flags.size();
+    }
+
+    public List<Flags> getFlags(){
+        return flags;
+    }
+
+    public void addFlag(Flags flag){
+        flags.add(flag);
+    }
+
+    public void removeFlag(Flags flag){
+        flags.remove(flag);
+    }
+
+    public boolean hasFlag(Flags flag){
+        return flags.contains(flag);
     }
 }

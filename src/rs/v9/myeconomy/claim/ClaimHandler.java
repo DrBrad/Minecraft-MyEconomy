@@ -12,9 +12,7 @@ import rs.v9.myeconomy.group.MyGroup;
 import rs.v9.myeconomy.group.Zone;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import static org.bukkit.Bukkit.getServer;
 import static rs.v9.myeconomy.Config.getClaimCost;
@@ -51,7 +49,24 @@ public class ClaimHandler {
 
                         int type = in.readInt();
 
-                        claims.put(key, new Claim(uuid, type));
+
+                        claims.put(key, new Claim(uuid, type, new ArrayList<>()));
+
+
+                        /*
+                        int type = in.readByte();
+
+                        List<Flags> flags = new ArrayList<>();
+                        int totalFlags = in.readByte();
+                        for(int i = 0; i < totalFlags; i++){
+                            Flags flag = Flags.fromByteValue(in.readByte());
+                            if(flag != Flags.NONE){
+                                flags.add(flag);
+                            }
+                        }
+
+                        claims.put(key, new Claim(uuid, type, flags));
+                        */
                     }
                 }
 
@@ -248,7 +263,7 @@ public class ClaimHandler {
                     player.sendMessage("§cThis chunk is claimed by a zone, you cannot over claim this chunk.");
                 }
             }else{
-                claims.put(key, new Claim(group.getKey(), group.getType()));
+                claims.put(key, new Claim(group.getKey(), group.getType(), new ArrayList<>()));
                 group.setPower(group.getPower()-getClaimCost());
                 write();
                 player.sendMessage("§7You have §aclaimed§7 this chunk for "+group.getName()+".");
@@ -287,7 +302,7 @@ public class ClaimHandler {
             //jclaim.put("k", zone.getKey().toString());
             //jclaim.put("t", zone.getType());
             //claims.put(key, jclaim);
-            claims.put(key, new Claim(zone.getKey(), zone.getType()));
+            claims.put(key, new Claim(zone.getKey(), zone.getType(), new ArrayList<>()));
 
             write();
             player.sendMessage("§7You have §aclaimed§7 this chunk for "+zone.getName()+".");
@@ -458,7 +473,17 @@ public class ClaimHandler {
                         out.writeInt(b.length);
                         out.write(b);
 
-                        out.writeInt(claims.get(key).getType());
+                        out.writeByte(claims.get(key).getType());
+
+                        out.writeByte(claims.get(key).getTotalFlags());
+
+                        if(claims.get(key).getTotalFlags() > 0){
+                            List<Flags> flags = claims.get(key).getFlags();
+
+                            for(Flags flag : flags){
+                                out.writeByte(flag.getByteValue());
+                            }
+                        }
                     }
 
                     out.flush();
