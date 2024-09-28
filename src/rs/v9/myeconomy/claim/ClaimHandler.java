@@ -58,7 +58,6 @@ public class ClaimHandler {
 
                         claims.put(key, new Claim(uuid, type, flags));
                     }
-                    write();
                 }
 
                 if(dynmap != null){
