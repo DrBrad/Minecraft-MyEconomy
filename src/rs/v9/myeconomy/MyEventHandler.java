@@ -739,7 +739,7 @@ public class MyEventHandler implements Listener {
 
         for(Block block : blocks){
             for(Player player : players){
-                player.sendBlockChange(block.getLocation(), Material.AIR.createBlockData());
+                player.sendBlockChange(block.getLocation(), Material.BARRIER.createBlockData());
             }
 
             plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
