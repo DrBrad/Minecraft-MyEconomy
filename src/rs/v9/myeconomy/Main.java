@@ -74,7 +74,7 @@ public class Main extends JavaPlugin {
 
         createRecipes();
 
-        Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable(){
+        int task = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable(){
             @Override
             public void run(){
                 String[] names = getRanks();

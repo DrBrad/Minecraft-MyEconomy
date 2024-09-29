@@ -85,6 +85,7 @@ public class MyEventHandler implements Listener {
         setPlayerCooldown(event.getPlayer().getUniqueId());
 
         removeTrader(event.getPlayer());
+        removePlayerAFK(event.getPlayer());
     }
 
     @EventHandler
@@ -736,7 +737,6 @@ public class MyEventHandler implements Listener {
         }
 
         if(isPlayerAFK(event.getPlayer())){
-            removePlayerAFK(event.getPlayer());
             String[] names = getRanks();
 
             MyGroup group = getPlayersGroup(event.getPlayer().getUniqueId());
@@ -747,10 +747,9 @@ public class MyEventHandler implements Listener {
             }else{
                 event.getPlayer().setPlayerListName("§c"+event.getPlayer().getName());
             }
-
-        }else{
-            setPlayerAFK(event.getPlayer());
         }
+
+        setPlayerAFK(event.getPlayer());
     }
 
     private void regenBlocks(Location location, List<Block> blocks){
