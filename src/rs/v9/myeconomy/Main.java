@@ -27,6 +27,7 @@ public class Main extends JavaPlugin {
 
     public static Plugin plugin;
     public static DynmapCommonAPI dynmap;
+    private int task;
 
     //AFK marker for tablist
     //afk bot system
@@ -74,7 +75,7 @@ public class Main extends JavaPlugin {
 
         createRecipes();
 
-        int task = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable(){
+        task = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable(){
             @Override
             public void run(){
                 String[] names = getRanks();
@@ -95,6 +96,8 @@ public class Main extends JavaPlugin {
 
     @Override
     public void onDisable(){
+        Bukkit.getServer().getScheduler().cancelTask(task);
+
         for(Player player : Bukkit.getOnlinePlayers()){
             if(isMapping(player.getUniqueId())){
                 stopMapping(player);
