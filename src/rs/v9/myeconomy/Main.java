@@ -29,9 +29,7 @@ public class Main extends JavaPlugin {
     public static DynmapCommonAPI dynmap;
     private int task;
 
-    //AFK marker for tablist
     //afk bot system
-    //allow TNT explosions as flag in claims
 
     @Override
     public void onLoad(){
