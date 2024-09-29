@@ -84,10 +84,10 @@ public class Main extends JavaPlugin {
                     MyGroup group = getPlayersGroup(player.getUniqueId());
                     if(group != null){
                         String color = getChatColor(group.getColor());
-                        player.setPlayerListName("§6["+color+group.getName()+"§6]["+color+names[group.getRank(player.getUniqueId())]+"§6]["+color+player.getName()+"§6]");
+                        player.setPlayerListName("§6[§7AFK§6]§6["+color+group.getName()+"§6]["+color+names[group.getRank(player.getUniqueId())]+"§6]["+color+player.getName()+"§6]");
 
                     }else{
-                        player.setPlayerListName("§c"+player.getName());
+                        player.setPlayerListName("§6[§7AFK§6]§c"+player.getName());
                     }
                 }
             }
