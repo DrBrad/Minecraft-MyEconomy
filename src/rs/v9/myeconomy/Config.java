@@ -11,14 +11,17 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static rs.v9.myeconomy.Main.plugin;
 
 public class Config {
 
     private static Location spawn, endSpawn;
-    private static HashMap<String, Location> warps = new HashMap<>();
-    private static HashMap<Player, Player> playerTeleport = new HashMap<>();
+    private static Map<String, Location> warps = new HashMap<>();
+    private static Map<Player, Player> playerTeleport = new HashMap<>();
+    private static Map<Player, Long> afkList = new HashMap<>();
 
     private static String[] ranks = { "Member", "Recruit", "Admin", "Owner" };
 
@@ -244,6 +247,31 @@ public class Config {
             return playerTeleport.get(player);
         }
         return null;
+    }
+
+    public static void setPlayerAFK(Player player){
+        afkList.put(player, System.currentTimeMillis()+60_000);//600_000);
+    }
+
+    public static boolean isPlayerAFK(Player player){
+        return afkList.containsKey(player);
+    }
+
+    public static long getPlayerAFK(Player player){
+        return afkList.get(player);
+    }
+
+    public static List<Player> getAFKPlayers(){
+        List<Player> afkPlayers = new ArrayList<>();
+        long now = System.currentTimeMillis();
+
+        for(Player player : afkList.keySet()){
+            if(afkList.get(player) < now){
+                afkPlayers.add(player);
+            }
+        }
+
+        return afkPlayers;
     }
 
     private static void writeConfig(){

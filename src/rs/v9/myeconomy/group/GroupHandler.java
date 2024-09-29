@@ -3,8 +3,6 @@ package rs.v9.myeconomy.group;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import org.json.JSONObject;
-import org.json.JSONTokener;
 
 import java.io.*;
 import java.util.*;
@@ -14,13 +12,13 @@ import static rs.v9.myeconomy.claim.ClaimHandler.*;
 
 public class GroupHandler {
 
-    private static ArrayList<UUID> chat = new ArrayList<>();
+    private static List<UUID> chat = new ArrayList<>();
 
-    private static HashMap<UUID, UUID> invites = new HashMap<>();
+    private static Map<UUID, UUID> invites = new HashMap<>();
     //private static JSONObject players = new JSONObject();
     private static Map<UUID, String> players = new HashMap<>();
-    private static HashMap<UUID, MyGroup> groupsByUUID = new HashMap<>();
-    private static HashMap<String, UUID> groupsByName = new HashMap<>();
+    private static Map<UUID, MyGroup> groupsByUUID = new HashMap<>();
+    private static Map<String, UUID> groupsByName = new HashMap<>();
     private static Zone safeZone, pvpZone;
 
     public GroupHandler(){

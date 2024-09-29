@@ -12,10 +12,15 @@ import org.dynmap.DynmapCommonAPI;
 import org.dynmap.DynmapCommonAPIListener;
 import rs.v9.myeconomy.claim.ClaimHandler;
 import rs.v9.myeconomy.group.GroupHandler;
+import rs.v9.myeconomy.group.MyGroup;
 import rs.v9.myeconomy.handlers.PlayerCooldown;
 import rs.v9.myeconomy.handlers.PlayerResolver;
 import rs.v9.myeconomy.shop.ShopHandler;
 
+import static rs.v9.myeconomy.Config.getAFKPlayers;
+import static rs.v9.myeconomy.Config.getRanks;
+import static rs.v9.myeconomy.group.GroupHandler.getPlayersGroup;
+import static rs.v9.myeconomy.handlers.Colors.getChatColor;
 import static rs.v9.myeconomy.handlers.MapHandler.isMapping;
 import static rs.v9.myeconomy.handlers.MapHandler.stopMapping;
 
@@ -69,6 +74,24 @@ public class Main extends JavaPlugin {
         new ShopHandler();
 
         createRecipes();
+
+        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
+            @Override
+            public void run(){
+                String[] names = getRanks();
+
+                for(Player player : getAFKPlayers()){
+                    MyGroup group = getPlayersGroup(player.getUniqueId());
+                    if(group != null){
+                        String color = getChatColor(group.getColor());
+                        player.setPlayerListName("§6["+color+group.getName()+"§6]["+color+names[group.getRank(player.getUniqueId())]+"§6]["+color+player.getName()+"§6]");
+
+                    }else{
+                        player.setPlayerListName("§c"+player.getName());
+                    }
+                }
+            }
+        }, 5);//100
     }
 
     @Override

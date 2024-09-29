@@ -7,14 +7,16 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static rs.v9.myeconomy.Config.*;
 import static rs.v9.myeconomy.Main.plugin;
 
 public class GeneralHandler {
 
-    private static ArrayList<Player> teleport = new ArrayList<>();
-    public static HashMap<Player, Location> lastTeleport = new HashMap();
+    private static List<Player> teleport = new ArrayList<>();
+    public static Map<Player, Location> lastTeleport = new HashMap();
 
     public static void teleport(Player player, Location location, String type, Color color){
         teleport.add(player);

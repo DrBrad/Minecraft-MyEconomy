@@ -10,6 +10,7 @@ import rs.v9.myeconomy.group.MyGroup;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import static rs.v9.myeconomy.claim.ClaimHandler.*;
@@ -17,7 +18,7 @@ import static rs.v9.myeconomy.group.GroupHandler.*;
 
 public class MapHandler {
 
-    private static HashMap<UUID, ArrayList<Location>> map = new HashMap<>();
+    private static Map<UUID, ArrayList<Location>> map = new HashMap<>();
 
     public static boolean isMapping(UUID uuid){
         return map.containsKey(uuid);

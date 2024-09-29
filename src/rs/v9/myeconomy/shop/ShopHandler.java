@@ -7,6 +7,7 @@ import org.dynmap.markers.MarkerSet;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import static rs.v9.myeconomy.Config.getMaxShops;
@@ -15,12 +16,12 @@ import static rs.v9.myeconomy.Main.plugin;
 
 public class ShopHandler {
 
-    private static HashMap<UUID, MyShop> shops = new HashMap<>();
-    private static HashMap<UUID, HashMap<String, UUID>> playersShopsByName = new HashMap<>();
-    private static HashMap<UUID, UUID> shopsByEntityUUID = new HashMap<>();;
-    protected static HashMap<UUID, UUID> trading = new HashMap<>();
-    protected static HashMap<Inventory, UUID> inventories = new HashMap<>();
-    private static HashMap<UUID, Marker> markers = new HashMap<>();
+    private static Map<UUID, MyShop> shops = new HashMap<>();
+    private static Map<UUID, Map<String, UUID>> playersShopsByName = new HashMap<>();
+    private static Map<UUID, UUID> shopsByEntityUUID = new HashMap<>();;
+    protected static Map<UUID, UUID> trading = new HashMap<>();
+    protected static Map<Inventory, UUID> inventories = new HashMap<>();
+    private static Map<UUID, Marker> markers = new HashMap<>();
     private static MarkerSet markerSet;
 
     public ShopHandler(){

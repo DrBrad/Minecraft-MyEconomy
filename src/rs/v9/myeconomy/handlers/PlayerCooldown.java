@@ -7,13 +7,14 @@ import org.json.JSONTokener;
 import java.io.*;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import static rs.v9.myeconomy.Main.plugin;
 
 public class PlayerCooldown {
 
-    private static HashMap<UUID, Long> players = new HashMap<>();
+    private static Map<UUID, Long> players = new HashMap<>();
     //private static JSONObject players = new JSONObject();
 
     public PlayerCooldown(){

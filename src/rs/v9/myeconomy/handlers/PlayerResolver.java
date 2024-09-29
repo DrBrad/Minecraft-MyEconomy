@@ -7,6 +7,7 @@ import org.json.JSONTokener;
 
 import java.io.*;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import static rs.v9.myeconomy.Main.plugin;
@@ -14,7 +15,7 @@ import static rs.v9.myeconomy.Main.plugin;
 public class PlayerResolver {
 
     //private static JSONObject players = new JSONObject();
-    private static HashMap<String, UUID> players = new HashMap<>();
+    private static Map<String, UUID> players = new HashMap<>();
 
     public PlayerResolver(){
         if(plugin.getDataFolder().exists()){

@@ -4,13 +4,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.UUID;
+import java.util.*;
 
 import static rs.v9.myeconomy.Config.*;
 import static rs.v9.myeconomy.group.GroupHandler.*;
@@ -18,7 +17,7 @@ import static rs.v9.myeconomy.Main.plugin;
 
 public class MyGroup implements Group {
 
-    private HashMap<String, Location> warps = new HashMap<>();
+    private Map<String, Location> warps = new HashMap<>();
     private JSONObject ranks = new JSONObject();
     private String name, description;
     private int power = 10, color = 12;
@@ -53,6 +52,16 @@ public class MyGroup implements Group {
                 if(ranks.getInt(uuid.toString()) == 3){
                     this.name = name;
                     writeData();
+
+                    String[] names = getRanks();
+
+                    for(String suuid : getPlayers()){
+                        UUID euuid = UUID.fromString(suuid);
+                        Player player = Bukkit.getPlayer(euuid);
+                        if(player.isOnline()){
+                            player.setPlayerListName("§6["+color+name+"§6]["+color+names[ranks.getInt(suuid)]+"§6]["+player.getName()+"§6]");
+                        }
+                    }
                     return true;
                 }
             }
@@ -162,7 +171,7 @@ public class MyGroup implements Group {
         return false;
     }
 
-    public ArrayList<String> getPlayers(){
+    public List<String> getPlayers(){
         return new ArrayList<>(ranks.keySet());
     }
 
@@ -217,6 +226,16 @@ public class MyGroup implements Group {
             if(ranks.getInt(uuid.toString()) > 1){
                 this.color = color;
                 writeData();
+
+                String[] names = getRanks();
+
+                for(String suuid : getPlayers()){
+                    UUID euuid = UUID.fromString(suuid);
+                    Player player = Bukkit.getPlayer(euuid);
+                    if(player.isOnline()){
+                        player.setPlayerListName("§6["+color+name+"§6]["+color+names[ranks.getInt(suuid)]+"§6]["+player.getName()+"§6]");
+                    }
+                }
                 return true;
             }
         }

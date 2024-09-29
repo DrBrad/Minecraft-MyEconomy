@@ -24,8 +24,8 @@ public class ClaimHandler {
 
     private static Map<String, Claim> claims = new HashMap<>();
     //private static JSONObject claims = new JSONObject();
-    private static HashMap<String, AreaMarker> markers = new HashMap<>();
-    private static HashMap<UUID, AutoClaim> autoClaiming = new HashMap<>();
+    private static Map<String, AreaMarker> markers = new HashMap<>();
+    private static Map<UUID, AutoClaim> autoClaiming = new HashMap<>();
     private static MarkerSet markerSet;
 
     public ClaimHandler(){

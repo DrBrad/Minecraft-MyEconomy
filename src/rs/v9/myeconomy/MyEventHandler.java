@@ -41,7 +41,7 @@ import static rs.v9.myeconomy.shop.ShopHandler.*;
 
 public class MyEventHandler implements Listener {
 
-    private static HashMap<Player, UUID> enteredClaim = new HashMap<>();
+    private static Map<Player, UUID> enteredClaim = new HashMap<>();
     private Random random = new Random();
 
     @EventHandler
@@ -731,6 +731,22 @@ public class MyEventHandler implements Listener {
         }else if(key != null){
             enteredClaim.put(event.getPlayer(), null);
             event.getPlayer().sendTitle("§2Wilderness", "", 0, 60, 0);
+        }
+
+        if(isPlayerAFK(event.getPlayer())){
+            String[] names = getRanks();
+
+            MyGroup group = getPlayersGroup(event.getPlayer().getUniqueId());
+            if(group != null){
+                String color = getChatColor(group.getColor());
+                event.getPlayer().setPlayerListName("§6["+color+group.getName()+"§6]["+color+names[group.getRank(event.getPlayer().getUniqueId())]+"§6]["+color+event.getPlayer().getName()+"§6]");
+
+            }else{
+                event.getPlayer().setPlayerListName("§c"+event.getPlayer().getName());
+            }
+
+        }else{
+            setPlayerAFK(event.getPlayer());
         }
     }
 
