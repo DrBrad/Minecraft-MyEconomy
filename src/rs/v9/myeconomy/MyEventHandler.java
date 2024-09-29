@@ -420,7 +420,9 @@ public class MyEventHandler implements Listener {
 
         if(event.getAttacker() instanceof Player){
             player = ((Player) event.getAttacker()).getPlayer();
-        }else if(event.getAttacker().getType() == EntityType.ARROW &&
+
+        }else if(event.getAttacker() != null &&
+                event.getAttacker().getType() == EntityType.ARROW &&
                 ((Projectile) event.getAttacker()).getShooter() instanceof Player){
             player = (Player) ((Projectile) event.getAttacker()).getShooter();
         }
@@ -734,6 +736,7 @@ public class MyEventHandler implements Listener {
         }
 
         if(isPlayerAFK(event.getPlayer())){
+            removePlayerAFK(event.getPlayer());
             String[] names = getRanks();
 
             MyGroup group = getPlayersGroup(event.getPlayer().getUniqueId());

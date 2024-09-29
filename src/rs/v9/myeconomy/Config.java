@@ -250,7 +250,7 @@ public class Config {
     }
 
     public static void setPlayerAFK(Player player){
-        afkList.put(player, System.currentTimeMillis()+60_000);//600_000);
+        afkList.put(player, System.currentTimeMillis()+600_000);
     }
 
     public static boolean isPlayerAFK(Player player){
@@ -261,7 +261,11 @@ public class Config {
         return afkList.get(player);
     }
 
-    public static List<Player> getAFKPlayers(){
+    public static void removePlayerAFK(Player player){
+        afkList.remove(player);
+    }
+
+    public static List<Player> getPlayersAFK(){
         List<Player> afkPlayers = new ArrayList<>();
         long now = System.currentTimeMillis();
 

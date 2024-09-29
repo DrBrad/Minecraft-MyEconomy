@@ -17,8 +17,7 @@ import rs.v9.myeconomy.handlers.PlayerCooldown;
 import rs.v9.myeconomy.handlers.PlayerResolver;
 import rs.v9.myeconomy.shop.ShopHandler;
 
-import static rs.v9.myeconomy.Config.getAFKPlayers;
-import static rs.v9.myeconomy.Config.getRanks;
+import static rs.v9.myeconomy.Config.*;
 import static rs.v9.myeconomy.group.GroupHandler.getPlayersGroup;
 import static rs.v9.myeconomy.handlers.Colors.getChatColor;
 import static rs.v9.myeconomy.handlers.MapHandler.isMapping;
@@ -75,12 +74,12 @@ public class Main extends JavaPlugin {
 
         createRecipes();
 
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
+        Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable(){
             @Override
             public void run(){
                 String[] names = getRanks();
 
-                for(Player player : getAFKPlayers()){
+                for(Player player : getPlayersAFK()){
                     MyGroup group = getPlayersGroup(player.getUniqueId());
                     if(group != null){
                         String color = getChatColor(group.getColor());
@@ -91,7 +90,7 @@ public class Main extends JavaPlugin {
                     }
                 }
             }
-        }, 5);//100
+        }, 200, 200);//100
     }
 
     @Override
