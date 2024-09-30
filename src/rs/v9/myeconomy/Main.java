@@ -30,6 +30,7 @@ public class Main extends JavaPlugin {
     private int task;
 
     //afk bot system
+    //CHUNK LOADER
 
     @Override
     public void onLoad(){
