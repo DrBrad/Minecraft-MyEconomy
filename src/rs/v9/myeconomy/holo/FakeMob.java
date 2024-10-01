@@ -44,14 +44,6 @@ public class FakeMob {
         }
     }
 
-    public String getCommand(){
-        return command;
-    }
-
-    public void setCommand(String command){
-        this.command = command;
-    }
-
     public int getEntityId(){
         if(entity == null){
             return -1;
@@ -62,7 +54,7 @@ public class FakeMob {
     public void display(Player player){
         PacketPlayOutSpawnEntity packet = new PacketPlayOutSpawnEntity(
                 entity.an(),
-                entity.cz(),//.cd,
+                entity.cz(),
                 location.getX(),
                 location.getY(),
                 location.getZ(),

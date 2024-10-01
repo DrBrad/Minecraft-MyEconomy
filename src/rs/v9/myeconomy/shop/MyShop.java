@@ -181,8 +181,9 @@ public class MyShop {
         return name;
     }
 
-    public MyShop create(Player player, String name, String type){
+    public MyShop create(Player player, String name, String entityType){
         this.name = name;
+        this.entityType = entityType;
 
         key = UUID.randomUUID();
         playerUUID = player.getUniqueId();
@@ -193,14 +194,12 @@ public class MyShop {
         received = Bukkit.createInventory(null, 36, "Received");
         inventories.put(received, key);
 
-        fakeMob = new FakeMob(player.getLocation(), type, name);
+        fakeMob = new FakeMob(player.getLocation(), entityType, name);
 
         writeData();
 
         fakeMob.createEntity();
         fakeMob.display(player);
-
-        //spawn();
 
         return this;
     }
@@ -208,48 +207,6 @@ public class MyShop {
     public FakeMob getFakeMob(){
         return fakeMob;
     }
-
-    /*
-    public void spawn(){
-        if(entityUUID != null){
-            if(!location.getWorld().isChunkLoaded(location.getChunk())){
-                location.getChunk().load();
-            }
-
-            for(Entity entity : location.getChunk().getEntities()){
-                if(entity.getUniqueId().equals(entityUUID)){
-                    return;
-                }
-            }
-        }
-
-        LivingEntity livingEntity = (LivingEntity) location.getWorld().spawnEntity(location, entityType);
-        entityUUID = livingEntity.getUniqueId();
-        if(livingEntity instanceof Ageable){
-            ((Ageable) livingEntity).setAdult();
-        }
-        if(livingEntity.getEquipment() != null){
-            livingEntity.getEquipment().setHelmet(null);
-            livingEntity.getEquipment().setChestplate(null);
-            livingEntity.getEquipment().setLeggings(null);
-            livingEntity.getEquipment().setBoots(null);
-        }
-        livingEntity.setRemoveWhenFarAway(false);
-        livingEntity.setCustomName(name);
-        livingEntity.setCustomNameVisible(true);
-        livingEntity.setInvulnerable(true);
-        livingEntity.setPersistent(true);
-        livingEntity.setVisualFire(false);
-        livingEntity.setAI(false);
-        livingEntity.setGravity(false);
-        livingEntity.setCanPickupItems(false);
-        livingEntity.setInvisible(false);
-        livingEntity.setSilent(true);
-        livingEntity.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(1.0);
-        livingEntity.setFreezeTicks(0);
-        writeData();
-    }
-    */
 
     public UUID getPlayerUUID(){
         return playerUUID;
@@ -286,7 +243,6 @@ public class MyShop {
 
             this.key = UUID.fromString(config.getString("key"));
             playerUUID = UUID.fromString(config.getString("player.uuid"));
-            //entityUUID = UUID.fromString(config.getString("entity.uuid"));
             name = config.getString("name");
             entityType = config.getString("entity.type");
 
@@ -298,8 +254,7 @@ public class MyShop {
             float pitch = (float) config.getDouble("location.pitch");
 
             fakeMob = new FakeMob(new Location(Bukkit.getWorld(world), x, y, z, yaw, pitch), entityType, name);
-
-            //spawn();
+            fakeMob.createEntity();
 
             merchant = Bukkit.createMerchant("Shop");
 
