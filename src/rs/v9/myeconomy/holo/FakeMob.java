@@ -1,6 +1,5 @@
 package rs.v9.myeconomy.holo;
 
-import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.network.syncher.DataWatcher;
 import net.minecraft.server.level.EntityPlayer;
