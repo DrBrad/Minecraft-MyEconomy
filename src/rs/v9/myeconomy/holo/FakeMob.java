@@ -1,13 +1,16 @@
 package rs.v9.myeconomy.holo;
 
-import net.minecraft.network.protocol.game.PacketPlayOutEntityDestroy;
-import net.minecraft.network.protocol.game.PacketPlayOutSpawnEntity;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.*;
+import net.minecraft.network.syncher.DataWatcher;
 import net.minecraft.server.level.EntityPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3D;
 import org.bukkit.*;
 import org.bukkit.craftbukkit.v1_21_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+
+import java.lang.reflect.Field;
 
 import static rs.v9.myeconomy.holo.MobResolver.fromName;
 
@@ -52,7 +55,8 @@ public class FakeMob {
     }
 
     public void display(Player player){
-        PacketPlayOutSpawnEntity packet = new PacketPlayOutSpawnEntity(
+        EntityPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
+        PacketPlayOutSpawnEntity spawnPacket = new PacketPlayOutSpawnEntity(
                 entity.an(),
                 entity.cz(),
                 location.getX(),
@@ -66,8 +70,25 @@ public class FakeMob {
                 0
         );
 
-        EntityPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
-        nmsPlayer.c.sendPacket(packet);
+        PacketPlayOutEntity.PacketPlayOutEntityLook lookPacket = new PacketPlayOutEntity.PacketPlayOutEntityLook(entity.an(), (byte) 180, (byte) 0, true);
+
+        PacketPlayOutEntityHeadRotation rotationPacket = new PacketPlayOutEntityHeadRotation(entity, (byte) (location.getYaw() * 255F / 360F));
+
+        nmsPlayer.c.sendPacket(spawnPacket);
+        nmsPlayer.c.sendPacket(lookPacket);
+        nmsPlayer.c.sendPacket(rotationPacket);
+
+        try{
+            Field f = Entity.class.getDeclaredField("ao");
+            f.setAccessible(true);
+
+            DataWatcher watcher = (DataWatcher) f.get(entity);
+            PacketPlayOutEntityMetadata metaPacket = new PacketPlayOutEntityMetadata(entity.an(), watcher.c());
+            nmsPlayer.c.sendPacket(metaPacket);
+
+        }catch(NoSuchFieldException | IllegalAccessException e){
+            e.printStackTrace();
+        }
     }
 
     public void reload(Player player){

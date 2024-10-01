@@ -85,7 +85,7 @@ public class ShopCommands implements CommandExecutor, TabExecutor {
                             switch(args[1]){
                                 case "add":
                                     for(Material mat : Material.values()){
-                                        if(mat.name().startsWith(args[args.length-1].toUpperCase()) || args[args.length-1].equals("")){
+                                        if(mat.name().startsWith(args[args.length-1].toLowerCase()) || args[args.length-1].equals("")){
                                             tabComplete.add(mat.toString().toLowerCase());
                                         }
                                     }

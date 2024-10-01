@@ -24,6 +24,7 @@ import static rs.v9.myeconomy.handlers.MapHandler.isMapping;
 import static rs.v9.myeconomy.handlers.MapHandler.stopMapping;
 import static rs.v9.myeconomy.holo.ConnectionInjecter.injectPlayer;
 import static rs.v9.myeconomy.holo.ConnectionInjecter.removePlayer;
+import static rs.v9.myeconomy.shop.ShopHandler.clearFakeMobs;
 
 public class Main extends JavaPlugin {
 
@@ -113,6 +114,8 @@ public class Main extends JavaPlugin {
         for(Player player : Bukkit.getOnlinePlayers()){
             removePlayer(player);
         }
+
+        clearFakeMobs();
     }
 
     private void createRecipes(){
