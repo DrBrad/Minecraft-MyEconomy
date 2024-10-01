@@ -31,6 +31,7 @@ public class Main extends JavaPlugin {
 
     //afk bot system
     //CHUNK LOADER
+    //NMS packet system for shops
 
     @Override
     public void onLoad(){
