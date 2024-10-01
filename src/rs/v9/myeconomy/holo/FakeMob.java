@@ -16,7 +16,7 @@ import static rs.v9.myeconomy.holo.MobResolver.fromName;
 public class FakeMob {
 
     private Location location;
-    private String type, name, command;
+    private String type, name;
     private Entity entity;
 
     public FakeMob(Location location, String type, String name){
