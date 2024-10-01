@@ -19,7 +19,7 @@ public class ShopHandler {
 
     private static Map<UUID, MyShop> shops = new HashMap<>();
     private static Map<UUID, Map<String, UUID>> playersShopsByName = new HashMap<>();
-    private static Map<Integer, UUID> shopsByEntityId = new HashMap<>();;
+    private static Map<Integer, UUID> shopsByEntityId = new HashMap<>();
     protected static Map<UUID, UUID> trading = new HashMap<>();
     protected static Map<Inventory, UUID> inventories = new HashMap<>();
     private static Map<UUID, Marker> markers = new HashMap<>();
