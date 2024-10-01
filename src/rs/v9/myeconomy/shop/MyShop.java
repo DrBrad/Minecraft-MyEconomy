@@ -3,7 +3,6 @@ package rs.v9.myeconomy.shop;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.*;
@@ -11,6 +10,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Merchant;
 import org.bukkit.inventory.MerchantRecipe;
+import rs.v9.myeconomy.holo.FakeMob;
 
 import java.io.*;
 import java.util.*;
@@ -20,12 +20,11 @@ import static rs.v9.myeconomy.shop.ShopHandler.*;
 
 public class MyShop {
 
-    private UUID key, playerUUID, entityUUID;
-    private String name;
+    private UUID key, playerUUID;
+    private FakeMob fakeMob;
+    private String name, entityType;
     private Merchant merchant;
     private Inventory stock, received;
-    private EntityType entityType;
-    private Location location;
 
     public MyShop(){
     }
@@ -40,33 +39,43 @@ public class MyShop {
             return;
         }
 
-        Map<Material, Integer> mats = new HashMap<>();
-        for(int i = 0; i < stock.getSize(); i++){
-            if(stock.getItem(i) == null || stock.getItem(i).getType().isAir()){
-                continue;
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
+            @Override
+            public void run(){
+                if(merchant.isTrading()){
+                    //player.sendMessage("§cAnother player is currently trading, please wait until they are done.");
+                    return;
+                }
+
+                Map<Material, Integer> mats = new HashMap<>();
+                for(int i = 0; i < stock.getSize(); i++){
+                    if(stock.getItem(i) == null || stock.getItem(i).getType().isAir()){
+                        continue;
+                    }
+
+                    if(mats.containsKey(stock.getItem(i).getType())){
+                        mats.put(stock.getItem(i).getType(), mats.get(stock.getItem(i).getType())+stock.getItem(i).getAmount());
+                        continue;
+                    }
+
+                    mats.put(stock.getItem(i).getType(), stock.getItem(i).getAmount());
+                }
+
+                for(MerchantRecipe recipe : merchant.getRecipes()){
+                    recipe.setUses(0);
+
+                    if(!mats.containsKey(recipe.getResult().getType()) || mats.get(recipe.getResult().getType()) < recipe.getResult().getAmount()){
+                        recipe.setMaxUses(0);
+                        continue;
+                    }
+
+                    recipe.setMaxUses(mats.get(recipe.getResult().getType())/recipe.getResult().getAmount());
+                }
+
+                trading.put(player.getUniqueId(), key);
+                player.openMerchant(merchant, true);
             }
-
-            if(mats.containsKey(stock.getItem(i).getType())){
-                mats.put(stock.getItem(i).getType(), mats.get(stock.getItem(i).getType())+stock.getItem(i).getAmount());
-                continue;
-            }
-
-            mats.put(stock.getItem(i).getType(), stock.getItem(i).getAmount());
-        }
-
-        for(MerchantRecipe recipe : merchant.getRecipes()){
-            recipe.setUses(0);
-
-            if(!mats.containsKey(recipe.getResult().getType()) || mats.get(recipe.getResult().getType()) < recipe.getResult().getAmount()){
-                recipe.setMaxUses(0);
-                continue;
-            }
-
-            recipe.setMaxUses(mats.get(recipe.getResult().getType())/recipe.getResult().getAmount());
-        }
-
-        trading.put(player.getUniqueId(), key);
-        player.openMerchant(merchant, true);
+        });
     }
 
     public void openStock(Player player){
@@ -172,14 +181,8 @@ public class MyShop {
         return name;
     }
 
-    public UUID getEntityUUID(){
-        return entityUUID;
-    }
-
-    public MyShop create(Player player, String name, EntityType entityType){
+    public MyShop create(Player player, String name, String type){
         this.name = name;
-        this.location = player.getLocation();
-        this.entityType = entityType;
 
         key = UUID.randomUUID();
         playerUUID = player.getUniqueId();
@@ -190,11 +193,23 @@ public class MyShop {
         received = Bukkit.createInventory(null, 36, "Received");
         inventories.put(received, key);
 
-        spawn();
+        fakeMob = new FakeMob(player.getLocation(), type, name);
+
+        writeData();
+
+        fakeMob.createEntity();
+        fakeMob.display(player);
+
+        //spawn();
 
         return this;
     }
 
+    public FakeMob getFakeMob(){
+        return fakeMob;
+    }
+
+    /*
     public void spawn(){
         if(entityUUID != null){
             if(!location.getWorld().isChunkLoaded(location.getChunk())){
@@ -234,10 +249,7 @@ public class MyShop {
         livingEntity.setFreezeTicks(0);
         writeData();
     }
-
-    public Location getLocation(){
-        return location;
-    }
+    */
 
     public UUID getPlayerUUID(){
         return playerUUID;
@@ -251,15 +263,12 @@ public class MyShop {
         inventories.remove(stock);
         inventories.remove(received);
 
-        Entity entity = Bukkit.getServer().getEntity(entityUUID);
-        if(entity != null && entity.isValid()){
-            entity.remove();
-        }
-
         File shopFolder = new File(plugin.getDataFolder()+File.separator+"shop"+File.separator+key.toString());
         if(shopFolder.exists()){
             shopFolder.mkdirs();
         }
+
+        fakeMob.kill();
 
         return true;
     }
@@ -277,9 +286,9 @@ public class MyShop {
 
             this.key = UUID.fromString(config.getString("key"));
             playerUUID = UUID.fromString(config.getString("player.uuid"));
-            entityUUID = UUID.fromString(config.getString("entity.uuid"));
+            //entityUUID = UUID.fromString(config.getString("entity.uuid"));
             name = config.getString("name");
-            entityType = EntityType.valueOf(config.getString("entity.type"));
+            entityType = config.getString("entity.type");
 
             String world = config.getString("location.world");
             double x = config.getDouble("location.x");
@@ -288,9 +297,9 @@ public class MyShop {
             float yaw = (float) config.getDouble("location.yaw");
             float pitch = (float) config.getDouble("location.pitch");
 
-            location = new Location(Bukkit.getWorld(world), x, y, z, yaw, pitch);
+            fakeMob = new FakeMob(new Location(Bukkit.getWorld(world), x, y, z, yaw, pitch), entityType, name);
 
-            spawn();
+            //spawn();
 
             merchant = Bukkit.createMerchant("Shop");
 
@@ -391,16 +400,16 @@ public class MyShop {
             FileConfiguration config = YamlConfiguration.loadConfiguration(configFile);
             config.set("key", key.toString());
             config.set("player.uuid", playerUUID.toString());
-            config.set("entity.uuid", entityUUID.toString());
-            config.set("entity.type", entityType.name());
+            //config.set("entity.uuid", entityUUID.toString());
+            config.set("entity.type", entityType);
             config.set("name", name);
 
-            config.set("location.world", location.getWorld().getName());
-            config.set("location.x", location.getX());
-            config.set("location.y", location.getY());
-            config.set("location.z", location.getZ());
-            config.set("location.yaw", location.getYaw());
-            config.set("location.pitch", location.getPitch());
+            config.set("location.world", fakeMob.getLocation().getWorld().getName());
+            config.set("location.x", fakeMob.getLocation().getX());
+            config.set("location.y", fakeMob.getLocation().getY());
+            config.set("location.z", fakeMob.getLocation().getZ());
+            config.set("location.yaw", fakeMob.getLocation().getYaw());
+            config.set("location.pitch", fakeMob.getLocation().getPitch());
 
             config.save(configFile);
 

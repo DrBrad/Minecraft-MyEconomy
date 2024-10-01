@@ -5,7 +5,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import rs.v9.myeconomy.claim.Claim;
@@ -18,7 +17,7 @@ import java.util.List;
 import static rs.v9.myeconomy.Config.isShops;
 import static rs.v9.myeconomy.claim.ClaimHandler.getClaim;
 import static rs.v9.myeconomy.group.GroupHandler.getPlayersGroup;
-import static rs.v9.myeconomy.handlers.MobHandler.getAllowedShops;
+import static rs.v9.myeconomy.holo.MobResolver.getMobs;
 import static rs.v9.myeconomy.shop.ShopHandler.*;
 
 public class ShopCommands implements CommandExecutor, TabExecutor {
@@ -102,9 +101,9 @@ public class ShopCommands implements CommandExecutor, TabExecutor {
                 }else if(args.length == 3){
                     switch(cmd){
                         case "create":
-                            for(EntityType mob : getAllowedShops()){
-                                if(mob.name().startsWith(args[2].toUpperCase()) || args[2].equals("")){
-                                    tabComplete.add(mob.name().toLowerCase());
+                            for(String mob : getMobs()){
+                                if(mob.startsWith(args[2].toUpperCase()) || args[2].equals("")){
+                                    tabComplete.add(mob);
                                 }
                             }
                             break;
@@ -170,7 +169,7 @@ public class ShopCommands implements CommandExecutor, TabExecutor {
             if(args.length > 2){
                 String name = args[1];
                 if(name.length() < 13 && name.length() > 1){
-                    EntityType type = EntityType.valueOf(args[2].toUpperCase());
+                    String type = args[2].toLowerCase();
 
                     if(isPlayerShopCapped(player)){
                         player.sendMessage("§cYou have hit the max number of shops per player.");
@@ -186,26 +185,23 @@ public class ShopCommands implements CommandExecutor, TabExecutor {
                         }
                     }
 
-                    if(type != null){
-                        if(getAllowedShops().contains(type)){
-                            if(!hasShopName(player, name)){
-                                MyShop shop = new MyShop(name).create(player, name, type);
-                                if(shop != null){
-                                    createShop(shop);
-                                    player.sendMessage("§7You have successfully created the shop §a"+name+"§7.");
+                    if(getMobs().contains(type)){
+                        if(!hasShopName(player, name)){
+                            MyShop shop = new MyShop(name).create(player, name, type);
+                            if(shop != null){
+                                createShop(shop);
+                                player.sendMessage("§7You have successfully created the shop §a"+name+"§7.");
 
-                                }else{
-                                    player.sendMessage("§cFailed to create shop.");
-                                }
                             }else{
-                                player.sendMessage("§cYou already have a shop with this name.");
+                                player.sendMessage("§cFailed to create shop.");
                             }
                         }else{
-                            player.sendMessage("§cEntity type is not allowed.");
+                            player.sendMessage("§cYou already have a shop with this name.");
                         }
                     }else{
-                        player.sendMessage("§cEntity type doesn't exist.");
+                        player.sendMessage("§cEntity type is not allowed.");
                     }
+
                 }else{
                     player.sendMessage("§cShop name exceeds character requirements.");
                 }

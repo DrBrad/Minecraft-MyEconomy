@@ -1,14 +1,15 @@
 package rs.v9.myeconomy.shop;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.dynmap.markers.Marker;
 import org.dynmap.markers.MarkerSet;
+import rs.v9.myeconomy.holo.FakeMob;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import static rs.v9.myeconomy.Config.getMaxShops;
 import static rs.v9.myeconomy.Main.dynmap;
@@ -18,10 +19,12 @@ public class ShopHandler {
 
     private static Map<UUID, MyShop> shops = new HashMap<>();
     private static Map<UUID, Map<String, UUID>> playersShopsByName = new HashMap<>();
-    private static Map<UUID, UUID> shopsByEntityUUID = new HashMap<>();;
+    private static Map<Integer, UUID> shopsByEntityId = new HashMap<>();;
     protected static Map<UUID, UUID> trading = new HashMap<>();
     protected static Map<Inventory, UUID> inventories = new HashMap<>();
     private static Map<UUID, Marker> markers = new HashMap<>();
+    private static List<FakeMob> mobList = new ArrayList<>();
+    private static Map<Player, List<FakeMob>> renderedMobs = new HashMap<>();
     private static MarkerSet markerSet;
 
     public ShopHandler(){
@@ -36,7 +39,8 @@ public class ShopHandler {
 
     public static void createShop(MyShop shop){
         shops.put(shop.getKey(), shop);
-        shopsByEntityUUID.put(shop.getEntityUUID(), shop.getKey());
+        shopsByEntityId.put(shop.getFakeMob().getEntityId(), shop.getKey());
+        mobList.add(shop.getFakeMob());
 
         if(playersShopsByName.containsKey(shop.getPlayerUUID())){
             playersShopsByName.get(shop.getPlayerUUID()).put(shop.getName(), shop.getKey());
@@ -55,17 +59,18 @@ public class ShopHandler {
 
             markers.put(shop.getKey(), markerSet.createMarker(shop.getKey().toString(),
                     "Shop - "+shop.getName(),
-                    shop.getLocation().getWorld().getName(),
-                    shop.getLocation().getX(),
-                    shop.getLocation().getY(),
-                    shop.getLocation().getZ(),
+                    shop.getFakeMob().getLocation().getWorld().getName(),
+                    shop.getFakeMob().getLocation().getX(),
+                    shop.getFakeMob().getLocation().getY(),
+                    shop.getFakeMob().getLocation().getZ(),
                     dynmap.getMarkerAPI().getMarkerIcon("building"),
                     false));
         }
     }
 
     public static void deleteShop(Player player, MyShop shop){
-        shopsByEntityUUID.remove(shop.getEntityUUID());
+        shopsByEntityId.remove(shop.getFakeMob().getEntityId());
+        mobList.remove(shop.getFakeMob());
         shops.remove(playersShopsByName.get(player.getUniqueId()).remove(shop.getName()));
 
         File shopFolder = new File(plugin.getDataFolder()+File.separator+"shop"+File.separator+shop.getKey());
@@ -95,12 +100,12 @@ public class ShopHandler {
         return shops.get(uuid);
     }
 
-    public static MyShop getShopByEntityUUID(UUID uuid){
-        if(!shopsByEntityUUID.containsKey(uuid)){
+    public static MyShop getShopByEntityId(int id){
+        if(!shopsByEntityId.containsKey(id)){
             return null;
         }
 
-        return shops.get(shopsByEntityUUID.get(uuid));
+        return shops.get(shopsByEntityId.get(id));
     }
 
     public static boolean hasShopName(Player player, String name){
@@ -157,5 +162,39 @@ public class ShopHandler {
         }
 
         return shops.get(inventories.get(inventory));
+    }
+
+    public static void checkDistanceFakeMobs(Player player, Location location){
+        if(!renderedMobs.containsKey(player)){
+            renderedMobs.put(player, new ArrayList<>());
+        }
+
+        for(FakeMob fakeMob : mobList){
+            int distance = (int) fakeMob.getLocation().distance(location);
+            if(distance > Bukkit.getViewDistance() && renderedMobs.get(player).contains(fakeMob)){
+                renderedMobs.get(player).remove(fakeMob);
+
+            }else if(distance < Bukkit.getViewDistance() && !renderedMobs.get(player).contains(fakeMob)){
+                renderedMobs.get(player).add(fakeMob);
+                fakeMob.display(player);
+            }
+        }
+    }
+
+    public static void stopRenderingFakeMobs(Player player){
+        if(renderedMobs.containsKey(player)){
+            renderedMobs.remove(player);
+        }
+    }
+
+    public static void clearFakeMobs(){
+        if(!mobList.isEmpty()){
+            for(FakeMob fakeMob : mobList){
+                fakeMob.kill();
+            }
+        }
+
+        mobList.clear();
+        renderedMobs.clear();
     }
 }

@@ -22,6 +22,8 @@ import static rs.v9.myeconomy.group.GroupHandler.getPlayersGroup;
 import static rs.v9.myeconomy.handlers.Colors.getChatColor;
 import static rs.v9.myeconomy.handlers.MapHandler.isMapping;
 import static rs.v9.myeconomy.handlers.MapHandler.stopMapping;
+import static rs.v9.myeconomy.holo.ConnectionInjecter.injectPlayer;
+import static rs.v9.myeconomy.holo.ConnectionInjecter.removePlayer;
 
 public class Main extends JavaPlugin {
 
@@ -92,6 +94,10 @@ public class Main extends JavaPlugin {
                 }
             }
         }, 200, 200);//100
+
+        for(Player player : Bukkit.getOnlinePlayers()){
+            injectPlayer(player);
+        }
     }
 
     @Override
@@ -102,6 +108,10 @@ public class Main extends JavaPlugin {
             if(isMapping(player.getUniqueId())){
                 stopMapping(player);
             }
+        }
+
+        for(Player player : Bukkit.getOnlinePlayers()){
+            removePlayer(player);
         }
     }
 

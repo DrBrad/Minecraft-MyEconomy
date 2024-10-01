@@ -37,6 +37,8 @@ import static rs.v9.myeconomy.handlers.MapHandler.isMapping;
 import static rs.v9.myeconomy.handlers.MapHandler.mapLandscape;
 import static rs.v9.myeconomy.handlers.PlayerCooldown.*;
 import static rs.v9.myeconomy.handlers.PlayerResolver.*;
+import static rs.v9.myeconomy.holo.ConnectionInjecter.injectPlayer;
+import static rs.v9.myeconomy.holo.ConnectionInjecter.removePlayer;
 import static rs.v9.myeconomy.shop.ShopHandler.*;
 
 public class MyEventHandler implements Listener {
@@ -62,6 +64,9 @@ public class MyEventHandler implements Listener {
         }
 
         setPlayerCooldown(event.getPlayer().getUniqueId());
+
+        injectPlayer(event.getPlayer());
+        checkDistanceFakeMobs(event.getPlayer(), event.getPlayer().getLocation());
     }
 
     @EventHandler
@@ -86,6 +91,9 @@ public class MyEventHandler implements Listener {
 
         removeTrader(event.getPlayer());
         removePlayerAFK(event.getPlayer());
+
+        removePlayer(event.getPlayer());
+        stopRenderingFakeMobs(event.getPlayer());
     }
 
     @EventHandler
@@ -105,6 +113,8 @@ public class MyEventHandler implements Listener {
         }else{
             spawnCircle(event.getPlayer(), event.getTo(), Color.fromRGB(0, 0, 255));
         }
+
+        checkDistanceFakeMobs(event.getPlayer(), event.getPlayer().getLocation());
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -486,19 +496,6 @@ public class MyEventHandler implements Listener {
         }
     }
 
-    @EventHandler
-    public void onPlayerInteractEntity(PlayerInteractEntityEvent event){
-        if(event.getRightClicked() instanceof LivingEntity){
-            LivingEntity entity = (LivingEntity) event.getRightClicked();
-
-            MyShop shop = getShopByEntityUUID(entity.getUniqueId());
-            if(shop != null){
-                shop.openMerchant(event.getPlayer());
-                event.setCancelled(true);
-            }
-        }
-    }
-
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onCreatureSpawn(CreatureSpawnEvent event){
         if(event.getSpawnReason().equals(CreatureSpawnEvent.SpawnReason.SPAWNER_EGG) ||
@@ -750,6 +747,7 @@ public class MyEventHandler implements Listener {
         }
 
         setPlayerAFK(event.getPlayer());
+        checkDistanceFakeMobs(event.getPlayer(), event.getPlayer().getLocation());
     }
 
     private void regenBlocks(Location location, List<Block> blocks){

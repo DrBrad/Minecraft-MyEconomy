@@ -11,5 +11,9 @@
     <orderEntry type="library" name="spigot-api-1.21.1-R0.1-20240907.094015-22" level="project" />
     <orderEntry type="library" name="DynmapCoreAPI-3.7-beta-6" level="project" />
     <orderEntry type="library" name="json-20230227" level="project" />
+    <orderEntry type="library" name="authlib-6.0.54" level="project" />
+    <orderEntry type="library" name="netty-buffer-4.1.97.Final" level="project" />
+    <orderEntry type="library" name="spigot-1.21.1-R0.1-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="fastutil-8.5.12" level="project" />
   </component>
 </module>
