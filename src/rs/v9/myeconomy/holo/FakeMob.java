@@ -71,7 +71,6 @@ public class FakeMob {
         );
 
         PacketPlayOutEntity.PacketPlayOutEntityLook lookPacket = new PacketPlayOutEntity.PacketPlayOutEntityLook(entity.an(), (byte) 180, (byte) 0, true);
-
         PacketPlayOutEntityHeadRotation rotationPacket = new PacketPlayOutEntityHeadRotation(entity, (byte) (location.getYaw() * 255F / 360F));
 
         nmsPlayer.c.sendPacket(spawnPacket);
