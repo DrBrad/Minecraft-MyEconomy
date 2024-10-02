@@ -16,8 +16,8 @@ import java.util.List;
 import java.util.Map;
 
 import static rs.v9.myeconomy.Main.plugin;
-import static rs.v9.myeconomy.handlers.ChunkLoadHandler.checkDistanceFakePlayers;
-import static rs.v9.myeconomy.handlers.ChunkLoadHandler.clearFakePlayers;
+import static rs.v9.myeconomy.chunkloader.ChunkLoadHandler.checkDistanceFakePlayers;
+import static rs.v9.myeconomy.chunkloader.ChunkLoadHandler.clearFakePlayers;
 import static rs.v9.myeconomy.shop.ShopHandler.checkDistanceFakeMobs;
 import static rs.v9.myeconomy.shop.ShopHandler.clearFakeMobs;
 

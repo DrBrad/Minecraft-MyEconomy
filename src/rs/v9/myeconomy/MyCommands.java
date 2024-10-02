@@ -16,6 +16,8 @@ import java.util.List;
 
 import static rs.v9.myeconomy.Config.*;
 import static rs.v9.myeconomy.Main.plugin;
+import static rs.v9.myeconomy.chunkloader.ChunkLoadHandler.addChunkLoad;
+import static rs.v9.myeconomy.chunkloader.ChunkLoadHandler.removeChunkLoad;
 import static rs.v9.myeconomy.group.GroupHandler.getPlayersGroup;
 import static rs.v9.myeconomy.handlers.Colors.getColorRGB;
 import static rs.v9.myeconomy.handlers.GeneralHandler.*;
@@ -77,6 +79,9 @@ public class MyCommands implements CommandExecutor, TabExecutor {
 
                 case "back":
                     return back(((Player) commandSender));
+
+                case "cl":
+                    return chunkLoader(((Player) commandSender), args);
             }
         }
 
@@ -102,7 +107,9 @@ public class MyCommands implements CommandExecutor, TabExecutor {
                     case "msg":
                         if(args.length == 1){
                             for(Player player : Bukkit.getOnlinePlayers()){
-                                tabComplete.add(player.getName());
+                                if(player.getName().startsWith(args[0]) || args[0].equals("")){
+                                    tabComplete.add(player.getName());
+                                }
                             }
                         }
                         break;
@@ -122,6 +129,13 @@ public class MyCommands implements CommandExecutor, TabExecutor {
                             }
                         }
                         break;
+
+                    case "cl":
+                        if(args.length == 1){
+                            tabComplete.add("set");
+                            tabComplete.add("clear");
+                        }
+                        break;
                 }
             }else{
                 tabComplete.add("warps");
@@ -138,6 +152,7 @@ public class MyCommands implements CommandExecutor, TabExecutor {
                 tabComplete.add("msg");
                 tabComplete.add("gamemode");
                 tabComplete.add("back");
+                tabComplete.add("cl");
             }
 
             return tabComplete;
@@ -601,6 +616,36 @@ public class MyCommands implements CommandExecutor, TabExecutor {
             }else{
                 player.sendMessage("§cPlease specify a gamemode.");
                 return false;
+            }
+        }else{
+            player.sendMessage("§cYou don't have permission to perform this command.");
+        }
+        return true;
+    }
+
+    public boolean chunkLoader(Player player, String[] args){
+        if(player.hasPermission("cl")){
+            if(args.length > 0){
+                switch(args[0].toLowerCase()){
+                    case "set":
+                        if(addChunkLoad(player)){
+                            player.sendMessage("§7You have set your chunk loader.");
+
+                        }else{
+                            player.sendMessage("§cYou cant have more than 1 chunk loader.");
+                        }
+                        return true;
+
+                    case "clear":
+                        removeChunkLoad(player);
+                        player.sendMessage("§7You have cleared your chunk loader.");
+                        return true;
+                }
+
+                player.sendMessage("§cInvalid option, you can do \"set\" or \"clear\".");
+
+            }else{
+                player.sendMessage("§cPlease specify a if you wish to set or clear.");
             }
         }else{
             player.sendMessage("§cYou don't have permission to perform this command.");

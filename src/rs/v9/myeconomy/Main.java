@@ -1,7 +1,6 @@
 package rs.v9.myeconomy;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.FurnaceRecipe;
@@ -14,7 +13,7 @@ import org.dynmap.DynmapCommonAPIListener;
 import rs.v9.myeconomy.claim.ClaimHandler;
 import rs.v9.myeconomy.group.GroupHandler;
 import rs.v9.myeconomy.group.MyGroup;
-import rs.v9.myeconomy.handlers.ChunkLoadHandler;
+import rs.v9.myeconomy.chunkloader.ChunkLoadHandler;
 import rs.v9.myeconomy.handlers.PlayerCooldown;
 import rs.v9.myeconomy.handlers.PlayerResolver;
 import rs.v9.myeconomy.shop.ShopHandler;

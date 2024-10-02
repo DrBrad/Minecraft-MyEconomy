@@ -265,6 +265,10 @@ commands:
     description: Teleport back to previous location.
     usage: |
       /back
+  cl:
+    description: Keep chunk loaded at all times.
+    usage: |
+      /cl
 
 permissions:
   g.admin:
@@ -425,3 +429,6 @@ permissions:
   back:
     default: true
     description: Teleport back to previous location.
+  cl:
+    default: true
+    description: Keep chunk loaded at all times.

@@ -33,7 +33,6 @@ import static rs.v9.myeconomy.handlers.BlockHandler.*;
 import static rs.v9.myeconomy.handlers.Colors.getChatColor;
 import static rs.v9.myeconomy.handlers.Colors.getColorRGB;
 import static rs.v9.myeconomy.handlers.GeneralHandler.*;
-import static rs.v9.myeconomy.handlers.ChunkLoadHandler.addFakePlayer;
 import static rs.v9.myeconomy.handlers.MapHandler.isMapping;
 import static rs.v9.myeconomy.handlers.MapHandler.mapLandscape;
 import static rs.v9.myeconomy.handlers.PlayerCooldown.*;
@@ -68,13 +67,6 @@ public class MyEventHandler implements Listener {
 
         injectPlayer(event.getPlayer());
         checkDistanceEntities(event.getPlayer(), event.getPlayer().getLocation());
-
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
-            @Override
-            public void run(){
-                addFakePlayer(event.getPlayer());
-            }
-        }, 20);
     }
 
     @EventHandler
