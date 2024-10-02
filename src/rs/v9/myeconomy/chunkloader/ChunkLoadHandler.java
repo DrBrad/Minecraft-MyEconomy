@@ -167,7 +167,7 @@ public class ChunkLoadHandler {
                 }
 
                 try{
-                    DataOutputStream out = new DataOutputStream(new FileOutputStream(new File(plugin.getDataFolder()+File.separator+"claims.ser")));
+                    DataOutputStream out = new DataOutputStream(new FileOutputStream(new File(plugin.getDataFolder()+File.separator+"chunk_loader.ser")));
 
                     for(UUID uuid : chunks.keySet()){
                         byte[] b = uuid.toString().getBytes();
