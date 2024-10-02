@@ -12,6 +12,7 @@ import java.io.File;
 import java.util.*;
 
 import static rs.v9.myeconomy.Config.getMaxShops;
+import static rs.v9.myeconomy.Config.renderedEntities;
 import static rs.v9.myeconomy.Main.dynmap;
 import static rs.v9.myeconomy.Main.plugin;
 
@@ -24,7 +25,6 @@ public class ShopHandler {
     protected static Map<Inventory, UUID> inventories = new HashMap<>();
     private static Map<UUID, Marker> markers = new HashMap<>();
     private static List<FakeMob> mobList = new ArrayList<>();
-    private static Map<Player, List<FakeMob>> renderedMobs = new HashMap<>();
     private static MarkerSet markerSet;
 
     public ShopHandler(){
@@ -177,25 +177,15 @@ public class ShopHandler {
     }
 
     public static void checkDistanceFakeMobs(Player player, Location location){
-        if(!renderedMobs.containsKey(player)){
-            renderedMobs.put(player, new ArrayList<>());
-        }
-
         for(FakeMob fakeMob : mobList){
             int distance = (int) fakeMob.getLocation().distance(location);
-            if(distance > Bukkit.getViewDistance() && renderedMobs.get(player).contains(fakeMob)){
-                renderedMobs.get(player).remove(fakeMob);
+            if(distance > Bukkit.getViewDistance() && renderedEntities.get(player).contains(fakeMob)){
+                renderedEntities.get(player).remove(fakeMob);
 
-            }else if(distance < Bukkit.getViewDistance() && !renderedMobs.get(player).contains(fakeMob)){
-                renderedMobs.get(player).add(fakeMob);
+            }else if(distance < Bukkit.getViewDistance() && !renderedEntities.get(player).contains(fakeMob)){
+                renderedEntities.get(player).add(fakeMob);
                 fakeMob.display(player);
             }
-        }
-    }
-
-    public static void stopRenderingFakeMobs(Player player){
-        if(renderedMobs.containsKey(player)){
-            renderedMobs.remove(player);
         }
     }
 
@@ -207,6 +197,5 @@ public class ShopHandler {
         }
 
         mobList.clear();
-        renderedMobs.clear();
     }
 }

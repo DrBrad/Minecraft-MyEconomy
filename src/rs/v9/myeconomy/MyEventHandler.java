@@ -67,7 +67,7 @@ public class MyEventHandler implements Listener {
         setPlayerCooldown(event.getPlayer().getUniqueId());
 
         injectPlayer(event.getPlayer());
-        checkDistanceFakeMobs(event.getPlayer(), event.getPlayer().getLocation());
+        checkDistanceEntities(event.getPlayer(), event.getPlayer().getLocation());
 
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
             @Override
@@ -103,7 +103,7 @@ public class MyEventHandler implements Listener {
         removePlayerAFK(event.getPlayer());
 
         removePlayer(event.getPlayer());
-        stopRenderingFakeMobs(event.getPlayer());
+        stopRenderingEntities(event.getPlayer());
     }
 
     @EventHandler
@@ -124,7 +124,7 @@ public class MyEventHandler implements Listener {
             spawnCircle(event.getPlayer(), event.getTo(), Color.fromRGB(0, 0, 255));
         }
 
-        checkDistanceFakeMobs(event.getPlayer(), event.getPlayer().getLocation());
+        checkDistanceEntities(event.getPlayer(), event.getPlayer().getLocation());
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -753,7 +753,7 @@ public class MyEventHandler implements Listener {
         }
 
         setPlayerAFK(event.getPlayer());
-        checkDistanceFakeMobs(event.getPlayer(), event.getPlayer().getLocation());
+        checkDistanceEntities(event.getPlayer(), event.getPlayer().getLocation());
     }
 
     private void regenBlocks(Location location, List<Block> blocks){

@@ -24,7 +24,6 @@ import static rs.v9.myeconomy.handlers.MapHandler.isMapping;
 import static rs.v9.myeconomy.handlers.MapHandler.stopMapping;
 import static rs.v9.myeconomy.holo.ConnectionInjecter.injectPlayer;
 import static rs.v9.myeconomy.holo.ConnectionInjecter.removePlayer;
-import static rs.v9.myeconomy.shop.ShopHandler.clearFakeMobs;
 
 public class Main extends JavaPlugin {
 
@@ -32,7 +31,6 @@ public class Main extends JavaPlugin {
     public static DynmapCommonAPI dynmap;
     private int task;
 
-    //afk bot system
     //CHUNK LOADER
 
     @Override
@@ -114,7 +112,7 @@ public class Main extends JavaPlugin {
             removePlayer(player);
         }
 
-        clearFakeMobs();
+        clearEntities();
     }
 
     private void createRecipes(){

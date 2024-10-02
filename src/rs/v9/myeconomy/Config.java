@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import rs.v9.myeconomy.holo.FakeEntity;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -15,6 +16,10 @@ import java.util.List;
 import java.util.Map;
 
 import static rs.v9.myeconomy.Main.plugin;
+import static rs.v9.myeconomy.handlers.LoaderHandler.checkDistanceFakePlayers;
+import static rs.v9.myeconomy.handlers.LoaderHandler.clearFakePlayers;
+import static rs.v9.myeconomy.shop.ShopHandler.checkDistanceFakeMobs;
+import static rs.v9.myeconomy.shop.ShopHandler.clearFakeMobs;
 
 public class Config {
 
@@ -22,6 +27,7 @@ public class Config {
     private static Map<String, Location> warps = new HashMap<>();
     private static Map<Player, Player> playerTeleport = new HashMap<>();
     private static Map<Player, Long> afkList = new HashMap<>();
+    public static Map<Player, List<FakeEntity>> renderedEntities = new HashMap<>();
 
     private static String[] ranks = { "Member", "Recruit", "Admin", "Owner" };
 
@@ -276,6 +282,27 @@ public class Config {
         }
 
         return afkPlayers;
+    }
+
+    public static void checkDistanceEntities(Player player, Location location){
+        if(!renderedEntities.containsKey(player)){
+            renderedEntities.put(player, new ArrayList<>());
+        }
+
+        checkDistanceFakeMobs(player, location);
+        checkDistanceFakePlayers(player, location);
+    }
+
+    public static void stopRenderingEntities(Player player){
+        if(renderedEntities.containsKey(player)){
+            renderedEntities.remove(player);
+        }
+    }
+
+    public static void clearEntities(){
+        clearFakeMobs();
+        clearFakePlayers();
+        renderedEntities.clear();
     }
 
     private static void writeConfig(){
