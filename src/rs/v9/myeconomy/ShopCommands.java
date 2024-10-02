@@ -1,5 +1,6 @@
 package rs.v9.myeconomy;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -50,6 +51,9 @@ public class ShopCommands implements CommandExecutor, TabExecutor {
 
                     case "trade":
                         return trade(((Player) commandSender), args);
+
+                    case "list":
+                        return list(((Player) commandSender), args);
                 }
 
             }else{
@@ -140,6 +144,7 @@ public class ShopCommands implements CommandExecutor, TabExecutor {
                     tabComplete.add("remove");
                     tabComplete.add("open");
                     tabComplete.add("trade");
+                    tabComplete.add("list");
                 }
 
                 return tabComplete;
@@ -329,5 +334,35 @@ public class ShopCommands implements CommandExecutor, TabExecutor {
             player.sendMessage("§cYou don't have permission to perform this command.");
             return false;
         }
+    }
+
+    private boolean list(Player player, String[] args){
+        if(player.hasPermission("s.list")){
+            int page = 0;
+            if(args.length > 1){
+                page = Integer.parseInt(args[1]);
+            }
+
+            List<MyShop> shops = getPlayersShops(player);
+
+            if(shops != null && shops.size() > 0){
+                player.sendMessage("§c------- §fList of your Shops (1/"+(((shops.size()/9)*page)+1)+") §c-------");
+
+                for(int i = page*9; i < (page+1)*9; i++){
+                    if(i < shops.size()){
+                        Location l = shops.get(i).getFakeMob().getLocation();
+                        player.sendMessage("§a"+shops.get(i).getName()+"§7 located at: §a"+(int) l.getX()+"§7, §a"+(int) l.getY()+"§7, §a"+(int) l.getZ()+"§7.");
+
+                    }else{
+                        break;
+                    }
+                }
+            }else{
+                player.sendMessage("§cThere are no groups currently.");
+            }
+        }else{
+            player.sendMessage("§cYou don't have permission to perform this command.");
+        }
+        return true;
     }
 }

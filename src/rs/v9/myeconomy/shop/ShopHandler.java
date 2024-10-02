@@ -164,6 +164,18 @@ public class ShopHandler {
         return shops.get(inventories.get(inventory));
     }
 
+    public static List<MyShop> getPlayersShops(Player player){
+        List<MyShop> r = new ArrayList<>();
+
+        if(playersShopsByName.containsKey(player.getUniqueId())){
+            for(String shop : playersShopsByName.get(player.getUniqueId()).keySet()){
+                r.add(shops.get(playersShopsByName.get(player.getUniqueId()).get(shop)));
+            }
+        }
+
+        return r;
+    }
+
     public static void checkDistanceFakeMobs(Player player, Location location){
         if(!renderedMobs.containsKey(player)){
             renderedMobs.put(player, new ArrayList<>());

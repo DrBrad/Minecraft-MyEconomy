@@ -381,7 +381,7 @@ public class GroupCommands implements CommandExecutor, TabExecutor {
                 page = Integer.parseInt(args[1]);
             }
 
-            ArrayList<MyGroup> groups = getListOfGroups();
+            List<MyGroup> groups = getListOfGroups();
 
             if(groups != null && groups.size() > 0){
                 player.sendMessage("§c------- §fList of Groups (1/"+(((groups.size()/9)*page)+1)+") §c-------");

@@ -204,6 +204,10 @@ commands:
     description: Add or remove a trade from shop.
     usage: |
       /s trade add SHOP_NAME MATERIAL MATERIAL
+  s list:
+    description: List all of the shops and locations of them.
+    usage: |
+      /s list
 
   warp:
     description: Warp to a location.
@@ -381,6 +385,9 @@ permissions:
   s.trade:
     default: true
     description: Add or remove a trade from shop.
+  s.list:
+    default: true
+    description: List all of the shops and locations of them.
 
   warp:
     default: true

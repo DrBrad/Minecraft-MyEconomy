@@ -7,6 +7,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3D;
 import org.bukkit.*;
 import org.bukkit.craftbukkit.v1_21_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_21_R1.util.CraftChatMessage;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;
@@ -41,7 +42,7 @@ public class FakeMob {
         this.name = name;
 
         if(name != null){
-            entity.b(name);
+            entity.b(CraftChatMessage.fromStringOrNull("§a"+name));
             entity.p(true);
         }
     }
@@ -108,6 +109,8 @@ public class FakeMob {
         }
 
         entity = fromName(type, location);
+        entity.b(CraftChatMessage.fromStringOrNull("§a"+name));
+        entity.p(true);
 
         return entity.an();
     }
