@@ -13,6 +13,7 @@ import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.*;
 import org.bukkit.event.vehicle.VehicleDamageEvent;
+import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantInventory;
 import org.bukkit.inventory.MerchantRecipe;
@@ -754,6 +755,21 @@ public class MyEventHandler implements Listener {
         setPlayerAFK(event.getPlayer());
         checkDistanceEntities(event.getPlayer(), event.getPlayer().getLocation());
     }
+
+    /*
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onChunkUnload(ChunkUnloadEvent event){
+        Chunk chunk = event.getChunk();
+        //System.out.println(event.getChunk().getX()+"  "+event.getChunk().getZ());
+        if(chunk.getX() == 7 && chunk.getZ() == -12){
+            try{
+                Bukkit.getServer().getWorld(chunk.getWorld().getName()).loadChunk(chunk.getX(), chunk.getZ());
+                Bukkit.getServer().getWorld(chunk.getWorld().getName()).loadChunk(chunk.getX(), chunk.getZ(), true);
+            }catch(NullPointerException ignored){
+            }
+        }
+    }
+    */
 
     private void regenBlocks(Location location, List<Block> blocks){
         Collection<Player> players = location.getWorld().getPlayersSeeingChunk(location.getChunk());
