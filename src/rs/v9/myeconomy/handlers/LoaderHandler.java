@@ -14,6 +14,12 @@ public class LoaderHandler {
 
     private static List<FakePlayer> npcList = new ArrayList<>();
 
+    public static void addFakePlayer(Player player){
+        FakePlayer npc = new FakePlayer(player.getLocation(), "ChunkLoader");
+        npcList.add(npc);
+        npc.display(player);
+    }
+
     public static void checkDistanceFakePlayers(Player player, Location location){
         for(FakePlayer fakePlayer : npcList){
             int distance = (int) fakePlayer.getLocation().distance(location);

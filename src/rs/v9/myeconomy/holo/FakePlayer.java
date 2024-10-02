@@ -52,11 +52,11 @@ public class FakePlayer extends FakeEntity {
                 PacketPlayOutSpawnEntity spawnPacket = new PacketPlayOutSpawnEntity(
                         entity.an(),
                         entity.cz(),
-                        player.getLocation().getX(),
-                        player.getLocation().getY(),
-                        player.getLocation().getZ(),
-                        player.getLocation().getYaw(),
-                        player.getLocation().getPitch(),
+                        location.getX(),
+                        location.getY(),
+                        location.getZ(),
+                        location.getYaw(),
+                        location.getPitch(),
                         entity.am(),
                         0,
                         new Vec3D(0, 0, 0),
@@ -69,7 +69,6 @@ public class FakePlayer extends FakeEntity {
                 nmsPlayer.c.sendPacket(spawnPacket);
                 nmsPlayer.c.sendPacket(lookPacket);
                 nmsPlayer.c.sendPacket(rotationPacket);
-
                 break;
             }
         }
