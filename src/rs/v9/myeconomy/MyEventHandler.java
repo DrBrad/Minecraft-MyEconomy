@@ -20,6 +20,7 @@ import rs.v9.myeconomy.claim.Claim;
 import rs.v9.myeconomy.claim.Flags;
 import rs.v9.myeconomy.group.MyGroup;
 import rs.v9.myeconomy.group.Zone;
+import rs.v9.myeconomy.holo.NPC;
 import rs.v9.myeconomy.shop.MyShop;
 
 import java.util.*;
@@ -67,6 +68,13 @@ public class MyEventHandler implements Listener {
 
         injectPlayer(event.getPlayer());
         checkDistanceFakeMobs(event.getPlayer(), event.getPlayer().getLocation());
+
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+            @Override
+            public void run() {
+                new NPC(event.getPlayer());
+            }
+        }, 20);
     }
 
     @EventHandler
