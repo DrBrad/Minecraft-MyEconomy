@@ -14,24 +14,17 @@ import java.lang.reflect.Field;
 
 import static rs.v9.myeconomy.holo.MobResolver.fromName;
 
-public class FakeMob {
+public class FakeMob extends FakeEntity {
 
-    private Location location;
-    private String type, name;
-    private Entity entity;
+    private String type;
 
     public FakeMob(Location location, String type, String name){
-        this.location = location;
+        super(location, name);
         this.type = type;
-        this.name = name;
-    }
 
-    public Location getLocation(){
-        return location;
-    }
-
-    public String getType(){
-        return type;
+        entity = fromName(type, location);
+        entity.b(CraftChatMessage.fromStringOrNull("§a"+name));
+        entity.p(true);
     }
 
     public String getName(){
@@ -47,13 +40,11 @@ public class FakeMob {
         }
     }
 
-    public int getEntityId(){
-        if(entity == null){
-            return -1;
-        }
-        return entity.an();
+    public String getType(){
+        return type;
     }
 
+    @Override
     public void display(Player player){
         EntityPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
         PacketPlayOutSpawnEntity spawnPacket = new PacketPlayOutSpawnEntity(
@@ -87,40 +78,6 @@ public class FakeMob {
 
         }catch(NoSuchFieldException | IllegalAccessException e){
             e.printStackTrace();
-        }
-    }
-
-    public void reload(Player player){
-        /*
-        PacketPlayOutEntityMetadata metadata = new PacketPlayOutEntityMetadata(entity.getEntityId(), entity.getDataWatcher(), true);
-
-        EntityPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
-        nmsPlayer.playerConnection.sendPacket(metadata);
-        if(equipmentList.size() > 0){
-            PacketPlayOutEntityEquipment equipment = new PacketPlayOutEntityEquipment(entity.getId(), equipmentList);
-            nmsPlayer.playerConnection.sendPacket(equipment);
-        }
-        */
-    }
-
-    public int createEntity(){
-        if(entity != null){
-            return entity.an();
-        }
-
-        entity = fromName(type, location);
-        entity.b(CraftChatMessage.fromStringOrNull("§a"+name));
-        entity.p(true);
-
-        return entity.an();
-    }
-
-    public void kill(){
-        PacketPlayOutEntityDestroy destroy = new PacketPlayOutEntityDestroy(entity.an());
-
-        for(Player player : location.getWorld().getPlayers()){
-            EntityPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
-            nmsPlayer.c.sendPacket(destroy);
         }
     }
 }

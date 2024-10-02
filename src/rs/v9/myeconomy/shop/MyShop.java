@@ -198,7 +198,6 @@ public class MyShop {
 
         writeData();
 
-        fakeMob.createEntity();
         fakeMob.display(player);
 
         return this;
@@ -254,7 +253,6 @@ public class MyShop {
             float pitch = (float) config.getDouble("location.pitch");
 
             fakeMob = new FakeMob(new Location(Bukkit.getWorld(world), x, y, z, yaw, pitch), entityType, name);
-            fakeMob.createEntity();
 
             merchant = Bukkit.createMerchant("Shop");
 

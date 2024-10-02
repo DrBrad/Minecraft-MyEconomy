@@ -20,7 +20,7 @@ import rs.v9.myeconomy.claim.Claim;
 import rs.v9.myeconomy.claim.Flags;
 import rs.v9.myeconomy.group.MyGroup;
 import rs.v9.myeconomy.group.Zone;
-import rs.v9.myeconomy.holo.NPC;
+import rs.v9.myeconomy.holo.FakePlayer;
 import rs.v9.myeconomy.shop.MyShop;
 
 import java.util.*;
@@ -69,12 +69,14 @@ public class MyEventHandler implements Listener {
         injectPlayer(event.getPlayer());
         checkDistanceFakeMobs(event.getPlayer(), event.getPlayer().getLocation());
 
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
             @Override
-            public void run() {
-                new NPC(event.getPlayer());
+            public void run(){
+                FakePlayer npc = new FakePlayer(event.getPlayer().getLocation(), "ChunkLoader");
+                npc.display(event.getPlayer());
             }
         }, 20);
+
     }
 
     @EventHandler
@@ -344,7 +346,6 @@ public class MyEventHandler implements Listener {
                 if(!event.getPlayer().hasPermission("f.admin")){
                     event.setCancelled(true);
                     event.getPlayer().sendMessage("§cOnly server admins can break blocks in zones.");
-                    return;
                 }
 
             }else{
@@ -353,17 +354,14 @@ public class MyEventHandler implements Listener {
                     if(!claim.getKey().equals(group.getKey())){
                         event.setCancelled(true);
                         event.getPlayer().sendMessage("§cYou cannot break blocks in other groups claims.");
-                        return;
 
                     }else if(!group.canBuild(event.getPlayer().getUniqueId())){
                         event.setCancelled(true);
                         event.getPlayer().sendMessage("§cYou cannot break blocks as a member.");
-                        return;
                     }
                 }else{
                     event.setCancelled(true);
                     event.getPlayer().sendMessage("§cYou cannot break blocks in other groups claims.");
-                    return;
                 }
             }
         }
