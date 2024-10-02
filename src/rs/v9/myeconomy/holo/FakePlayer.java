@@ -34,7 +34,7 @@ public class FakePlayer extends FakeEntity {
         ((EntityPlayer) entity).c = new PlayerConnection(((CraftServer) Bukkit.getServer()).getServer(),
                 new NetworkManager(EnumProtocolDirection.a),
                 (EntityPlayer) entity,
-                CommonListenerCookie.a(gameProfile, false));
+                CommonListenerCookie.a(((EntityPlayer) entity).fX(), false));
     }
 
     @Override
