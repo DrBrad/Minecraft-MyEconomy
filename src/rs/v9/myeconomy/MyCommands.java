@@ -80,10 +80,11 @@ public class MyCommands implements CommandExecutor, TabExecutor {
                 case "back":
                     return back(((Player) commandSender));
 
-                case "cl":
+                case "chunkload":
                     return chunkLoader(((Player) commandSender), args);
             }
         }
+        System.out.println(command.getName());
 
         return false;
     }
@@ -130,7 +131,7 @@ public class MyCommands implements CommandExecutor, TabExecutor {
                         }
                         break;
 
-                    case "cl":
+                    case "chunkload":
                         if(args.length == 1){
                             tabComplete.add("set");
                             tabComplete.add("clear");
@@ -152,7 +153,7 @@ public class MyCommands implements CommandExecutor, TabExecutor {
                 tabComplete.add("msg");
                 tabComplete.add("gamemode");
                 tabComplete.add("back");
-                tabComplete.add("cl");
+                tabComplete.add("chunkload");
             }
 
             return tabComplete;
@@ -624,7 +625,7 @@ public class MyCommands implements CommandExecutor, TabExecutor {
     }
 
     public boolean chunkLoader(Player player, String[] args){
-        if(player.hasPermission("cl")){
+        if(player.hasPermission("chunkload")){
             if(args.length > 0){
                 switch(args[0].toLowerCase()){
                     case "set":

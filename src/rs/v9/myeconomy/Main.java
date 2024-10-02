@@ -32,8 +32,6 @@ public class Main extends JavaPlugin {
     public static DynmapCommonAPI dynmap;
     private int task;
 
-    //CHUNK LOADER
-
     @Override
     public void onLoad(){
         plugin = this;
@@ -66,6 +64,7 @@ public class Main extends JavaPlugin {
         getCommand("msg").setExecutor(new MyCommands());
         getCommand("gamemode").setExecutor(new MyCommands());
         getCommand("back").setExecutor(new MyCommands());
+        getCommand("chunkload").setExecutor(new MyCommands());
 
         new Config();
         new GroupHandler();
