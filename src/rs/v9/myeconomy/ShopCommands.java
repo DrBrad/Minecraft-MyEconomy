@@ -358,7 +358,7 @@ public class ShopCommands implements CommandExecutor, TabExecutor {
                     }
                 }
             }else{
-                player.sendMessage("§cThere are no groups currently.");
+                player.sendMessage("§cYou don't have any shops.");
             }
         }else{
             player.sendMessage("§cYou don't have permission to perform this command.");
