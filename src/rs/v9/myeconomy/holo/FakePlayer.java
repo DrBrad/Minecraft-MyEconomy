@@ -16,6 +16,7 @@ import org.bukkit.craftbukkit.v1_21_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_21_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
+import java.lang.reflect.Field;
 import java.util.UUID;
 
 public class FakePlayer extends FakeEntity {
@@ -35,6 +36,14 @@ public class FakePlayer extends FakeEntity {
                 new NetworkManager(EnumProtocolDirection.a),
                 (EntityPlayer) entity,
                 CommonListenerCookie.a(((EntityPlayer) entity).fX(), false));
+
+        try{
+            Field f = GameProfile.class.getDeclaredField("name");
+            f.setAccessible(true);
+            f.set(gameProfile, "§3"+gameProfile.getName());
+
+        }catch(NoSuchFieldException | IllegalAccessException e){
+        }
     }
 
     @Override

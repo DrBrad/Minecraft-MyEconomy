@@ -76,7 +76,6 @@ public class MyEventHandler implements Listener {
                 addFakePlayer(event.getPlayer());
             }
         }, 20);
-
     }
 
     @EventHandler
