@@ -145,11 +145,11 @@ public class MyEventHandler implements Listener {
                 event.setCancelled(true);
 
             }else{
-                event.setFormat("§6["+color+group.getName()+"§6]["+color+names[group.getRank(event.getPlayer().getUniqueId())]+"§6]["+color+event.getPlayer().getName()+"§6]§7: ");
+                event.setFormat("§6["+color+group.getName()+"§6]["+color+names[group.getRank(event.getPlayer().getUniqueId())]+"§6]["+color+event.getPlayer().getName()+"§6]§7: %2$s");
                 //event.setFormat("§6["+color+group.getName()+"§6]["+color+names[group.getRank(event.getPlayer().getUniqueId())]+"§6]["+color+event.getPlayer().getName()+"§6]§7: "+event.getMessage());
             }
         }else{
-            event.setFormat("§6[§c"+event.getPlayer().getName()+"§6]§7: ");
+            event.setFormat("§6[§c"+event.getPlayer().getName()+"§6]§7: %2$s");
             //event.setFormat("§6[§c"+event.getPlayer().getName()+"§6]§7: "+event.getMessage());
         }
     }
