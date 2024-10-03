@@ -32,6 +32,8 @@ public class Main extends JavaPlugin {
     public static DynmapCommonAPI dynmap;
     private int task;
 
+    //Attempt player chunk loading not forceChunkLoad
+
     @Override
     public void onLoad(){
         plugin = this;
