@@ -137,6 +137,11 @@ public class ChunkLoadHandler {
 
     public static void checkDistanceFakePlayers(Player player, Location location){
         for(FakePlayer fakePlayer : npcList){
+            if(!fakePlayer.getLocation().getWorld().equals(location.getWorld())){
+                renderedEntities.get(player).remove(fakePlayer);
+                continue;
+            }
+
             int distance = (int) fakePlayer.getLocation().distance(location);
             if(distance > Bukkit.getViewDistance() && renderedEntities.get(player).contains(fakePlayer)){
                 renderedEntities.get(player).remove(fakePlayer);

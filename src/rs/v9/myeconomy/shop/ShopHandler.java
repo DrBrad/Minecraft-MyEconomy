@@ -179,6 +179,11 @@ public class ShopHandler {
 
     public static void checkDistanceFakeMobs(Player player, Location location){
         for(FakeMob fakeMob : mobList){
+            if(!fakeMob.getLocation().getWorld().equals(location.getWorld())){
+                renderedEntities.get(player).remove(fakeMob);
+                continue;
+            }
+
             int distance = (int) fakeMob.getLocation().distance(location);
             if(distance > Bukkit.getViewDistance() && renderedEntities.get(player).contains(fakeMob)){
                 renderedEntities.get(player).remove(fakeMob);
