@@ -33,6 +33,7 @@ public class Main extends JavaPlugin {
     private int task;
 
     //Attempt player chunk loading not forceChunkLoad
+    //add close to chat...
 
     @Override
     public void onLoad(){
