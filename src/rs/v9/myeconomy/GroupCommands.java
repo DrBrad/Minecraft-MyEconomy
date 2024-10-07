@@ -1146,6 +1146,11 @@ public class GroupCommands implements CommandExecutor, TabExecutor {
                         return true;
                     }
 
+                    if(!group.getKey().equals(claim.getKey())){
+                        player.sendMessage("§cThis chunk is not owned by your group.");
+                        return true;
+                    }
+
                     String type = args[1];
                     try{
                         Flags flag = Flags.valueOf(args[2].toUpperCase());
